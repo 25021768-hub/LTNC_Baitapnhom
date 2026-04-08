@@ -63,8 +63,10 @@ public class Product implements Serializable {
         }
     }
 
-    // Getters
+    // Getter & Setter cần thiết cho việc Sửa/Xóa
+    public String getId() { return id; }
     public String getStatus() { return status; }
-    public String getHighestBidder() { return highestBidder; }
+    public void setName(String name) { this.name = name; }
+    public void setDescription(String description) { this.description = description; }
     public double getCurrentPrice() { return currentPrice; }
-}
+    public String getHighestBidder() { return highestBidder; }; }
