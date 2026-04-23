@@ -1,6 +1,7 @@
 module com.example.onlineauctionsystem {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
 
     opens com.example.onlineauctionsystem to javafx.fxml;

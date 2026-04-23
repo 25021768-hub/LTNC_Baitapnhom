@@ -2,7 +2,7 @@ package com.example.onlineauctionsystem.model;
 import java.io.Serializable;
 
 public class AuctionMessage implements Serializable {
-    public enum Action { LOGIN, REGISTER, BID, UPDATE_LIST, ADD_PRODUCT, DELETE_PRODUCT, ERROR, SUCCESS }
+    public enum Action { LOGIN, REGISTER, BID, UPDATE_LIST, ADD_PRODUCT, DELETE_PRODUCT,CHANGE_PASSWORD, ERROR, SUCCESS }
 
     private Action action;
     private Object data;
