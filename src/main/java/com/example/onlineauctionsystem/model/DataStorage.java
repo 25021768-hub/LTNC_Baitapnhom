@@ -31,14 +31,28 @@ public class DataStorage {
     }
 
     public static boolean register(Account acc) {
-        String sql = "INSERT INTO accounts (username, password, role) VALUES (?, ?, ?)";
+        // 1. Kiểm tra định dạng trước khi phí công kết nối DB
+        if (!isValidEmail(acc.getEmail()) || !isValidCCCD(acc.getIdCard())) {
+            return false;
+        }
+
+        String sql = "INSERT INTO accounts (username, password, role, id_card, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, acc.getUsername());
             stmt.setString(2, acc.getPassword());
             stmt.setString(3, acc.getRole());
+            stmt.setString(4, acc.getIdCard());
+            stmt.setString(5, acc.getEmail());
+            stmt.setString(6, acc.getPhoneNumber());
+
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) { return false; }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Trả về false nếu trùng username hoặc lỗi kết nối
+        }
     }
 
     public static boolean changePassword(String username, String oldPass, String newPass) {
@@ -140,6 +154,16 @@ public class DataStorage {
             e.printStackTrace();
             return false;
         }
+    }
+    // Kiểm tra định dạng Email
+    public static boolean isValidEmail(String email) {
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return email != null && email.matches(regex);
+    }
+
+    // Kiểm tra CCCD đúng 12 số
+    public static boolean isValidCCCD(String cccd) {
+        return cccd != null && cccd.matches("\\d{12}");
     }
 
 
