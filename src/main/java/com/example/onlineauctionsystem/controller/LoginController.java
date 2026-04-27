@@ -2,26 +2,12 @@ package com.example.onlineauctionsystem.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
-public class LoginController {
+public class LoginController extends BaseController{
     @FXML
-    private TextField Username;
+    public Hyperlink btnGoToRegister;
     @FXML
-    private Button LoginButton;
-    @FXML
-    private TextField Password;
-
-    @FXML
-    void HandleLogin(ActionEvent event){
-
-    }
-    private void  navigateToAuction(ActionEvent event){
-
-    }
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -29,5 +15,8 @@ public class LoginController {
         alert.setContentText(content);
         alert.showAndWait();
     }
-
+    @FXML
+    private void onRegisterClick(ActionEvent event){
+        switchScene(event, "/com/example/onlineauctionsystem/Dang_Ky.fxml", "Đăng kí tài khoản");
+    }
 }
