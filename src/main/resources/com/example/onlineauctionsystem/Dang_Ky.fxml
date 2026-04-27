@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.collections.FXCollections?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Hyperlink?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E8F1F8;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E8F1F8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.LoginController">
     <children>
         <VBox layoutX="162.4" layoutY="23.2" prefHeight="557.0" prefWidth="478.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="30.0">
             <padding>
@@ -38,36 +25,59 @@
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-                <TextField promptText="Ví dụ: username123" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
-                <GridPane hgap="10.0" prefWidth="438.0" vgap="10.0">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
+
+                <VBox spacing="2.0">
+                    <children>
+                        <TextField fx:id="txtUsername" promptText="Ví dụ: username123" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
+
+                        <Label fx:id="lblUsernameMessage" managed="false" text="" textFill="RED" visible="false">
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
+                <GridPane hgap="10.0" prefWidth="438.0" vgap="0.0"> <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                  <StackPane prefHeight="0.0" prefWidth="214.0">
-                     <children>
-                              <PasswordField promptText="Mật khẩu (Password)" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
-                           <image>
-                              <Image url="@LTNC_Baitapnhom/Kho_anh/mat.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
-                  <StackPane prefHeight="0.0" prefWidth="200.0" GridPane.columnIndex="1">
-                     <children>
-                              <PasswordField promptText="Nhập lại mật khẩu (Retype Pa...)" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
-                           <image>
-                              <Image url="@LTNC_Baitapnhom/Kho_anh/mat.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </StackPane>
+                        <VBox spacing="2.0">
+                            <children>
+                                <StackPane>
+                                    <children>
+                                        <PasswordField fx:id="txtPassword" promptText="Mật khẩu (Password)" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
+                                            <StackPane.margin><Insets right="8.0" /></StackPane.margin>
+                                            <image><Image url="@LTNC_Baitapnhom/Kho_anh/mat.png" /></image>
+                                        </ImageView>
+                                    </children>
+                                </StackPane>
+                                <Label fx:id="lblPasswordMessage1" managed="false" text="" textFill="RED" visible="false">
+                                    <font><Font size="10.0" /></font>
+                                </Label>
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="2.0" GridPane.columnIndex="1">
+                            <children>
+                                <StackPane>
+                                    <children>
+                                        <PasswordField fx:id="txtRePassword" promptText="Nhập lại mật khẩu (Retype Pa...)" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
+                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
+                                            <StackPane.margin><Insets right="8.0" /></StackPane.margin>
+                                            <image><Image url="@LTNC_Baitapnhom/Kho_anh/mat.png" /></image>
+                                        </ImageView>
+                                    </children>
+                                </StackPane>
+                                <Label fx:id="lblPasswordMessage2" managed="false" text="" textFill="RED" visible="false">
+                                    <font><Font size="10.0" /></font>
+                                </Label>
+                            </children>
+                        </VBox>
                     </children>
                 </GridPane>
                 <TextField promptText="Họ và tên" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
@@ -105,12 +115,12 @@
                         </ComboBox>
                     </children>
                 </GridPane>
-                <Button mnemonicParsing="false" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="ĐĂNG KÝ" textFill="WHITE">
+                <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#onRegister" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="ĐĂNG KÝ" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
                 </Button>
-                <Hyperlink alignment="CENTER_RIGHT" prefHeight="24.0" prefWidth="438.0" style="-fx-text-fill: #113366;" text="Quay lại Đăng nhập" />
+                <Hyperlink fx:id="ReturnLogin" alignment="CENTER_RIGHT" onAction="#onReturnLogin" prefHeight="24.0" prefWidth="438.0" style="-fx-text-fill: #113366;" text="Quay lại Đăng nhập" />
                 <HBox alignment="CENTER" prefHeight="28.0" prefWidth="438.0" spacing="5.0">
                     <children>
                         <CheckBox mnemonicParsing="false" text="Tôi đồng ý với" />

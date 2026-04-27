@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<HBox fx:controller="com.example.onlineauctionsystem.controller.LoginController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #f0f2f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #f0f2f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.LoginController">
    <children>
       <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="400.0" spacing="15.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);;">
          <children>
@@ -64,7 +64,7 @@
             </Label>
             <TextField promptText="Tài khoản" style="-fx-background-radius: 5; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-color: white; -fx-padding: 10;" />
             <PasswordField promptText="Mật khẩu" style="-fx-background-radius: 5; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-color: white; -fx-padding: 10;" />
-            <Hyperlink id="forgot password" alignment="CENTER_RIGHT" maxWidth="Infinity" text="Quên mật khẩu?" />
+            <Hyperlink fx:id="btnForgotPassword" alignment="CENTER_RIGHT" maxWidth="Infinity" onAction="#onForgotPassword" text="Quên mật khẩu?" />
             <Button id="login" alignment="CENTER" mnemonicParsing="false" prefWidth="200.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="ĐĂNG NHẬP" />
             <HBox alignment="CENTER" spacing="5.0">
                <children>
