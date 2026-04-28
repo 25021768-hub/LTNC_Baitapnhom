@@ -1,6 +1,8 @@
 package com.example.onlineauctionsystem.model;
 
 import com.example.onlineauctionsystem.model.Product;
+import com.example.onlineauctionsystem.utils.Validator;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,9 +34,9 @@ public class DataStorage {
 
     public static boolean register(Account acc) {
         // 1. Kiểm tra định dạng Email, CCCD và cả Mật khẩu mạnh
-        if (!isValidEmail(acc.getEmail()) ||
-                !isValidCCCD(acc.getIdCard()) ||
-                !isValidPassword(acc.getPassword())) {
+        if (!Validator.isValidEmail(acc.getEmail()) ||
+                !Validator.isValidCCCD(acc.getIdCard()) ||
+                !Validator.isValidPassword(acc.getPassword())) {
 
             System.err.println("Đăng ký thất bại: Định dạng Email, CCCD hoặc Mật khẩu không hợp lệ!");
             return false;
@@ -164,25 +166,5 @@ public class DataStorage {
             e.printStackTrace();
             return false;
         }
-    }
-    // Kiểm tra định dạng Email
-    public static boolean isValidEmail(String email) {
-        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        return email != null && email.matches(regex);
-    }
-
-    // Kiểm tra CCCD đúng 12 số
-    public static boolean isValidCCCD(String cccd) {
-        return cccd != null && cccd.matches("\\d{12}");
-    }
-
-    // Kiểm tra mật khẩu mạnh (Tối thiểu 8 ký tự, 1 chữ in hoa, 1 ký tự đặc biệt)
-    public static boolean isValidPassword(String password) {
-        // Giải thích Regex:
-        // (?=.*[A-Z])      : Phải có ít nhất 1 chữ cái in hoa (A-Z)
-        // (?=.*[!@#$%^&*]) : Phải có ít nhất 1 ký tự đặc biệt trong cụm ngoặc vuông
-        // .{8,}            : Chiều dài tổng cộng phải từ 8 ký tự trở lên
-        String regex = "^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$";
-        return password != null && password.matches(regex);
     }
 }
