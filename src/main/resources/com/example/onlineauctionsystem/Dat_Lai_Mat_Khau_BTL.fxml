@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-radius: 8; -fx-border-color: #1357b7; -fx-border-radius: 8; -fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.LoginController">
+    <children>
+        <VBox layoutX="162.4" layoutY="23.2" prefHeight="557.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="30.0">
+            <padding>
+                <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+            </padding>
+            <children>
+                <Label text="ĐẶT LẠI MẬT KHẨU" textFill="#1357b7">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="119.0" fitWidth="113.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../LTNC_Baitapnhom/Kho_anh/DatLaiMatKhau.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+                <Label text="Vui lòng nhập mật khẩu mới và xác nhận mật khẩu cho tài khoản của bạn." textFill="#1357b7" wrapText="true">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Label>
+            <Label text="Mật khẩu mới:">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <StackPane prefHeight="23.0" prefWidth="438.0">
+               <children>
+                  <PasswordField promptText="Nhập mật khẩu mới" style="-fx-background-radius: 8; -fx-border-color: #1357b7; -fx-border-radius: 8; -fx-background-color: white;" />
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
+                     <StackPane.margin>
+                        <Insets right="10.0" />
+                     </StackPane.margin>
+                     <image>
+                        <Image url="@../LTNC_Baitapnhom/Kho_anh/mat.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </StackPane>
+            <Label layoutX="40.0" layoutY="247.0" text="Xác nhận mật khẩu:">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <StackPane prefHeight="2.0" prefWidth="438.0">
+               <children>
+                  <PasswordField prefHeight="14.0" prefWidth="438.0" promptText="Nhập lại mật khẩu mới" style="-fx-background-radius: 8; -fx-border-color: #1357b7; -fx-border-radius: 8; -fx-background-color: white;" />
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
+                     <StackPane.margin>
+                        <Insets right="10.0" />
+                     </StackPane.margin>
+                     <image>
+                        <Image url="@../LTNC_Baitapnhom/Kho_anh/mat.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </StackPane>
+                <Button mnemonicParsing="false" prefHeight="38.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="HOÀN TẤT" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Button>
+            <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="438.0">
+               <children>
+                  <Label text="Quay lại" />
+                  <Hyperlink onAction="#onReturnLogin" text="Đăng nhập" />
+               </children>
+            </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
