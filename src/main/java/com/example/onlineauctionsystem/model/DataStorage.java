@@ -31,8 +31,12 @@ public class DataStorage {
     }
 
     public static boolean register(Account acc) {
-        // 1. Kiểm tra định dạng trước khi phí công kết nối DB
-        if (!isValidEmail(acc.getEmail()) || !isValidCCCD(acc.getIdCard())) {
+        // 1. Kiểm tra định dạng Email, CCCD và cả Mật khẩu mạnh
+        if (!isValidEmail(acc.getEmail()) ||
+                !isValidCCCD(acc.getIdCard()) ||
+                !isValidPassword(acc.getPassword())) {
+
+            System.err.println("Đăng ký thất bại: Định dạng Email, CCCD hoặc Mật khẩu không hợp lệ!");
             return false;
         }
 
@@ -143,8 +147,14 @@ public class DataStorage {
         return null;
     }
 
-    // 2. Hàm xóa sản phẩm khỏi Database
-    public static boolean deleteProduct(String id) {
+    // 2. Hàm xóa sản phẩm khỏi Database(chỉ cho ADMIN)
+    // Hàm xóa sản phẩm (Chỉ Admin mới được xóa)
+    public static boolean deleteProduct(String id, Account loggedInUser) {
+        if (loggedInUser == null || !"ADMIN".equals(loggedInUser.getRole())) {
+            System.err.println("Từ chối truy cập: Chỉ ADMIN mới có quyền xóa sản phẩm!");
+            return false;
+        }
+
         String sql = "DELETE FROM products WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -166,5 +176,13 @@ public class DataStorage {
         return cccd != null && cccd.matches("\\d{12}");
     }
 
-
+    // Kiểm tra mật khẩu mạnh (Tối thiểu 8 ký tự, 1 chữ in hoa, 1 ký tự đặc biệt)
+    public static boolean isValidPassword(String password) {
+        // Giải thích Regex:
+        // (?=.*[A-Z])      : Phải có ít nhất 1 chữ cái in hoa (A-Z)
+        // (?=.*[!@#$%^&*]) : Phải có ít nhất 1 ký tự đặc biệt trong cụm ngoặc vuông
+        // .{8,}            : Chiều dài tổng cộng phải từ 8 ký tự trở lên
+        String regex = "^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$";
+        return password != null && password.matches(regex);
+    }
 }
