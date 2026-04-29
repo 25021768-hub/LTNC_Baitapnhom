@@ -13,6 +13,9 @@ public class Account implements Serializable {
     private String email;
     private String phoneNumber;
 
+    //So du
+    private double balance;
+
     // 1. Constructor ĐẦY ĐỦ dùng cho lúc ĐĂNG KÝ
     public Account(String username, String password, String role, String idCard, String email, String phoneNumber) {
         this.username = username;
@@ -23,7 +26,7 @@ public class Account implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    // 2. Constructor RÚT GỌN dùng cho lúc ĐĂNG NHẬP (Giữ nguyên của Hiếu)
+    // 2. Constructor RÚT GỌN dùng cho lúc ĐĂNG NHẬP
     public Account(String username, String password, String role) {
         this.username = username;
         this.password = password;
@@ -37,9 +40,15 @@ public class Account implements Serializable {
     public String getIdCard() { return idCard; }
     public String getEmail() { return email; }
     public String getPhoneNumber() { return phoneNumber; }
+    public double getBalance() { return balance; }
 
     // SETTER BẮT BUỘC PHẢI CÓ ĐỂ ĐỔI MẬT KHẨU (Của Hiếu)
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    //Setter cho so du
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }

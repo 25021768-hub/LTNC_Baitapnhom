@@ -167,4 +167,20 @@ public class DataStorage {
             return false;
         }
     }
+
+    // Lấy số dư hiện tại của tài khoản
+    public static double getBalance(String username) {
+        String sql = "SELECT balance FROM accounts WHERE username = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("balance");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
 }

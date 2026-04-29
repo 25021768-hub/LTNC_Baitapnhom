@@ -17,4 +17,9 @@ public class Validator {
         String regex = "^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$";
         return password != null && password.matches(regex);
     }
+
+    // 4. Kiểm tra số dư lớn hơn hoặc bằng số tiền muốn trả
+    public static boolean hasEnoughMoney(double balance, double bidAmount) {
+        return balance >= bidAmount;
+    }
 }
