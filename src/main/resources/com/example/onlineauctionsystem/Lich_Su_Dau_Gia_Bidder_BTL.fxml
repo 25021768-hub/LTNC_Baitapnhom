@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="78.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
+         <children>
+            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="286.0">
+               <children>
+                  <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@LTNC_Baitapnhom/Kho_anh/vnu-uet-removebg-preview.png" />
+                     </image>
+                  </ImageView>
+                  <Label text="ĐẤU GIÁ UET" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="3.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="74.0" prefWidth="702.0" spacing="10.0">
+               <children>
+                  <VBox alignment="CENTER" prefWidth="117.0">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm mới">
+                           <font><Font size="10.0" /></font>
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image><Image url="@LTNC_Baitapnhom/Kho_anh/gift.png" /></image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefWidth="117.0">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử đấu giá">
+                           <font><Font size="10.0" /></font>
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image><Image url="@LTNC_Baitapnhom/Kho_anh/history.png" /></image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefWidth="117.0">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Bạn đang đấu giá">
+                           <font><Font size="10.0" /></font>
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image><Image url="@LTNC_Baitapnhom/Kho_anh/trophy.png" /></image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefWidth="117.0">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
+                           <font><Font size="10.0" /></font>
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image><Image url="@LTNC_Baitapnhom/Kho_anh/user.png" /></image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefWidth="117.0">
+                     <children>
+                        <Button contentDisplay="TOP" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
+                           <font><Font size="10.0" /></font>
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image><Image url="@LTNC_Baitapnhom/Kho_anh/logout.png" /></image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+      <VBox prefHeight="621.0" prefWidth="900.0" spacing="15.0" style="-fx-background-radius: 15; -fx-background-color: white; -fx-border-radius: 15;">
+         <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </VBox.margin>
+         <effect><DropShadow /></effect>
+         <children>
+            <Label text="Lịch sử đấu giá cá nhân của bạn">
+               <font><Font name="System Bold" size="24.0" /></font>
+            </Label>
+            <HBox alignment="CENTER_LEFT" prefHeight="23.0" prefWidth="839.0" spacing="5.0">
+               <children>
+                  <Label text="Tên sản phẩm">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField promptText="Tên sản phẩm muốn tìm" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: black;" />
+                  <Label text="Trạng thái"><font><Font size="14.0" /></font></Label>
+                  <ComboBox prefWidth="150.0" promptText="Lọc kết quả" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: white; -fx-border-color: black;">
+                     <items>
+                        <FXCollections fx:factory="observableArrayList">
+                           <String fx:value="All" />
+                           <String fx:value="Thắng" />
+                           <String fx:value="Thua" />
+                        </FXCollections>
+                     </items>
+                  </ComboBox>
+               </children>
+            </HBox>
+            <GridPane prefHeight="501.0" prefWidth="839.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: white;">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="90.0" minHeight="90.0" prefHeight="90.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                     <children>
+                        <Label text="Tóm tắt lịch sử"><font><Font name="System Bold" size="20.0" /></font></Label>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                           <children>
+                              <Label contentDisplay="RIGHT" prefHeight="34.0" prefWidth="210.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;" text="Tổng sản phẩm đã đấu giá:">
+                                 <font><Font size="14.0" /></font>
+                                 <effect><DropShadow offsetY="4.0" /></effect>
+                                 <padding><Insets left="5.0" /></padding>
+                                 <graphic><Label text="..." /></graphic>
+                              </Label>
+                              <Label contentDisplay="RIGHT" prefHeight="34.0" prefWidth="210.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;" text="Sản phẩm thắng:">
+                                 <font><Font size="14.0" /></font>
+                                 <effect><DropShadow offsetY="4.0" /></effect>
+                                 <padding><Insets left="5.0" /></padding>
+                                 <graphic><Label text="..." /></graphic>
+                              </Label>
+                              <Label contentDisplay="RIGHT" prefHeight="34.0" prefWidth="210.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;" text="Tỷ lệ thắng:">
+                                 <font><Font size="14.0" /></font>
+                                 <effect><DropShadow offsetY="4.0" /></effect>
+                                 <padding><Insets left="5.0" /></padding>
+                                 <graphic><Label text="...%" /></graphic>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <GridPane alignment="CENTER" prefHeight="23.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label text="Tên vật phẩm" GridPane.columnIndex="0"><font><Font name="System Bold" size="15.0" /></font></Label>
+                        <Label text="Mức giá bạn trả" GridPane.columnIndex="1"><font><Font name="System Bold" size="15.0" /></font></Label>
+                        <Label text="Giá cuối cùng" GridPane.columnIndex="2"><font><Font name="System Bold" size="15.0" /></font></Label>
+                        <Label text="Thời gian" GridPane.columnIndex="3"><font><Font name="System Bold" size="15.0" /></font></Label>
+                        <Label text="Trạng thái" GridPane.columnIndex="4"><font><Font name="System Bold" size="15.0" /></font></Label>
+                     </children>
+                  </GridPane>
+                  <ScrollPane hbarPolicy="NEVER" GridPane.rowIndex="1">
+                     <content>
+                        <VBox prefHeight="366.0" prefWidth="839.0">
+                           <children>
+                              <GridPane minWidth="839.0" prefHeight="30.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <children>
+                                    <Label text="Laptop Dell XPS" GridPane.columnIndex="0" />
+                                    <Label text="15tr" GridPane.columnIndex="1" />
+                                    <Label text="15tr" GridPane.columnIndex="2" />
+                                    <Label text="12:00" GridPane.columnIndex="3" />
+                                    <Label alignment="CENTER" prefWidth="65.0" style="-fx-border-color: green; -fx-border-radius: 10;" text="THẮNG" textFill="GREEN" GridPane.columnIndex="4" />
+                                 </children>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+                                 </rowConstraints>
+                              </GridPane>
+                              <GridPane layoutX="10.0" layoutY="10.0" minWidth="839.0" prefHeight="30.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <children>
+                                    <Label text="Laptop Dell XPS" GridPane.columnIndex="0" />
+                                    <Label text="15tr" GridPane.columnIndex="1" />
+                                    <Label text="15tr" GridPane.columnIndex="2" />
+                                    <Label text="12:00" GridPane.columnIndex="3" />
+                                    <Label alignment="CENTER" prefWidth="65.0" style="-fx-border-color: #ff0101; -fx-border-radius: 10;" text="THUA" textFill="#ff0101" GridPane.columnIndex="4" />
+                                 </children>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+                                 </rowConstraints>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </children>
+               <effect><DropShadow /></effect>
+            </GridPane>
+         </children>
+         <padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
+      </VBox>
+   </children>
+</VBox>
