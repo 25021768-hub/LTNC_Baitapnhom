@@ -32,15 +32,34 @@ public class DataStorage {
         return null;
     }
 
-    public static boolean register(Account acc) {
-        // 1. Kiểm tra định dạng Email, CCCD và cả Mật khẩu mạnh
-        if (!Validator.isValidEmail(acc.getEmail()) ||
-                !Validator.isValidCCCD(acc.getIdCard()) ||
-                !Validator.isValidPassword(acc.getPassword())) {
-
-            System.err.println("Đăng ký thất bại: Định dạng Email, CCCD hoặc Mật khẩu không hợp lệ!");
+    //Check tài khoản tồn tài chưa
+    public static boolean isAccountExists(String identifier){
+        if(identifier == null || identifier.trim().isEmpty()){
             return false;
         }
+        String sql = "SELECT COUNT(*) FROM accounts WHERE username = ? OR email = ? OR phone_number = ? OR id_card = ?";
+        try(Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);){
+            String value = identifier.trim();
+            stmt.setString(1, value);
+            stmt.setString(2, value);
+            stmt.setString(3, value);
+            stmt.setString(4, value);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return count > 0;
+                }
+            }
+        }
+        catch (SQLException e) {
+            System.err.println("Lỗi truy vấn Database: " + e.getMessage());
+        }
+        return false;
+    }
+
+
+    public static boolean register(Account acc) {
 
         String sql = "INSERT INTO accounts (username, password, role, id_card, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
 

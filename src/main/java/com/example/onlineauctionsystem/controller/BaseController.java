@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -28,5 +29,12 @@ public abstract class BaseController{
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    protected void updateLabel(Label label, String text, String color) {
+        label.setText(text);
+        label.setStyle("-fx-text-fill: " + color + ";");
+        label.setVisible(true);
+        label.setManaged(true);
     }
 }

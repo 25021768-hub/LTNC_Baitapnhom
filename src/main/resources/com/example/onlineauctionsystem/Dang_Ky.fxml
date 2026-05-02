@@ -138,7 +138,7 @@
                         </VBox>
                     </children>
                 </GridPane>
-                <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#onReturnLogin" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="ĐĂNG KÝ" textFill="WHITE">
+                <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#registerNewUser" disable="true" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="ĐĂNG KÝ" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
@@ -146,7 +146,7 @@
                 <Hyperlink fx:id="ReturnLogin" alignment="CENTER_RIGHT" onAction="#onReturnLogin" prefHeight="24.0" prefWidth="438.0" style="-fx-text-fill: #113366;" text="Quay lại Đăng nhập" />
                 <HBox alignment="CENTER" prefHeight="28.0" prefWidth="438.0" spacing="5.0">
                     <children>
-                        <CheckBox mnemonicParsing="false" text="Tôi đồng ý với" />
+                        <CheckBox fx:id="cbCheck" mnemonicParsing="false" text="Tôi đồng ý với" />
                         <Hyperlink style="-fx-padding: 0;" text="điều khoản" />
                     </children>
                 </HBox>

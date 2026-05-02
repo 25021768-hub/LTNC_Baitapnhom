@@ -8,7 +8,7 @@ import com.example.onlineauctionsystem.utils.Validator;
 
 public class LoginController extends BaseController {
 
-    @FXML private Hyperlink btnGoToRegister;
+
 
     // Chuyển màn hình đăng kí
     @FXML
@@ -16,8 +16,7 @@ public class LoginController extends BaseController {
         switchScene(event, "/com/example/onlineauctionsystem/Dang_Ky.fxml", "Đăng kí tài khoản");
     }
 
-
-
+    //Quên mật khẩu
     @FXML
     private void onForgotPassword(ActionEvent event){
         switchScene(event, "/com/example/onlineauctionsystem/Quen_Mat_Khau_BTL.fxml", "Quên mật khẩu");

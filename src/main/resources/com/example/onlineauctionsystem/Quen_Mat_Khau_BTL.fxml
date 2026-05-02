@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:controller="com.example.onlineauctionsystem.controller.LoginController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E8F1F8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E8F1F8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.auth.PasswordController">
     <children>
         <VBox layoutX="162.4" layoutY="23.2" prefHeight="557.0" prefWidth="478.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="30.0">
             <padding>
@@ -37,8 +37,11 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <TextField promptText="Ví dụ: username123 hoặc 09xxxxxx" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
-                <Button mnemonicParsing="false" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="TIẾP TỤC" textFill="WHITE">
+            <TextField fx:id="txtFind" promptText="Ví dụ: username123 hoặc 09xxxxxx" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
+                <Label fx:id="lblMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
+                    <font><Font size="10.0" /></font>
+                </Label>
+                <Button onAction="#onFindAccount" mnemonicParsing="false" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="TIẾP TỤC" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
