@@ -17,8 +17,16 @@ public class Validator {
         String regex = "^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$";
         return password != null && password.matches(regex);
     }
+    //4.Kiểm tra số điện thoại chỉ chứa số
+    public static boolean isValidPhone(String phone){
+        return phone.matches("^0\\d{9}$");
+    }
+    //4.Kiểm tra tên đăng nhập(Không chứa dấu cách và kí tự đặc biệt)
+    public static boolean isValidUsername(String user){
+        return user.matches("^[a-zA-Z0-9]*$");
+    }
 
-    // 4. Kiểm tra số dư lớn hơn hoặc bằng số tiền muốn trả
+    // 6. Kiểm tra số dư lớn hơn hoặc bằng số tiền muốn trả
     public static boolean hasEnoughMoney(double balance, double bidAmount) {
         return balance >= bidAmount;
     }

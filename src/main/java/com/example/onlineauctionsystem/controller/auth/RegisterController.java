@@ -13,11 +13,22 @@ public class RegisterController extends BaseController {
     @FXML private TextField txtUsername;
     @FXML private PasswordField txtPassword;
     @FXML private PasswordField txtRePassword;
+    @FXML private TextField txtIDCard;
+    @FXML private TextField txtEmail;
+    @FXML private TextField txtPhone;
+
     @FXML private Label lblUsernameMessage;
     @FXML private Label lblPasswordMessage1;
     @FXML private Label lblPasswordMessage2;
+    @FXML private Label lblIDCardMessage;
+    @FXML private Label lblEmailMessage;
+    @FXML private Label lblPhoneMessage;
     private boolean Password;
     private boolean Repassword;
+    private boolean emailIsValid;
+    private boolean IDCardIsValid;
+    private boolean phoneIsValid;
+    private boolean userIsValid;
 
     //---------- PHẦN ĐĂNG KÍ-------------
 
@@ -38,19 +49,104 @@ public class RegisterController extends BaseController {
     //Khời tạo
     @FXML
     private void initialize() {
+        //Set up label
         if (lblUsernameMessage != null) {
             setUpLabel(lblUsernameMessage);
-            lblUsernameMessage.setWrapText(true);
         }
         if (lblPasswordMessage1 != null) {
             setUpLabel(lblPasswordMessage1);
-            lblPasswordMessage1.setWrapText(true);
         }
         if (lblPasswordMessage2 != null) {
             setUpLabel(lblPasswordMessage2);
-            lblPasswordMessage2.setWrapText(true);
+        }
+        if(lblIDCardMessage != null){
+            setUpLabel(lblIDCardMessage);
+        }
+        if(lblEmailMessage != null){
+            setUpLabel(lblEmailMessage);
+        }
+        if(lblPhoneMessage != null){
+            setUpLabel(lblPhoneMessage);
         }
 
+        //Check sđt
+        if(txtPhone != null){
+            txtPhone.textProperty().addListener((obs, oldVal, newVal) -> {
+                String phone = txtPhone.getText();
+                if(phone != null) {
+                    if (Validator.isValidPhone(phone)) {
+                        updateLabel(lblPhoneMessage, "✅ Số điện thoại hợp lệ!", "green");
+                        phoneIsValid = true;
+                    } else {
+                        updateLabel(lblPhoneMessage, "❌ Số điện thoại không hợp lệ!", "red");
+                        phoneIsValid = false;
+                    }
+                }
+                else {
+                    setUpLabel(lblPhoneMessage);
+                }
+            });
+        }
+
+        //Check email
+        if(txtEmail != null){
+            txtEmail.textProperty().addListener((obs, oldVal, newVal) -> {
+                String email = txtEmail.getText();
+                if (email != null){
+                    if (Validator.isValidEmail(email)) {
+                        updateLabel(lblEmailMessage, "✅ Email hợp lệ!", "green");
+                        emailIsValid = true;
+                    } else {
+                        updateLabel(lblEmailMessage, "❌ Email không hợp lệ!", "red");
+                        emailIsValid = false;
+                    }
+                }
+                else{
+                    setUpLabel(lblEmailMessage);
+                }
+            });
+        }
+
+        //Check CCCD
+        if(txtIDCard != null){
+            txtIDCard.textProperty().addListener((obs, odlVal, newVal) -> {
+                String IDCard = txtIDCard.getText();
+                if(IDCard != null) {
+                    if (Validator.isValidCCCD(IDCard)) {
+                        updateLabel(lblIDCardMessage, "✅ CCCD hợp lệ!", "green");
+                        IDCardIsValid = true;
+                    } else {
+                        updateLabel(lblIDCardMessage, "❌ CCCD không hợp lệ!", "red");
+                        IDCardIsValid = false;
+                    }
+                }
+                else {
+                    setUpLabel(lblIDCardMessage);
+                }
+            });
+        }
+
+        //Check tên đăng nhập
+        if(txtUsername != null){
+            txtUsername.textProperty().addListener((obs, odlVal, newVal) -> {
+                String user = txtUsername.getText();
+                if(user != null) {
+                    if (Validator.isValidUsername(user)) {
+                        updateLabel(lblUsernameMessage, "✅ Tên đăng nhập hợp lệ!", "green");
+                        userIsValid = true;
+                    } else {
+                        updateLabel(lblUsernameMessage, "❌ Tên đăng nhập không được chứa dấu, khoảng trắng hoặc kí tự đặc biệt. ", "red");
+                        userIsValid = false;
+                    }
+                }
+                else{
+                    setUpLabel(lblUsernameMessage);
+                }
+            });
+        }
+
+
+        //Check mật khẩu mạnh và khớp
         if (txtPassword != null && txtRePassword != null) {
             ChangeListener<String> passwordListener = ((observable, oldValue, newValue) -> {
                 String p1 = txtPassword.getText();
