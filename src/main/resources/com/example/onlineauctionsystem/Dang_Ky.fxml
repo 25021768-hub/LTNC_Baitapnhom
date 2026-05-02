@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E8F1F8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.LoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E8F1F8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.auth.RegisterController">
     <children>
         <VBox layoutX="162.4" layoutY="23.2" prefHeight="557.0" prefWidth="478.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="30.0">
             <padding>
@@ -115,7 +115,7 @@
                         </ComboBox>
                     </children>
                 </GridPane>
-                <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#onRegister" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="ĐĂNG KÝ" textFill="WHITE">
+                <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#onReturnLogin" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="ĐĂNG KÝ" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>

@@ -5,7 +5,7 @@ module com.example.onlineauctionsystem {
 
 
     opens com.example.onlineauctionsystem to javafx.fxml;
-    opens com.example.onlineauctionsystem.controller to javafx.fxml;
-    exports com.example.onlineauctionsystem.controller;
+    opens com.example.onlineauctionsystem.controller.auth to javafx.fxml;
+    exports com.example.onlineauctionsystem.controller.auth;
     exports com.example.onlineauctionsystem;
 }
