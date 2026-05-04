@@ -19,12 +19,6 @@ public class RegisterController extends BaseController {
 
     private boolean Password, Repassword, emailIsValid, IDCardIsValid, phoneIsValid, userIsValid, roleIsValid;
 
-    @FXML
-    private void setUpLabel(Label label) {
-        label.setVisible(false);
-        label.setManaged(false);
-    }
-
 
     private void checkRegister() {
         boolean allValid = (Password && Repassword && emailIsValid && IDCardIsValid && phoneIsValid && userIsValid && roleIsValid && cbCheck.isSelected());
@@ -101,7 +95,7 @@ public class RegisterController extends BaseController {
         });
 
         // Password Listener
-        ChangeListener<String> passwordListener = (o, old, newVal) -> {
+        ChangeListener<String> passwordListener = (obs, old, newVal) -> {
             String p1 = txtPassword.getText();
             String p2 = txtRePassword.getText();
             Password = Validator.isValidPassword(p1);

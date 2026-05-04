@@ -62,8 +62,8 @@
                   <Font size="25.0" />
                </font>
             </Label>
-            <TextField promptText="Tài khoản" style="-fx-background-radius: 5; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-color: white; -fx-padding: 10;" />
-            <PasswordField promptText="Mật khẩu" style="-fx-background-radius: 5; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-color: white; -fx-padding: 10;" />
+            <TextField fx:id="txtUsername" promptText="Tài khoản" style="-fx-background-radius: 5; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-color: white; -fx-padding: 10;" />
+            <PasswordField fx:id="txtPassword" promptText="Mật khẩu" style="-fx-background-radius: 5; -fx-border-color: #dcdcdc; -fx-border-radius: 5; -fx-background-color: white; -fx-padding: 10;" />
             <Hyperlink fx:id="btnForgotPassword" alignment="CENTER_RIGHT" maxWidth="Infinity" onAction="#onForgotPassword" text="Quên mật khẩu?" />
             <Button id="login" alignment="CENTER" mnemonicParsing="false" prefWidth="200.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="ĐĂNG NHẬP" />
             <HBox alignment="CENTER" spacing="5.0">

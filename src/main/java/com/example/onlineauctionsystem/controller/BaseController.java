@@ -1,6 +1,7 @@
 package com.example.onlineauctionsystem.controller;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -29,6 +30,11 @@ public abstract class BaseController{
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    protected void setUpLabel(Label label) {
+        label.setVisible(false);
+        label.setManaged(false);
     }
 
     protected void updateLabel(Label label, String text, String color) {

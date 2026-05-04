@@ -2,6 +2,7 @@ package com.example.onlineauctionsystem.model;
 
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.Validator;
+import com.mysql.cj.x.protobuf.MysqlxCrud;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -58,7 +59,7 @@ public class DataStorage {
         return false;
     }
 
-
+    //Đăng kí tài khoản
     public static boolean register(Account acc) {
 
         String sql = "INSERT INTO accounts (username, password, role, id_card, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
@@ -80,6 +81,22 @@ public class DataStorage {
         }
     }
 
+    //Đổi mật khẩu khi quên tên đăng nhập
+    public static boolean changeForgotPassword(String identifier, String newPass){
+        String sql = "UPDATE accounts SET password = ? WHERE phone_number = ? OR email = ?";
+        try (Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newPass);
+            stmt.setString(2, identifier);
+            stmt.setString(3, identifier);
+            return stmt.executeUpdate() > 0;
+        }
+        catch (SQLException e){
+            return false;
+        }
+    }
+
+    //Đổi mật khẩu khi biết tên đăng nhập
     public static boolean changePassword(String username, String oldPass, String newPass) {
         String sql = "UPDATE accounts SET password = ? WHERE username = ? AND password = ?";
         try (Connection conn = getConnection();

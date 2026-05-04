@@ -7,7 +7,8 @@ import javafx.scene.control.*;
 import com.example.onlineauctionsystem.utils.Validator;
 
 public class LoginController extends BaseController {
-
+    @FXML private TextField txtUsername;
+    @FXML private PasswordField txtPassword;
 
 
     // Chuyển màn hình đăng kí
@@ -22,7 +23,14 @@ public class LoginController extends BaseController {
         switchScene(event, "/com/example/onlineauctionsystem/Quen_Mat_Khau_BTL.fxml", "Quên mật khẩu");
     }
 
-
+    //Đăng nhập
+    @FXML
+    private void onLogin(ActionEvent event){
+        if(txtUsername.getText().trim().isEmpty() && txtPassword.getText().trim().isEmpty()){
+            if()
+            switchScene(event, "/com/example/onlineauctionsystem/", "Trang chủ");
+        }
+    }
 }
 
 
