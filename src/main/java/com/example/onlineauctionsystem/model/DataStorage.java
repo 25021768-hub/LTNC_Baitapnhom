@@ -202,4 +202,19 @@ public class DataStorage {
         }
         return 0.0;
     }
+
+    //Update status tài khoản (cộng/trừ tiền trong ví)
+    public static boolean updateBalance(String username, double amountToChange) {
+        // có thể là số âm (trừ tiền) hoặc số dương (nạp tiền/hoàn tiền)
+        String sql = "UPDATE accounts SET balance = balance + ? WHERE username = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDouble(1, amountToChange);
+            stmt.setString(2, username);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
