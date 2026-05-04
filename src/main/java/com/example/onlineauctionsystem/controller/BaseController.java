@@ -1,6 +1,8 @@
 package com.example.onlineauctionsystem.controller;
 
+import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -23,12 +25,20 @@ public abstract class BaseController{
             e.printStackTrace();
         }
     }
+    protected void switchScene(ActionEvent event, SceneConfig sceneType){
+        switchScene(event, sceneType.getPath(), sceneType.getTitle());
+    }
     protected void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    protected void setUpLabel(Label label) {
+        label.setVisible(false);
+        label.setManaged(false);
     }
 
     protected void updateLabel(Label label, String text, String color) {

@@ -3,6 +3,7 @@ package com.example.onlineauctionsystem.controller.auth;
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.model.Account;
 import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -18,12 +19,6 @@ public class RegisterController extends BaseController {
     @FXML private Label lblUsernameMessage, lblPasswordMessage1, lblPasswordMessage2, lblIDCardMessage, lblEmailMessage, lblPhoneMessage;
 
     private boolean Password, Repassword, emailIsValid, IDCardIsValid, phoneIsValid, userIsValid, roleIsValid;
-
-    @FXML
-    private void setUpLabel(Label label) {
-        label.setVisible(false);
-        label.setManaged(false);
-    }
 
 
     private void checkRegister() {
@@ -45,9 +40,9 @@ public class RegisterController extends BaseController {
             if (newVal == null || newVal.isEmpty()) setUpLabel(lblPhoneMessage);
             else {
                 if (phoneIsValid) {
-                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblPhoneMessage, "✅ Số điện thoại hợp lệ!", "green");
-                    else { updateLabel(lblPhoneMessage, "❌ Số điện thoại đã tồn tại!", "red"); phoneIsValid = false; }
-                } else updateLabel(lblPhoneMessage, "❌ Số điện thoại không hợp lệ!", "red");
+                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblPhoneMessage, "Số điện thoại hợp lệ!", "green");
+                    else { updateLabel(lblPhoneMessage, "Số điện thoại đã tồn tại!", "red"); phoneIsValid = false; }
+                } else updateLabel(lblPhoneMessage, "Số điện thoại không hợp lệ!", "red");
             }
             checkRegister();
         });
@@ -58,9 +53,9 @@ public class RegisterController extends BaseController {
             if (newVal == null || newVal.isEmpty()) setUpLabel(lblEmailMessage);
             else {
                 if (emailIsValid) {
-                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblEmailMessage, "✅ Email hợp lệ!", "green");
-                    else { updateLabel(lblEmailMessage, "❌ Email đã tồn tại!", "red"); emailIsValid = false; }
-                } else updateLabel(lblEmailMessage, "❌ Email không hợp lệ!", "red");
+                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblEmailMessage, "Email hợp lệ!", "green");
+                    else { updateLabel(lblEmailMessage, "Email đã tồn tại!", "red"); emailIsValid = false; }
+                } else updateLabel(lblEmailMessage, "Email không hợp lệ!", "red");
             }
             checkRegister();
         });
@@ -71,9 +66,9 @@ public class RegisterController extends BaseController {
             if (newVal == null || newVal.isEmpty()) { setUpLabel(lblIDCardMessage); IDCardIsValid = false; }
             else {
                 if (IDCardIsValid) {
-                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblIDCardMessage, "✅ CCCD hợp lệ!", "green");
-                    else { updateLabel(lblIDCardMessage, "❌ CCCD đã tồn tại!", "red"); IDCardIsValid = false; }
-                } else updateLabel(lblIDCardMessage, "❌ CCCD không hợp lệ!", "red");
+                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblIDCardMessage, "CCCD hợp lệ!", "green");
+                    else { updateLabel(lblIDCardMessage, "CCCD đã tồn tại!", "red"); IDCardIsValid = false; }
+                } else updateLabel(lblIDCardMessage, "CCCD không hợp lệ!", "red");
             }
             checkRegister();
         });
@@ -84,9 +79,9 @@ public class RegisterController extends BaseController {
             if (newVal == null || newVal.isEmpty()) setUpLabel(lblUsernameMessage);
             else {
                 if (userIsValid) {
-                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblUsernameMessage, "✅ Tên đăng nhập hợp lệ!", "green");
-                    else { updateLabel(lblUsernameMessage, "❌ Tên đăng nhập đã tồn tại!", "red"); userIsValid = false; }
-                } else updateLabel(lblUsernameMessage, "❌ Tên không chứa dấu/khoảng trắng!", "red");
+                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblUsernameMessage, "Tên đăng nhập hợp lệ!", "green");
+                    else { updateLabel(lblUsernameMessage, "Tên đăng nhập đã tồn tại!", "red"); userIsValid = false; }
+                } else updateLabel(lblUsernameMessage, "Tên không chứa dấu/khoảng trắng!", "red");
             }
             checkRegister();
         });
@@ -101,16 +96,16 @@ public class RegisterController extends BaseController {
         });
 
         // Password Listener
-        ChangeListener<String> passwordListener = (o, old, newVal) -> {
+        ChangeListener<String> passwordListener = (obs, old, newVal) -> {
             String p1 = txtPassword.getText();
             String p2 = txtRePassword.getText();
             Password = Validator.isValidPassword(p1);
             if (p1.isEmpty()) setUpLabel(lblPasswordMessage1);
-            else updateLabel(lblPasswordMessage1, Password ? "✅ Mật khẩu mạnh!" : "❌ Cần ít nhất 8 kí tự, 1 hoa, 1 đặc biệt.", Password ? "green" : "red");
+            else updateLabel(lblPasswordMessage1, Password ? "Mật khẩu mạnh!" : "Cần ít nhất 8 kí tự, 1 hoa, 1 đặc biệt.", Password ? "green" : "red");
 
             Repassword = !p2.isEmpty() && p2.equals(p1);
             if (p2.isEmpty()) setUpLabel(lblPasswordMessage2);
-            else updateLabel(lblPasswordMessage2, Repassword ? "✅ Trùng khớp!" : "❌ Mật khẩu không trùng khớp!", Repassword ? "green" : "red");
+            else updateLabel(lblPasswordMessage2, Repassword ? "Trùng khớp!" : "Mật khẩu không trùng khớp!", Repassword ? "green" : "red");
             checkRegister();
         };
         txtPassword.textProperty().addListener(passwordListener);
@@ -130,7 +125,7 @@ public class RegisterController extends BaseController {
         );
         if (DataStorage.register(acc)) {
             showAlert("Đăng kí", "Đăng kí tài khoản thành công!");
-            switchScene(event, "/com/example/onlineauctionsystem/Dang_Nhap_BTL.fxml", "Đăng nhập");
+            switchScene(event, SceneConfig.LOGIN);
         } else {
             showAlert("Đăng kí", "Lỗi hệ thống!");
         }
@@ -138,6 +133,6 @@ public class RegisterController extends BaseController {
 
     @FXML
     private void onReturnLogin(ActionEvent event) {
-        switchScene(event, "/com/example/onlineauctionsystem/Dang_Nhap_BTL.fxml", "Đăng nhập");
+        switchScene(event, SceneConfig.LOGIN);
     }
 }

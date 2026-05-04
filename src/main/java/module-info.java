@@ -2,7 +2,8 @@ module com.example.onlineauctionsystem {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
-
+    requires mysql.connector.j;
+    requires java.net.http;
 
 
     opens com.example.onlineauctionsystem to javafx.fxml;
