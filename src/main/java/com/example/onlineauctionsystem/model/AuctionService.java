@@ -35,9 +35,24 @@ public class AuctionService {
     private static AuctionMessage handleRegister(AuctionMessage request) {
         Account newAcc = (Account) request.getData();
 
-        // Gọi Validator kiểm tra thông tin trước khi phi vào Database
-        if (!Validator.isValidUsername(newAcc.getUsername()) || !Validator.isValidEmail(newAcc.getEmail())) {
-            return new AuctionMessage(AuctionMessage.Action.ERROR, "Định dạng Username hoặc Email không hợp lệ!");
+        // Gọi Validator kiểm tra Username
+        if (!Validator.isValidUsername(newAcc.getUsername())) {
+            return new AuctionMessage(AuctionMessage.Action.ERROR, "Định dạng Username không hợp lệ!");
+        }
+
+        //Gọi validator kiểm tra email
+        if (!Validator.isValidEmail(newAcc.getEmail())) {
+            return new AuctionMessage(AuctionMessage.Action.ERROR, "Định dạng Email không ợp lệ");
+        }
+
+        //Gọi Valid kiểm tra CCCD
+        if (!Validator.isValidCCCD(newAcc.getIdCard())) {
+            return new AuctionMessage(AuctionMessage.Action.ERROR, "Vui lòng nhập đúng 12 số căn cước công dân");
+        }
+
+        //Gọi valid kiểm tra Số điện thoại
+        if (!Validator.isValidPhone(newAcc.getPhoneNumber())) {
+            return new AuctionMessage(AuctionMessage.Action.ERROR, "Vui lòng nhập đúng số điện thoại");
         }
 
         // Kiểm tra tồn tại
