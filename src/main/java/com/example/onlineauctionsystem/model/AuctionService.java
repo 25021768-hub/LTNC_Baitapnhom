@@ -1,6 +1,8 @@
 package com.example.onlineauctionsystem.model;
 
 import com.example.onlineauctionsystem.utils.Validator;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AuctionService {
@@ -95,6 +97,18 @@ public class AuctionService {
 
         // 3: Tìm sản phẩm và check logic giá
         Product p = DataStorage.findProductById(pId);
+
+        //Kiểm tra xem sản phẩm có tồn tại ko
+        if (p == null) {
+            return new AuctionMessage(AuctionMessage.Action.ERROR, "Sản phẩm không tồn tại!");
+        }
+
+        //Nếu tồn tại, kiểm tra xem hết hạn chưa
+        if (p.getEndTime().isBefore(LocalDateTime.now())) {
+            DataStorage.closeExpiredAuctions();
+            return new AuctionMessage(AuctionMessage.Action.ERROR, "Phiên đấu giá này đã kết thúc!");
+        }
+
         if (p != null) {
 
             //Lưu lại để hoàn tiền

@@ -234,4 +234,20 @@ public class DataStorage {
             return false;
         }
     }
+
+    public static void closeExpiredAuctions() {
+        // SQL: Chuyển từ RUNNING sang FINISHED nếu thời gian hiện tại đã vượt quá end_time
+        String sql = "UPDATE products SET status = 'FINISHED' " +
+                "WHERE status = 'RUNNING' AND end_time <= NOW()";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("[Server] Đã tự động đóng " + affectedRows + " phiên đấu giá hết hạn.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
