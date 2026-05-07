@@ -2,9 +2,11 @@ package com.example.onlineauctionsystem.controller.auth;
 
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.model.Account;
+import com.example.onlineauctionsystem.model.AuctionMessage;
 import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
+import com.example.onlineauctionsystem.model.AuctionService;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +21,7 @@ public class RegisterController extends BaseController {
     @FXML private Label lblUsernameMessage, lblPasswordMessage1, lblPasswordMessage2, lblIDCardMessage, lblEmailMessage, lblPhoneMessage;
 
     private boolean Password, Repassword, emailIsValid, IDCardIsValid, phoneIsValid, userIsValid, roleIsValid;
-
+    static AuctionMessage result;
 
     private void checkRegister() {
         boolean allValid = (Password && Repassword && emailIsValid && IDCardIsValid && phoneIsValid && userIsValid && roleIsValid && cbCheck.isSelected());

@@ -21,7 +21,7 @@ public class Validator {
     public static boolean isValidPhone(String phone){
         return phone.matches("^0\\d{9}$");
     }
-    //4.Kiểm tra tên đăng nhập(Không chứa dấu cách và kí tự đặc biệt)
+    //5.Kiểm tra tên đăng nhập(Không chứa dấu cách và kí tự đặc biệt)
     public static boolean isValidUsername(String user){
         return user.matches("^[a-zA-Z0-9]*$");
     }
