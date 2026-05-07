@@ -39,7 +39,7 @@ public class ForgotPasswordController extends BaseController {
         }
     }
     @FXML
-    private void initialize() {
+    public void initialize() {
         if(txtNewPassword != null && txtReNewPassword != null) {
             Label[] labels = {lblPasswordMessage1, lblPasswordMessage2};
             for (Label l : labels) {

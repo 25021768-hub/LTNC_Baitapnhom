@@ -6,7 +6,6 @@ import com.example.onlineauctionsystem.model.AuctionMessage;
 import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
-import com.example.onlineauctionsystem.model.AuctionService;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,73 +19,49 @@ public class RegisterController extends BaseController {
     @FXML private PasswordField txtPassword, txtRePassword;
     @FXML private Label lblUsernameMessage, lblPasswordMessage1, lblPasswordMessage2, lblIDCardMessage, lblEmailMessage, lblPhoneMessage;
 
-    private boolean Password, Repassword, emailIsValid, IDCardIsValid, phoneIsValid, userIsValid, roleIsValid;
-    static AuctionMessage result;
+    private boolean roleIsValid;
+
+    private boolean isAllValid(Label... labels) {
+        for (Label lbl : labels) {
+            if (lbl.getText().isEmpty() || lbl.getStyle().contains("red")) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private void checkRegister() {
-        boolean allValid = (Password && Repassword && emailIsValid && IDCardIsValid && phoneIsValid && userIsValid && roleIsValid && cbCheck.isSelected());
-        btnRegister.setDisable(!allValid);
+        boolean isValid = isAllValid(lblUsernameMessage, lblPasswordMessage1,
+                lblPasswordMessage2, lblEmailMessage,
+                lblPhoneMessage, lblIDCardMessage);
+
+        // Kết hợp thêm điều kiện Checkbox và ComboBox
+        boolean canSubmit = isValid && cbCheck.isSelected() && cbRole.getValue() != null;
+
+        btnRegister.setDisable(!canSubmit);
     }
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         // Ẩn tất cả label lúc mới vào
         Label[] labels = {lblUsernameMessage, lblPasswordMessage1, lblPasswordMessage2, lblIDCardMessage, lblEmailMessage, lblPhoneMessage};
-        for (Label l : labels) { if (l != null) setUpLabel(l); }
+        for (Label l : labels) {
+            if (l != null) setUpLabel(l);
+        }
 
         txtUsername.requestFocus();
 
         // Check SĐT + Database
-        txtPhone.textProperty().addListener((obs, oldVal, newVal) -> {
-            phoneIsValid = Validator.isValidPhone(newVal);
-            if (newVal == null || newVal.isEmpty()) setUpLabel(lblPhoneMessage);
-            else {
-                if (phoneIsValid) {
-                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblPhoneMessage, "Số điện thoại hợp lệ!", "green");
-                    else { updateLabel(lblPhoneMessage, "Số điện thoại đã tồn tại!", "red"); phoneIsValid = false; }
-                } else updateLabel(lblPhoneMessage, "Số điện thoại không hợp lệ!", "red");
-            }
-            checkRegister();
-        });
+        setupValidation(txtPhone, lblPhoneMessage, null, Validator::isValidPhone, "Số điện thoại không hợp lệ.", "Số điện thoại hợp lệ.", this::checkRegister);
 
         // Check Email + Database
-        txtEmail.textProperty().addListener((obs, oldVal, newVal) -> {
-            emailIsValid = Validator.isValidEmail(newVal);
-            if (newVal == null || newVal.isEmpty()) setUpLabel(lblEmailMessage);
-            else {
-                if (emailIsValid) {
-                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblEmailMessage, "Email hợp lệ!", "green");
-                    else { updateLabel(lblEmailMessage, "Email đã tồn tại!", "red"); emailIsValid = false; }
-                } else updateLabel(lblEmailMessage, "Email không hợp lệ!", "red");
-            }
-            checkRegister();
-        });
+        setupValidation(txtEmail, lblEmailMessage, null, Validator::isValidEmail, "Email không hợp lệ.", "Email hợp lệ.", this::checkRegister);
 
         // Check CCCD + Database
-        txtIDCard.textProperty().addListener((obs, oldVal, newVal) -> {
-            IDCardIsValid = Validator.isValidCCCD(newVal);
-            if (newVal == null || newVal.isEmpty()) { setUpLabel(lblIDCardMessage); IDCardIsValid = false; }
-            else {
-                if (IDCardIsValid) {
-                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblIDCardMessage, "CCCD hợp lệ!", "green");
-                    else { updateLabel(lblIDCardMessage, "CCCD đã tồn tại!", "red"); IDCardIsValid = false; }
-                } else updateLabel(lblIDCardMessage, "CCCD không hợp lệ!", "red");
-            }
-            checkRegister();
-        });
+        setupValidation(txtIDCard, lblIDCardMessage, null, Validator::isValidCCCD, "CCCD không hợp lệ.", "CCCD hợp lệ", this::checkRegister);
 
         // Check Username + Database
-        txtUsername.textProperty().addListener((obs, oldVal, newVal) -> {
-            userIsValid = Validator.isValidUsername(newVal);
-            if (newVal == null || newVal.isEmpty()) setUpLabel(lblUsernameMessage);
-            else {
-                if (userIsValid) {
-                    if (!DataStorage.isAccountExists(newVal)) updateLabel(lblUsernameMessage, "Tên đăng nhập hợp lệ!", "green");
-                    else { updateLabel(lblUsernameMessage, "Tên đăng nhập đã tồn tại!", "red"); userIsValid = false; }
-                } else updateLabel(lblUsernameMessage, "Tên không chứa dấu/khoảng trắng!", "red");
-            }
-            checkRegister();
-        });
+        setupValidation(txtUsername, lblUsernameMessage, null, Validator::isValidUsername, "Tên đăng nhập không được dấu, khoảng trắng và kí tự đặc biệt.", "Tên hơp lệ", this::checkRegister);
 
         // Check đã tích chưa
         cbCheck.selectedProperty().addListener((o, old, newVal) -> checkRegister());
@@ -98,22 +73,8 @@ public class RegisterController extends BaseController {
         });
 
         // Password Listener
-        ChangeListener<String> passwordListener = (obs, old, newVal) -> {
-            String p1 = txtPassword.getText();
-            String p2 = txtRePassword.getText();
-            Password = Validator.isValidPassword(p1);
-            if (p1.isEmpty()) setUpLabel(lblPasswordMessage1);
-            else updateLabel(lblPasswordMessage1, Password ? "Mật khẩu mạnh!" : "Cần ít nhất 8 kí tự, 1 hoa, 1 đặc biệt.", Password ? "green" : "red");
-
-            Repassword = !p2.isEmpty() && p2.equals(p1);
-            if (p2.isEmpty()) setUpLabel(lblPasswordMessage2);
-            else updateLabel(lblPasswordMessage2, Repassword ? "Trùng khớp!" : "Mật khẩu không trùng khớp!", Repassword ? "green" : "red");
-            checkRegister();
-        };
-        txtPassword.textProperty().addListener(passwordListener);
-        txtRePassword.textProperty().addListener(passwordListener);
+        setupPasswordValidation(txtPassword, txtRePassword, lblPasswordMessage1, lblPasswordMessage2, Validator::isValidPassword, this::checkRegister);
     }
-
     //Tạo tài khoản mới
     @FXML
     private void registerNewUser(ActionEvent event) {

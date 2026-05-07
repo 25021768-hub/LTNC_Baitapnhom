@@ -17,7 +17,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.UserProfile">
    <children>
       <HBox prefHeight="78.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
          <children>
@@ -235,10 +235,10 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <TextField style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="Nguyễn Văn A" GridPane.columnIndex="1" />
-                              <TextField layoutX="130.0" layoutY="12.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField layoutX="130.0" layoutY="42.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="0999999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField layoutX="130.0" layoutY="72.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="123456789101" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="txtUsername" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="Nguyễn Văn A" GridPane.columnIndex="1" />
+                              <TextField fx:id="txtEmail" layoutX="130.0" layoutY="12.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtPhoneNumber" layoutX="130.0" layoutY="42.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="0999999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtIDCard" layoutX="130.0" layoutY="72.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="123456789101" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                         <Label layoutX="20.0" layoutY="20.0" text="Bảo mật">
