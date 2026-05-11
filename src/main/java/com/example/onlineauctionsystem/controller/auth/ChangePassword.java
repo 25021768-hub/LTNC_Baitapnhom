@@ -1,0 +1,52 @@
+package com.example.onlineauctionsystem.controller.auth;
+
+import com.example.onlineauctionsystem.controller.BaseController;
+import com.example.onlineauctionsystem.model.Account;
+import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.utils.SceneConfig;
+import com.example.onlineauctionsystem.utils.Validator;
+import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+
+public class ChangePassword extends BaseController {
+
+    @FXML private Label lblCurrentMessage, lblReMessage, lblNewMessage;
+    @FXML private PasswordField txtNewPassword, txtCurrentPassword, txtReNewPassword;
+    @FXML private Button btnConfirm;
+
+    @Override
+    public void initialize() {
+        btnConfirm.setDisable(true);
+        txtCurrentPassword.textProperty().addListener((observable, oldValue, newValue) -> {
+            String oldPassword = DataStorage.currentAccount.getPassword();
+            if (newValue.trim().equals(oldPassword)) {
+                updateLabel(lblCurrentMessage, "Khớp với mật khẩu hiện tại.", "green");
+            } else {
+                updateLabel(lblCurrentMessage, "Không khớp với mật khẩu hiện tại.", "red");
+            }
+            checkConfirm();
+        });
+            setupPasswordValidation(txtNewPassword, txtReNewPassword, lblNewMessage, lblReMessage, Validator::isValidPassword, this::checkConfirm);
+
+    }
+
+    private void checkConfirm(){
+        boolean isValid = isAllValid(lblNewMessage, lblCurrentMessage, lblReMessage);
+        btnConfirm.setDisable(!isValid);
+    }
+    @FXML
+    private void onReturnProfile(ActionEvent event) {
+        String username = DataStorage.currentAccount.getUsername();
+        if(DataStorage.changePassword(username, txtCurrentPassword.getText(), txtNewPassword.getText())){
+            switchScene(event, SceneConfig.HOME);
+            showAlert("Đổi mật khẩu", "Đổi mật khẩu thành công.");
+        }
+        else{
+            showAlert("Đổi mật khẩu","Lỗi hệ thống.");
+        }
+    }
+}

@@ -27,7 +27,15 @@ public class DataStorage {
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Account(rs.getString("username"), rs.getString("password"), rs.getString("role"));
+                Account acc = new Account();
+                acc.setUsername(rs.getString("username"));
+                acc.setRole(rs.getString("role"));
+                acc.setIdCard(rs.getString("id_card"));
+                acc.setEmail(rs.getString("email"));
+                acc.setPhoneNumber(rs.getString("phone_number")); // Đúng tên phone_number
+                acc.setBalance(rs.getDouble("balance"));
+                acc.setPassword(rs.getString("PASSWORD"));
+                return acc;
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;

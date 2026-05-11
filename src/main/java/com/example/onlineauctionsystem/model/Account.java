@@ -33,6 +33,8 @@ public class Account implements Serializable {
         this.role = role;
     }
 
+    public Account(){};
+
     // GETTER (Để lấy thông tin)
     public String getUsername() { return username; }
     public String getPassword() { return password; }
@@ -51,4 +53,14 @@ public class Account implements Serializable {
     public void setBalance(double balance) {
         this.balance = balance;
     }
+
+    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
+
+    public void setUsername(String username) {this.username = username;}
+
+    public void setIdCard(String idCard) {this.idCard = idCard;}
+
+    public void setEmail(String email) {this.email = email;}
+
+    public void setRole(String role) {this.role = role;}
 }

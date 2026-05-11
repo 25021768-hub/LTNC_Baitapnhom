@@ -137,6 +137,15 @@ public abstract class BaseController{
         txtRePass.textProperty().addListener(passListener);
     }
 
+    protected boolean isAllValid(Label... labels) {
+        for (Label lbl : labels) {
+            if (lbl.getText().isEmpty() || lbl.getStyle().contains("red")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Hàm initialize abstract để các con bắt buộc phải triển khai
     @FXML
     public abstract void initialize();

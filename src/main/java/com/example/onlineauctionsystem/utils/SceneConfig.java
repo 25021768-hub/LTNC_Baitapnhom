@@ -4,7 +4,8 @@ public enum SceneConfig {
     LOGIN("Dang_Nhap_BTL.fxml", "Đăng nhập"),
     REGISTER("Dang_Ky.fxml", "Đăng ký tài khoản"),
     HOME("Tai_Khoan.fxml", "Trang chủ người đấu giá"),
-    FORGOT_PASSWORD("Quen_Mat_Khau_BTL.fxml", "Quên mật khẩu");
+    FORGOT_PASSWORD("Quen_Mat_Khau_BTL.fxml", "Quên mật khẩu"),
+    CHANGE_PASSWORD("Doi_Mat_Khau_BTL.fxml", "Đổi mật khẩu");
 
     private final String fileName;
     private final String title;

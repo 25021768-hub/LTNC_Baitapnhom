@@ -21,15 +21,6 @@ public class RegisterController extends BaseController {
 
     private boolean roleIsValid;
 
-    private boolean isAllValid(Label... labels) {
-        for (Label lbl : labels) {
-            if (lbl.getText().isEmpty() || lbl.getStyle().contains("red")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private void checkRegister() {
         boolean isValid = isAllValid(lblUsernameMessage, lblPasswordMessage1,
                 lblPasswordMessage2, lblEmailMessage,
