@@ -104,6 +104,25 @@ public class DataStorage {
         }
     }
 
+    public static boolean updateAccount(Account acc){
+            // Chỉ SET những thứ cần thay đổi, tuyệt đối không SET password ở đây
+            String sql = "UPDATE accounts SET id_card = ?, email = ?, phone_number = ? WHERE username = ?";
+
+            try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                stmt.setString(1, acc.getIdCard());     // Khớp với id_card
+                stmt.setString(2, acc.getEmail());      // Khớp với email
+                stmt.setString(3, acc.getPhoneNumber());// Khớp với phone_number
+                stmt.setString(4, acc.getUsername());   // Điều kiện để biết sửa ai
+
+                return stmt.executeUpdate() > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+    }
+
     //Đổi mật khẩu khi biết tên đăng nhập
     public static boolean changePassword(String username, String oldPass, String newPass) {
         String sql = "UPDATE accounts SET password = ? WHERE username = ? AND password = ?";

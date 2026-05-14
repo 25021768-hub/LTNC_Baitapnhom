@@ -146,6 +146,7 @@ public abstract class BaseController{
         return true;
     }
 
+
     // Hàm initialize abstract để các con bắt buộc phải triển khai
     @FXML
     public abstract void initialize();
