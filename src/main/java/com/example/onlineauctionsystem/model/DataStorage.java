@@ -12,7 +12,7 @@ public class DataStorage {
     private static final String URL = "jdbc:mysql://localhost:3306/online_auction";
     private static final String USER = "root";
     private static final String PASS = "";
-
+    public static Account currentAccount;
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
     }
@@ -26,7 +26,15 @@ public class DataStorage {
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Account(rs.getString("username"), rs.getString("password"), rs.getString("role"));
+                Account acc = new Account();
+                acc.setUsername(rs.getString("username"));
+                acc.setRole(rs.getString("role"));
+                acc.setIdCard(rs.getString("id_card"));
+                acc.setEmail(rs.getString("email"));
+                acc.setPhoneNumber(rs.getString("phone_number")); // Đúng tên phone_number
+                acc.setBalance(rs.getDouble("balance"));
+                acc.setPassword(rs.getString("PASSWORD"));
+                return acc;
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
@@ -217,5 +225,36 @@ public class DataStorage {
             e.printStackTrace();
         }
         return 0.0;
+    }
+
+    //Update status tài khoản (cộng/trừ tiền trong ví)
+    public static boolean updateBalance(String username, double amountToChange) {
+        // có thể là số âm (trừ tiền) hoặc số dương (nạp tiền/hoàn tiền)
+        String sql = "UPDATE accounts SET balance = balance + ? WHERE username = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDouble(1, amountToChange);
+            stmt.setString(2, username);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static void closeExpiredAuctions() {
+        // SQL: Chuyển từ RUNNING sang FINISHED nếu thời gian hiện tại đã vượt quá end_time
+        String sql = "UPDATE products SET status = 'FINISHED' " +
+                "WHERE status = 'RUNNING' AND end_time <= NOW()";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("[Server] Đã tự động đóng " + affectedRows + " phiên đấu giá hết hạn.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
