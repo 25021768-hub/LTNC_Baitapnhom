@@ -2,7 +2,6 @@ package com.example.onlineauctionsystem.model;
 
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.Validator;
-import com.mysql.cj.x.protobuf.MysqlxCrud;
 
 import java.sql.*;
 import java.time.LocalDateTime;

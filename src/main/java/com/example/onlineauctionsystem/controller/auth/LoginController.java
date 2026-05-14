@@ -27,7 +27,7 @@ public class LoginController extends BaseController {
     @FXML
     private void onLogin(ActionEvent event){
         if(txtUsername.getText().trim().isEmpty() && txtPassword.getText().trim().isEmpty()){
-            if()
+
             switchScene(event, "/com/example/onlineauctionsystem/", "Trang chủ");
         }
     }
