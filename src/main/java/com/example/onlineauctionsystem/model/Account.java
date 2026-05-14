@@ -7,22 +7,25 @@ public class Account implements Serializable {
     private String username;
     private String password;
     private String role; // "ADMIN", "SELLER", "BIDDER"
+    private String fullName;
 
     // THÊM 3 TRƯỜNG MỚI CHO GIAO DIỆN ĐĂNG KÝ
     private String idCard;
     private String email;
     private String phoneNumber;
-    private String fullName;
 
-    //So du
+
     private double balance;
+
+    public Account() {
+
+    }
 
     // 1. Constructor ĐẦY ĐỦ dùng cho lúc ĐĂNG KÝ
     public Account(String username, String password, String role, String idCard, String email, String phoneNumber) {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.fullName = fullName;
         this.idCard = idCard;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -42,20 +45,32 @@ public class Account implements Serializable {
     public String getIdCard() { return idCard; }
     public String getEmail() { return email; }
     public String getPhoneNumber() { return phoneNumber; }
-    public double getBalance() { return balance; }
     public String getFullName() { return fullName;}
+    public double getBalance() { return balance; }
 
-    // SETTER BẮT BUỘC PHẢI CÓ ĐỂ ĐỔI MẬT KHẨU
+    // SETTER
     public void setPassword(String password) {
         this.password = password;
     }
-
-    //Setter cho so du
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public void setUsername(String username) {
+        this.username = username;
     }
-
+    public void setRole(String role) {
+        this.role = role;
+    }
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }

@@ -2,7 +2,6 @@ package com.example.onlineauctionsystem.model;
 
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.Validator;
-import com.mysql.cj.x.protobuf.MysqlxCrud;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ public class DataStorage {
     private static final String URL = "jdbc:mysql://localhost:3306/online_auction";
     private static final String USER = "root";
     private static final String PASS = "";
-
+    public static Account currentAccount;
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
     }
@@ -27,7 +26,15 @@ public class DataStorage {
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Account(rs.getString("username"), rs.getString("password"), rs.getString("role"));
+                Account acc = new Account();
+                acc.setUsername(rs.getString("username"));
+                acc.setRole(rs.getString("role"));
+                acc.setIdCard(rs.getString("id_card"));
+                acc.setEmail(rs.getString("email"));
+                acc.setPhoneNumber(rs.getString("phone_number")); // Đúng tên phone_number
+                acc.setBalance(rs.getDouble("balance"));
+                acc.setPassword(rs.getString("PASSWORD"));
+                return acc;
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
@@ -95,6 +102,25 @@ public class DataStorage {
         catch (SQLException e){
             return false;
         }
+    }
+
+    public static boolean updateAccount(Account acc){
+            // Chỉ SET những thứ cần thay đổi, tuyệt đối không SET password ở đây
+            String sql = "UPDATE accounts SET id_card = ?, email = ?, phone_number = ? WHERE username = ?";
+
+            try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                stmt.setString(1, acc.getIdCard());     // Khớp với id_card
+                stmt.setString(2, acc.getEmail());      // Khớp với email
+                stmt.setString(3, acc.getPhoneNumber());// Khớp với phone_number
+                stmt.setString(4, acc.getUsername());   // Điều kiện để biết sửa ai
+
+                return stmt.executeUpdate() > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
     }
 
     //Đổi mật khẩu khi biết tên đăng nhập

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" spacing="20.0" style="-fx-background-radius: 15; -fx-border-radius: 15;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <effect>
+      <DropShadow>
+         <color>
+            <Color red="0.5372549295425415" green="0.5372549295425415" blue="0.5372549295425415" />
+         </color>
+      </DropShadow>
+   </effect>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <children>
+      <Label contentDisplay="RIGHT" prefHeight="27.0" prefWidth="661.0" text="Tên sản phẩm">
+         <font>
+            <Font size="15.0" />
+         </font>
+         <graphic>
+            <TextField prefHeight="27.0" prefWidth="554.0" promptText="tên sản phẩm.." style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #1357b7;" />
+         </graphic>
+      </Label>
+      <Label text="Đăng tải hình ảnh sản phẩm">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <VBox prefHeight="220.0" prefWidth="660.0" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 5;">
+         <effect>
+            <DropShadow>
+               <color>
+                  <Color red="0.5372549295425415" green="0.5372549295425415" blue="0.5372549295425415" />
+               </color>
+            </DropShadow>
+         </effect>
+         <children>
+            <HBox prefHeight="90.0" prefWidth="620.0">
+               <children>
+                  <ImageView fitHeight="95.0" fitWidth="95.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@LTNC_Baitapnhom/Kho_anh/CuaSoDangBan.png" />
+                     </image>
+                  </ImageView>
+                  <VBox prefHeight="90.0" prefWidth="307.0" spacing="5.0">
+                     <children>
+                        <Label text="Kéo và thả hình ảnh vào đây">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label text="( Tải tối đa 5 ảnh, kích thước mỗi ảnh &lt; 5MB )">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="126.0" prefWidth="620.0" spacing="10.0">
+               <children>
+                  <StackPane maxHeight="104.0" maxWidth="104.0" minHeight="104.0" minWidth="104.0" prefHeight="104.0" prefWidth="104.0" style="-fx-background-color: #c4c4c4; -fx-background-radius: 5; -fx-border-radius: 5;">
+                     <children>
+                        <ImageView fitHeight="104.0" fitWidth="104.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </StackPane>
+                  <StackPane layoutX="10.0" layoutY="10.0" maxHeight="104.0" maxWidth="104.0" minHeight="104.0" minWidth="104.0" prefHeight="104.0" prefWidth="104.0" style="-fx-background-color: #c4c4c4; -fx-background-radius: 5; -fx-border-radius: 5;">
+                     <children>
+                        <ImageView fitHeight="104.0" fitWidth="104.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </StackPane>
+                  <StackPane layoutX="124.0" layoutY="10.0" maxHeight="104.0" maxWidth="104.0" minHeight="104.0" minWidth="104.0" prefHeight="104.0" prefWidth="104.0" style="-fx-background-color: #c4c4c4; -fx-background-radius: 5; -fx-border-radius: 5;">
+                     <children>
+                        <ImageView fitHeight="104.0" fitWidth="104.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </StackPane>
+                  <StackPane layoutX="239.0" layoutY="10.0" maxHeight="104.0" maxWidth="104.0" minHeight="104.0" minWidth="104.0" prefHeight="104.0" prefWidth="104.0" style="-fx-background-color: #c4c4c4; -fx-background-radius: 5; -fx-border-radius: 5;">
+                     <children>
+                        <ImageView fitHeight="104.0" fitWidth="104.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </StackPane>
+                  <StackPane layoutX="353.0" layoutY="10.0" maxHeight="104.0" maxWidth="104.0" minHeight="104.0" minWidth="104.0" prefHeight="104.0" prefWidth="104.0" style="-fx-background-color: #c4c4c4; -fx-background-radius: 5; -fx-border-radius: 5;">
+                     <children>
+                        <ImageView fitHeight="104.0" fitWidth="104.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
+      <Label text="Thông số đấu giá">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <HBox prefHeight="29.0" prefWidth="660.0" spacing="20.0">
+         <children>
+            <Label contentDisplay="RIGHT" prefHeight="30.0" prefWidth="254.0" text="Giá khởi điểm">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <graphic>
+                  <TextField prefHeight="28.0" prefWidth="159.0" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #1357b7;" />
+               </graphic>
+            </Label>
+            <Label contentDisplay="RIGHT" prefHeight="30.0" prefWidth="254.0" text="Bước giá">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <graphic>
+                  <TextField prefHeight="28.0" prefWidth="159.0" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #1357b7;" />
+               </graphic>
+            </Label>
+         </children>
+      </HBox>
+      <Label layoutX="30.0" layoutY="362.0" text="Thời gian đấu giá">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label contentDisplay="RIGHT" prefHeight="30.0" prefWidth="413.0" text="Thời gian phiên đấu giá diễn ra ( giờ )">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <graphic>
+            <TextField prefHeight="28.0" prefWidth="159.0" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #1357b7;" />
+         </graphic>
+      </Label>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="95.0" style="-fx-background-radius: 20; -fx-border-radius: 20;" text="Hủy">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="292.0" layoutY="15.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="95.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);" text="Đăng bán" textFill="WHITE">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+</VBox>
