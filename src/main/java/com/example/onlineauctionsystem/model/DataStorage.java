@@ -62,7 +62,7 @@ public class DataStorage {
     //Đăng kí tài khoản
     public static boolean register(Account acc) {
 
-        String sql = "INSERT INTO accounts (username, password, role, id_card, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO accounts (username, password, role, full_name, id_card, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -70,6 +70,7 @@ public class DataStorage {
             stmt.setString(1, acc.getUsername());
             stmt.setString(2, acc.getPassword());
             stmt.setString(3, acc.getRole());
+            stmt.setString(4, acc.getFullName());
             stmt.setString(4, acc.getIdCard());
             stmt.setString(5, acc.getEmail());
             stmt.setString(6, acc.getPhoneNumber());

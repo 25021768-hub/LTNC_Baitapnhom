@@ -12,6 +12,7 @@ public class Account implements Serializable {
     private String idCard;
     private String email;
     private String phoneNumber;
+    private String fullName;
 
     //So du
     private double balance;
@@ -21,6 +22,7 @@ public class Account implements Serializable {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.fullName = fullName;
         this.idCard = idCard;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -41,8 +43,9 @@ public class Account implements Serializable {
     public String getEmail() { return email; }
     public String getPhoneNumber() { return phoneNumber; }
     public double getBalance() { return balance; }
+    public String getFullName() { return fullName;}
 
-    // SETTER BẮT BUỘC PHẢI CÓ ĐỂ ĐỔI MẬT KHẨU (Của Hiếu)
+    // SETTER BẮT BUỘC PHẢI CÓ ĐỂ ĐỔI MẬT KHẨU
     public void setPassword(String password) {
         this.password = password;
     }
@@ -50,5 +53,9 @@ public class Account implements Serializable {
     //Setter cho so du
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }
