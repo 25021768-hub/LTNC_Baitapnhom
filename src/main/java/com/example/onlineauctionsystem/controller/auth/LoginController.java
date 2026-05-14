@@ -67,7 +67,3 @@ public class LoginController extends BaseController {
         Platform.runLater(() -> txtUsername.requestFocus());
     }
 }
-
-
-
-
