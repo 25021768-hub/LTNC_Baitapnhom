@@ -18,7 +18,6 @@ public class Account implements Serializable {
     private double balance;
 
     public Account() {
-
     }
 
     // 1. Constructor ĐẦY ĐỦ dùng cho lúc ĐĂNG KÝ
