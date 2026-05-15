@@ -34,7 +34,7 @@
                <children>
                   <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="85.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm mới">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onNewProduct" prefHeight="85.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm mới">
                            <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
@@ -46,7 +46,7 @@
                   </VBox>
                   <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="91.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử đấu giá">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="91.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử đấu giá">
                            <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
@@ -58,7 +58,7 @@
                   </VBox>
                   <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="72.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Bạn đang đấu giá">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActive" prefHeight="72.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Bạn đang đấu giá">
                            <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
@@ -70,10 +70,10 @@
                   </VBox>
                   <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="77.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onAccount" prefHeight="77.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
                            <font><Font size="10.0" /></font>
                            <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="onAccount" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image><Image url="@../../../Kho_anh/user.png" /></image>
                               </ImageView>
                            </graphic>
@@ -82,7 +82,7 @@
                   </VBox>
                   <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="122.0" prefWidth="145.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onLogout" prefHeight="122.0" prefWidth="145.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
                            <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">

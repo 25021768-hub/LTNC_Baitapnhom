@@ -1,6 +1,7 @@
 package com.example.onlineauctionsystem.controller.auth;
 
 import com.example.onlineauctionsystem.controller.BaseController;
+import com.example.onlineauctionsystem.controller.ValidatorHelp;
 import com.example.onlineauctionsystem.model.Account;
 import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
@@ -12,7 +13,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 
-public class LoginController extends BaseController {
+public class LoginController extends ValidatorHelp {
     @FXML private TextField txtUsername;
     @FXML private PasswordField txtPassword;
     @FXML private Label lblLoginMessage;

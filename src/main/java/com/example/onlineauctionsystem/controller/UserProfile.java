@@ -6,14 +6,11 @@ import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 
 import java.util.Optional;
 
-public class UserProfile extends BaseController{
+public class UserProfile extends ValidatorHelp{
     @FXML private Label lblUsernameMessage, lblEmailMessage, lblPhoneMessage, lblIDCardMessage, lblName;
     private Account acc = DataStorage.currentAccount;
     @FXML private Label lblBalance;
@@ -76,11 +73,15 @@ public class UserProfile extends BaseController{
 
     @FXML
     private void onSave(){
-        if(DataStorage.updateAccount(acc)){
-            showAlert("Đổi thông tin", "Đổi thành công.");
-        }
-        else{
-            showAlert("Đổi thông tin", "Lỗi!");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác nhận");
+        alert.setHeaderText("Bạn có chắc chắn với các thay đổi?");
+        if(alert.showAndWait().get() == ButtonType.OK) {
+            if (DataStorage.updateAccount(acc)) {
+                showAlert("Đổi thông tin", "Đổi thành công.");
+            } else {
+                showAlert("Đổi thông tin", "Lỗi!");
+            }
         }
     }
 
@@ -121,20 +122,31 @@ public class UserProfile extends BaseController{
     }
 
     @FXML
-    private void onNewProduct(ActionEvent event) {
+    protected void onNewProduct(ActionEvent event) {
         switchScene(event, SceneConfig.BIDDER_NEW_PRODUCT);
     }
     @FXML
-    private void onHistory(ActionEvent event) {
+    protected void onHistory(ActionEvent event) {
         switchScene(event, SceneConfig.BIDDER_HISTORY);
     }
     @FXML
-    private void onActive(ActionEvent event) {
+    protected void onActive(ActionEvent event) {
         switchScene(event, SceneConfig.BIDDER_ACTIVE);
     }
     @FXML
-    private void onAccount(ActionEvent event) {
+    protected void onAccount(ActionEvent event) {
         switchScene(event, SceneConfig.HOME);
     }
+    @FXML
+    protected void onLogout(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác nhận");
+        alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
+        if(alert.showAndWait().get() == ButtonType.OK) {
+            DataStorage.currentAccount = null;
+            switchScene(event, SceneConfig.LOGIN);
+        }
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.example.onlineauctionsystem.controller.auth;
 
 import com.example.onlineauctionsystem.controller.BaseController;
+import com.example.onlineauctionsystem.controller.ValidatorHelp;
 import com.example.onlineauctionsystem.model.Account;
 import com.example.onlineauctionsystem.model.AuctionMessage;
 import com.example.onlineauctionsystem.model.DataStorage;
@@ -11,7 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-public class RegisterController extends BaseController {
+public class RegisterController extends ValidatorHelp {
     @FXML private CheckBox cbCheck;
     @FXML private ComboBox<String> cbRole;
     @FXML private Button btnRegister;

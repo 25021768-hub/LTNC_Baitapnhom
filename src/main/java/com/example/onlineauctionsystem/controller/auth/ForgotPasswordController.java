@@ -1,6 +1,7 @@
 package com.example.onlineauctionsystem.controller.auth;
 
 import com.example.onlineauctionsystem.controller.BaseController;
+import com.example.onlineauctionsystem.controller.ValidatorHelp;
 import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
@@ -12,7 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class ForgotPasswordController extends BaseController {
+public class ForgotPasswordController extends ValidatorHelp {
 
     @FXML private Button btnComplete;
     @FXML private TextField txtFind;
