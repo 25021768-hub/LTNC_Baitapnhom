@@ -15,7 +15,7 @@
                <children>
                   <ImageView fitHeight="107.0" fitWidth="106.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@vnu-uet-removebg-preview.png" />
+                        <Image url="@../../../Kho_anh/vnu-uet-removebg-preview.png" />
                      </image>
                      <effect>
                         <ColorAdjust />
@@ -44,7 +44,7 @@
             </Label>
             <ImageView fitHeight="354.0" fitWidth="344.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@bua%20(2).png" />
+                  <Image url="@../../../Kho_anh/bua%20(2).png" />
                </image>
             </ImageView>
          </children>
