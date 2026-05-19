@@ -78,9 +78,9 @@ public class DataStorage {
             stmt.setString(2, acc.getPassword());
             stmt.setString(3, acc.getRole());
             stmt.setString(4, acc.getFullName());
-            stmt.setString(4, acc.getIdCard());
-            stmt.setString(5, acc.getEmail());
-            stmt.setString(6, acc.getPhoneNumber());
+            stmt.setString(5, acc.getIdCard());
+            stmt.setString(6, acc.getEmail());
+            stmt.setString(7, acc.getPhoneNumber());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
