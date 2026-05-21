@@ -36,7 +36,7 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="75.0" prefWidth="161.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm của tôi">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="75.0" prefWidth="161.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Sản phẩm của tôi">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -47,6 +47,13 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
                         </Button>
                      </children>
                   </VBox>

@@ -6,6 +6,7 @@
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
@@ -68,7 +69,7 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="237.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="106.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Quản lý đăng bán">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="106.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Quản lý đăng bán">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -79,6 +80,13 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
                         </Button>
                      </children>
                   </VBox>

@@ -85,7 +85,7 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="276.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="93.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="93.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Tài khoản">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -96,6 +96,13 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
                         </Button>
                      </children>
                   </VBox>

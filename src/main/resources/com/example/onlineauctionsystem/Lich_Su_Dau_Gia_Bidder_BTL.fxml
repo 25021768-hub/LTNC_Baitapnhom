@@ -7,6 +7,7 @@
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
@@ -46,13 +47,20 @@
                   </VBox>
                   <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="91.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử đấu giá">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="91.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Lịch sử đấu giá">
                            <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image><Image url="@../../../Kho_anh/history.png" /></image>
                               </ImageView>
                            </graphic>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
                         </Button>
                      </children>
                   </VBox>
