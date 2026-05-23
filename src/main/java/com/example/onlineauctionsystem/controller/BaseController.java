@@ -56,18 +56,6 @@ public abstract class BaseController{
             alert.showAndWait();
         }
 
-        protected void setUpLabel(Label label) {
-            label.setVisible(false);
-            label.setManaged(false);
-        }
-
-        protected void updateLabel(Label label, String text, String color) {
-            label.setText(text);
-            label.setStyle("-fx-text-fill: " + color + ";");
-            label.setVisible(true);
-            label.setManaged(true);
-        }
-
         // Hàm initialize abstract để các con bắt buộc phải triển khai
         @FXML
         public abstract void initialize();

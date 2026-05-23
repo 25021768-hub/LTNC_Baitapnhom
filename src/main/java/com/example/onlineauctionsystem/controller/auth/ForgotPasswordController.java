@@ -13,7 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class ForgotPasswordController extends ValidatorHelp {
+public class ForgotPasswordController extends BaseController{
 
     @FXML private Button btnComplete;
     @FXML private TextField txtFind;
@@ -36,7 +36,7 @@ public class ForgotPasswordController extends ValidatorHelp {
             showAlert("Quên mật khẩu", "Tìm thấy tài khoản! Vui lòng đặt mật khẩu mới.");
             switchScene(event, "/com/example/onlineauctionsystem/Dat_Lai_Mat_Khau_BTL.fxml", "Đổi mật khẩu");
         } else {
-            updateLabel(lblMessage, "Thông tin không chính xác hoặc tài khoản chưa đăng ký!", "red");
+            ValidatorHelp.updateLabel(lblMessage, "Thông tin không chính xác hoặc tài khoản chưa đăng ký!", "red");
         }
     }
     @FXML
@@ -44,20 +44,20 @@ public class ForgotPasswordController extends ValidatorHelp {
         if(txtNewPassword != null && txtReNewPassword != null) {
             Label[] labels = {lblPasswordMessage1, lblPasswordMessage2};
             for (Label l : labels) {
-                if (l != null) setUpLabel(l);
+                if (l != null) ValidatorHelp.setUpLabel(l);
             }
             ChangeListener<String> passwordListener = (obs, oldVal, newVal) -> {
                 String p1 = txtNewPassword.getText();
                 String p2 = txtReNewPassword.getText();
                 password = Validator.isValidPassword(p1);
-                if (p1.isEmpty()) setUpLabel(lblPasswordMessage1);
+                if (p1.isEmpty()) ValidatorHelp.setUpLabel(lblPasswordMessage1);
                 else
-                    updateLabel(lblPasswordMessage1, password ? "Mật khẩu mạnh!" : "Cần ít nhất 8 kí tự, 1 hoa, 1 đặc biệt.", password ? "green" : "red");
+                    ValidatorHelp.updateLabel(lblPasswordMessage1, password ? "Mật khẩu mạnh!" : "Cần ít nhất 8 kí tự, 1 hoa, 1 đặc biệt.", password ? "green" : "red");
 
                 repassword = !p2.isEmpty() && p2.equals(p1);
-                if (p2.isEmpty()) setUpLabel(lblPasswordMessage2);
+                if (p2.isEmpty()) ValidatorHelp.setUpLabel(lblPasswordMessage2);
                 else
-                    updateLabel(lblPasswordMessage2, repassword ? "Trùng khớp!" : "Mật khẩu không trùng khớp!", repassword ? "green" : "red");
+                    ValidatorHelp.updateLabel(lblPasswordMessage2, repassword ? "Trùng khớp!" : "Mật khẩu không trùng khớp!", repassword ? "green" : "red");
                 checkValid();
             };
             txtNewPassword.textProperty().addListener(passwordListener);

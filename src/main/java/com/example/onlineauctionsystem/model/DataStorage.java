@@ -33,7 +33,8 @@ public class DataStorage {
                 acc.setEmail(rs.getString("email"));
                 acc.setPhoneNumber(rs.getString("phone_number")); // Đúng tên phone_number
                 acc.setBalance(rs.getDouble("balance"));
-                acc.setPassword(rs.getString("PASSWORD"));
+                acc.setPassword(rs.getString("password"));
+                acc.setFullName(rs.getString("fullname"));
                 return acc;
             }
         } catch (SQLException e) { e.printStackTrace(); }
@@ -69,7 +70,7 @@ public class DataStorage {
     //Đăng kí tài khoản
     public static boolean register(Account acc) {
 
-        String sql = "INSERT INTO accounts (username, password, role, full_name, id_card, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO accounts (username, password, role, fullname, id_card, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

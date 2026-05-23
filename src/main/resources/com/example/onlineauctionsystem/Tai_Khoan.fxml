@@ -37,7 +37,7 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onNewProduct" prefHeight="88.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm mới">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onMyProducts" prefHeight="88.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm mới">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -69,7 +69,7 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="237.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActive" prefHeight="88.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Bạn đang đấu giá" wrapText="true">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onManage" prefHeight="88.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Bạn đang đấu giá" wrapText="true">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -235,7 +235,10 @@
                                  </font>
                               </Label>
                               <VBox alignment="CENTER" spacing="2.0" GridPane.columnIndex="1">
-                                 <TextField fx:id="txtUsername" editable="false" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" />
+                                 <TextField fx:id="txtFullName" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" />
+                                 <Label fx:id="lblFullNameMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
+                                    <font><Font size="10.0" /> </font>
+                                 </Label>
                               </VBox>
                               <VBox alignment="CENTER" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <TextField fx:id="txtEmail" layoutX="130.0" layoutY="12.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="..." />

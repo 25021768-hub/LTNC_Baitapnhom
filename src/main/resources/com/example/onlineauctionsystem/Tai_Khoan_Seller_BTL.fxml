@@ -9,7 +9,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.UserProfile">
    <children>
       <HBox prefHeight="78.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
          <children>
@@ -37,7 +37,7 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="104.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm của tôi">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onMyProducts" prefHeight="104.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm của tôi">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -53,7 +53,7 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="125.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử hàng đã bán">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="125.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử hàng đã bán">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -69,7 +69,7 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="237.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="96.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Quản lý đăng bán" wrapText="true">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onManage" prefHeight="96.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Quản lý đăng bán" wrapText="true">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -85,7 +85,7 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="276.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="93.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Tài khoản">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onAccount" prefHeight="93.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Tài khoản">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -108,7 +108,7 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="293.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="101.0" prefWidth="145.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onLogout" prefHeight="101.0" prefWidth="145.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -147,7 +147,7 @@
                               <ImageView fitHeight="165.0" fitWidth="165.0" pickOnBounds="true" preserveRatio="true" />
                            </children>
                         </StackPane>
-                        <Label alignment="CENTER" prefHeight="35.0" prefWidth="288.0" text="Nguyễn Văn A">
+                        <Label fx:id="lblName" alignment="CENTER" prefHeight="35.0" prefWidth="288.0" text="Nguyễn Văn A">
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font>
@@ -173,12 +173,12 @@
                                           <Font size="16.0" />
                                        </font>
                                     </Label>
-                                    <Label alignment="CENTER" prefHeight="41.0" prefWidth="270.0" text="5,000,000tr" textFill="#1357b7">
+                                    <Label fx:id="lblBalance" alignment="CENTER" prefHeight="41.0" prefWidth="270.0" text="5,000,000tr" textFill="#1357b7">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
                                     </Label>
-                                    <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="118.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" text="+ Nạp thêm tiền" textFill="WHITE">
+                                    <Button mnemonicParsing="false" onAction="#onDeposit" prefHeight="29.0" prefWidth="118.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" text="+ Nạp thêm tiền" textFill="WHITE">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
@@ -203,16 +203,16 @@
                            </font>
                         </Label>
                         <GridPane vgap="5.0">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
                               <Label text="Họ và tên">
                                  <font>
@@ -234,10 +234,30 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <TextField style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="Nguyễn Văn A" GridPane.columnIndex="1" />
-                              <TextField layoutX="130.0" layoutY="12.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField layoutX="130.0" layoutY="42.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="0999999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField layoutX="130.0" layoutY="72.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="123456789101" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <VBox alignment="CENTER" spacing="2.0" GridPane.columnIndex="1">
+                                 <TextField fx:id="txtFullName" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" />
+                                 <Label fx:id="lblFullNameMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
+                                    <font><Font size="10.0" /> </font>
+                                 </Label>
+                              </VBox>
+                              <VBox alignment="CENTER" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <TextField fx:id="txtEmail" layoutX="130.0" layoutY="12.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="..." />
+                                 <Label fx:id="lblEmailMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
+                                    <font><Font size="10.0" /> </font>
+                                 </Label>
+                              </VBox>
+                              <VBox alignment="CENTER" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <TextField fx:id="txtPhoneNumber" layoutX="130.0" layoutY="42.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="0999999999" />
+                                 <Label fx:id="lblPhoneMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
+                                    <font><Font size="10.0" /> </font>
+                                 </Label>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="41.0" prefWidth="419.0" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <TextField fx:id="txtIDCard" layoutX="130.0" layoutY="72.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="123456789101" />
+                                 <Label fx:id="lblIDCardMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
+                                    <font><Font size="10.0" /> </font>
+                                 </Label>
+                              </VBox>
                            </children>
                         </GridPane>
                         <Label layoutX="20.0" layoutY="20.0" text="Bảo mật">
@@ -245,19 +265,19 @@
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Label>
-                        <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="105.0" text="Đổi mật khẩu">
+                        <Button mnemonicParsing="false" onAction="#onChangePassword" prefHeight="26.0" prefWidth="105.0" text="Đổi mật khẩu">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
                         <HBox alignment="CENTER" prefHeight="50.0" prefWidth="510.0" spacing="15.0">
                            <children>
-                              <Button mnemonicParsing="false" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #898989;" text="Hủy bỏ" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#onCancel" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #898989;" text="Hủy bỏ" textFill="WHITE">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Button>
-                              <Button mnemonicParsing="false" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);" text="Lưu thay đổi" textFill="WHITE">
+                              <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onSave" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);" text="Lưu thay đổi" textFill="WHITE">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>

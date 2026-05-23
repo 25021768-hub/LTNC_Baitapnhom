@@ -2,18 +2,16 @@ package com.example.onlineauctionsystem.controller.auth;
 
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.controller.ValidatorHelp;
-import com.example.onlineauctionsystem.model.Account;
 import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 
-public class LoginController extends ValidatorHelp {
+public class LoginController extends BaseController {
     @FXML private TextField txtUsername;
     @FXML private PasswordField txtPassword;
     @FXML private Label lblLoginMessage;
@@ -42,10 +40,25 @@ public class LoginController extends ValidatorHelp {
         if(DataStorage.currentAccount != null){
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             showAlert("Đăng nhập", "Đăng nhập thành công.");
-            switchScene(stage, SceneConfig.HOME);
+
+            String role = DataStorage.currentAccount.getRole() != null
+                    ? DataStorage.currentAccount.getRole().toUpperCase().trim()
+                    : "GUEST";
+
+            switch (role) {
+                case "BIDDER":
+                    switchScene(stage, SceneConfig.BIDDER_HOME);
+                    break;
+                case "SELLER":
+                    switchScene(stage, SceneConfig.SELLER_HOME); // Hoặc trang quản lý của Seller tùy bạn cấu hình
+                    break;
+                default:
+                    showAlert("Lỗi phân quyền", "Tài khoản của bạn chưa được cấp quyền truy cập hệ thống.");
+                    break;
+            }
         }
         else{
-            updateLabel(lblLoginMessage, "Sai tên đăng nhập hoặc mật khẩu.", "red");
+            ValidatorHelp.updateLabel(lblLoginMessage, "Sai tên đăng nhập hoặc mật khẩu.", "red");
         }
     }
 

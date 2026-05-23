@@ -12,18 +12,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-public class RegisterController extends ValidatorHelp {
+public class RegisterController extends BaseController {
+
     @FXML private CheckBox cbCheck;
     @FXML private ComboBox<String> cbRole;
     @FXML private Button btnRegister;
-    @FXML private TextField txtUsername, txtIDCard, txtEmail, txtPhone;
+    @FXML private TextField txtUsername, txtIDCard, txtEmail, txtPhone, txtFullName;
     @FXML private PasswordField txtPassword, txtRePassword;
     @FXML private Label lblUsernameMessage, lblPasswordMessage1, lblPasswordMessage2, lblIDCardMessage, lblEmailMessage, lblPhoneMessage;
 
     private boolean roleIsValid;
 
     private void checkRegister() {
-        boolean isValid = isAllValid(lblUsernameMessage, lblPasswordMessage1,
+        boolean isValid = ValidatorHelp.isAllValid(lblUsernameMessage, lblPasswordMessage1,
                 lblPasswordMessage2, lblEmailMessage,
                 lblPhoneMessage, lblIDCardMessage);
 
@@ -38,22 +39,22 @@ public class RegisterController extends ValidatorHelp {
         // Ẩn tất cả label lúc mới vào
         Label[] labels = {lblUsernameMessage, lblPasswordMessage1, lblPasswordMessage2, lblIDCardMessage, lblEmailMessage, lblPhoneMessage};
         for (Label l : labels) {
-            if (l != null) setUpLabel(l);
+            if (l != null) ValidatorHelp.setUpLabel(l);
         }
 
         txtUsername.requestFocus();
 
         // Check SĐT + Database
-        setupValidation(txtPhone, lblPhoneMessage, null, Validator::isValidPhone, "Số điện thoại không hợp lệ.", "Số điện thoại hợp lệ.", this::checkRegister);
+        ValidatorHelp.setupValidation(txtPhone, lblPhoneMessage, null, Validator::isValidPhone, "Số điện thoại không hợp lệ.", "Số điện thoại hợp lệ.", this::checkRegister);
 
         // Check Email + Database
-        setupValidation(txtEmail, lblEmailMessage, null, Validator::isValidEmail, "Email không hợp lệ.", "Email hợp lệ.", this::checkRegister);
+        ValidatorHelp.setupValidation(txtEmail, lblEmailMessage, null, Validator::isValidEmail, "Email không hợp lệ.", "Email hợp lệ.", this::checkRegister);
 
         // Check CCCD + Database
-        setupValidation(txtIDCard, lblIDCardMessage, null, Validator::isValidCCCD, "CCCD không hợp lệ.", "CCCD hợp lệ", this::checkRegister);
+        ValidatorHelp.setupValidation(txtIDCard, lblIDCardMessage, null, Validator::isValidCCCD, "CCCD không hợp lệ.", "CCCD hợp lệ", this::checkRegister);
 
         // Check Username + Database
-        setupValidation(txtUsername, lblUsernameMessage, null, Validator::isValidUsername, "Tên đăng nhập không được dấu, khoảng trắng và kí tự đặc biệt.", "Tên hơp lệ", this::checkRegister);
+        ValidatorHelp.setupValidation(txtUsername, lblUsernameMessage, null, Validator::isValidUsername, "Tên đăng nhập không được dấu, khoảng trắng và kí tự đặc biệt.", "Tên hơp lệ", this::checkRegister);
 
         // Check đã tích chưa
         cbCheck.selectedProperty().addListener((o, old, newVal) -> checkRegister());
@@ -65,13 +66,14 @@ public class RegisterController extends ValidatorHelp {
         });
 
         // Password Listener
-        setupPasswordValidation(txtPassword, txtRePassword, lblPasswordMessage1, lblPasswordMessage2, Validator::isValidPassword, this::checkRegister);
+        ValidatorHelp.setupPasswordValidation(txtPassword, txtRePassword, lblPasswordMessage1, lblPasswordMessage2, Validator::isValidPassword, this::checkRegister);
     }
     //Tạo tài khoản mới
     @FXML
     private void registerNewUser(ActionEvent event) {
         Account acc = new Account(
                 txtUsername.getText(),
+                txtFullName.getText(),
                 txtPassword.getText(),
                 cbRole.getValue().toString(),
                 txtIDCard.getText(),

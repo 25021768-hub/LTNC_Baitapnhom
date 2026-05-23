@@ -7,8 +7,8 @@ import javafx.scene.control.TextField;
 
 import java.util.function.Predicate;
 
-public abstract class ValidatorHelp extends BaseController {
-    protected void setupValidation(TextField field, Label label,
+public class ValidatorHelp{
+    public static void setupValidation(TextField field, Label label,
                                    String originalValue, // Truyền null nếu là Đăng ký
                                    Predicate<String> formatChecker,
                                    String errorFormat, String successMsg,
@@ -40,7 +40,7 @@ public abstract class ValidatorHelp extends BaseController {
     }
 
 
-    protected void setupPasswordValidation(PasswordField txtPass, PasswordField txtRePass,
+    public static void setupPasswordValidation(PasswordField txtPass, PasswordField txtRePass,
                                            Label lblMsg1, Label lblMsg2,
                                            Predicate<String> strengthChecker,
                                            Runnable updateStatus) {
@@ -74,7 +74,19 @@ public abstract class ValidatorHelp extends BaseController {
         txtRePass.textProperty().addListener(passListener);
     }
 
-    protected boolean isAllValid(Label... labels) {
+    public static void setUpLabel(Label label) {
+        label.setVisible(false);
+        label.setManaged(false);
+    }
+
+    public static void updateLabel(Label label, String text, String color) {
+        label.setText(text);
+        label.setStyle("-fx-text-fill: " + color + ";");
+        label.setVisible(true);
+        label.setManaged(true);
+    }
+
+    public static boolean isAllValid(Label... labels) {
         for (Label lbl : labels) {
             if (lbl.getText().isEmpty() || lbl.getStyle().contains("red")) {
                 return false;

@@ -10,29 +10,32 @@ import javafx.scene.control.*;
 
 import java.util.Optional;
 
-public class UserProfile extends ValidatorHelp{
-    @FXML private Label lblUsernameMessage, lblEmailMessage, lblPhoneMessage, lblIDCardMessage, lblName;
+public class UserProfile extends MenuController{
+    @FXML private Label lblFullNameMessage, lblEmailMessage, lblPhoneMessage, lblIDCardMessage, lblName;
     private Account acc = DataStorage.currentAccount;
     @FXML private Label lblBalance;
-    @FXML private TextField txtUsername, txtEmail, txtPhoneNumber, txtIDCard;
+    @FXML private TextField txtFullName, txtEmail, txtPhoneNumber, txtIDCard;
     @FXML private Button btnSave;
 
     @Override
     public void initialize() {
         btnSave.setDisable(true);
-        txtUsername.setText(DataStorage.currentAccount.getUsername());
+        txtFullName.setText(DataStorage.currentAccount.getFullName());
         txtEmail.setText(DataStorage.currentAccount.getEmail());
         txtIDCard.setText(DataStorage.currentAccount.getIdCard());
         txtPhoneNumber.setText(DataStorage.currentAccount.getPhoneNumber());
         lblBalance.setText(String.valueOf(DataStorage.currentAccount.getBalance()));
-        lblName.setText(DataStorage.currentAccount.getUsername());
+        lblName.setText(DataStorage.currentAccount.getFullName());
 
-        setupValidation(txtPhoneNumber, lblPhoneMessage, acc.getUsername(), Validator::isValidPhone, "Số điện thoại không hợp lệ.", "Số điện thoại hợp lệ.", this::checkSave);
+        ValidatorHelp.setupValidation(txtPhoneNumber, lblPhoneMessage, acc.getUsername(), Validator::isValidPhone, "Số điện thoại không hợp lệ.", "Số điện thoại hợp lệ.", this::checkSave);
 
-        setupValidation(txtEmail, lblEmailMessage, acc.getEmail(), Validator::isValidEmail, "Email không hợp lệ.", "Email hợp lệ.", this::checkSave);
+        ValidatorHelp.setupValidation(txtEmail, lblEmailMessage, acc.getEmail(), Validator::isValidEmail, "Email không hợp lệ.", "Email hợp lệ.", this::checkSave);
 
-        setupValidation(txtIDCard, lblIDCardMessage, acc.getIdCard(), Validator::isValidCCCD, "CCCD không hợp lệ.", "CCCD hợp lệ", this::checkSave);
+        ValidatorHelp.setupValidation(txtIDCard, lblIDCardMessage, acc.getIdCard(), Validator::isValidCCCD, "CCCD không hợp lệ.", "CCCD hợp lệ", this::checkSave);
 
+        ValidatorHelp.setupValidation(txtFullName, lblFullNameMessage, acc.getFullName(),
+                name -> name != null && !name.trim().isEmpty(),
+                "Họ tên không được để trống.", "Họ tên hợp lệ.", this::checkSave);
     }
 
     @FXML
@@ -90,14 +93,14 @@ public class UserProfile extends ValidatorHelp{
         Account current = DataStorage.currentAccount;
 
         // Gán lại dữ liệu cũ vào các ô text
-        txtUsername.setText(current.getUsername());
+        txtFullName.setText(current.getFullName());
         txtEmail.setText(current.getEmail());
         txtPhoneNumber.setText(current.getPhoneNumber());
         txtIDCard.setText(current.getIdCard());
 
         Label[] labels = {lblEmailMessage, lblPhoneMessage, lblIDCardMessage};
         for (Label l : labels){
-            setUpLabel(l);
+            ValidatorHelp.setUpLabel(l);
         }
 
         // Tắt nút Lưu
@@ -118,35 +121,15 @@ public class UserProfile extends ValidatorHelp{
              isUpdate = true;
              acc.setIdCard(txtIDCard.getText());
          }
-        btnSave.setDisable(!isUpdate);
-    }
-
-    @FXML
-    protected void onNewProduct(ActionEvent event) {
-        switchScene(event, SceneConfig.BIDDER_NEW_PRODUCT);
-    }
-    @FXML
-    protected void onHistory(ActionEvent event) {
-        switchScene(event, SceneConfig.BIDDER_HISTORY);
-    }
-    @FXML
-    protected void onActive(ActionEvent event) {
-        switchScene(event, SceneConfig.BIDDER_ACTIVE);
-    }
-    @FXML
-    protected void onAccount(ActionEvent event) {
-        switchScene(event, SceneConfig.HOME);
-    }
-    @FXML
-    protected void onLogout(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Xác nhận");
-        alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
-        if(alert.showAndWait().get() == ButtonType.OK) {
-            DataStorage.currentAccount = null;
-            switchScene(event, SceneConfig.LOGIN);
+        if (lblFullNameMessage.getStyle().contains("green") && !(txtFullName.getText().trim().equals(acc.getFullName())) ){
+            isUpdate = true;
+            acc.setFullName(txtFullName.getText());
         }
+         btnSave.setDisable(!isUpdate);
     }
 
+
+    @FXML
+    protected void onAccount(ActionEvent event) {switchScene(event, SceneConfig.BIDDER_HOME);}
 
 }
