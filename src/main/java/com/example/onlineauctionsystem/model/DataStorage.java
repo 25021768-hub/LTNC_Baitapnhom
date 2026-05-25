@@ -78,9 +78,9 @@ public class DataStorage {
             stmt.setString(2, acc.getPassword());
             stmt.setString(3, acc.getRole());
             stmt.setString(4, acc.getFullName());
-            stmt.setString(4, acc.getIdCard());
-            stmt.setString(5, acc.getEmail());
-            stmt.setString(6, acc.getPhoneNumber());
+            stmt.setString(5, acc.getIdCard());
+            stmt.setString(6, acc.getEmail());
+            stmt.setString(7, acc.getPhoneNumber());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -146,9 +146,11 @@ public class DataStorage {
                 Product p = new Product(
                         rs.getString("id"), rs.getString("name"), rs.getString("description"),
                         rs.getDouble("initial_price"),
+                        rs.getDouble("bid_increment"),
                         rs.getTimestamp("start_time").toLocalDateTime(),
                         rs.getTimestamp("end_time").toLocalDateTime(),
-                        rs.getString("seller_name")
+                        rs.getString("seller_name"),
+                        rs.getString("image_path")
                 );
                 p.setCurrentPrice(rs.getDouble("current_price"));
                 p.setHighestBidder(rs.getString("highest_bidder"));
@@ -161,18 +163,23 @@ public class DataStorage {
     }
 
     public static boolean addProduct(Product p) {
-        String sql = "INSERT INTO products (id, name, description, initial_price, current_price, start_time, end_time, status, seller_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO products (id, name, description, initial_price, bid_increment, " +
+                "current_price, seller_name, image_path, highest_bidder, start_time, end_time, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, p.getId());
             stmt.setString(2, p.getName());
             stmt.setString(3, p.getDescription());
             stmt.setDouble(4, p.getInitialPrice());
-            stmt.setDouble(5, p.getCurrentPrice());
-            stmt.setTimestamp(6, Timestamp.valueOf(p.getStartTime()));
-            stmt.setTimestamp(7, Timestamp.valueOf(p.getEndTime()));
-            stmt.setString(8, p.getStatus());
-            stmt.setString(9, p.getSellerName());
+            stmt.setDouble(5, p.getBidIncrement()); // <-- THÊM MỚI: Lưu bước giá
+            stmt.setDouble(6, p.getCurrentPrice());
+            stmt.setString(7, p.getSellerName());
+            stmt.setString(8, p.getImagePath());     // <-- THÊM MỚI: Lưu đường dẫn ảnh
+            stmt.setString(9, p.getHighestBidder());
+            stmt.setTimestamp(10, Timestamp.valueOf(p.getStartTime()));
+            stmt.setTimestamp(11, Timestamp.valueOf(p.getEndTime()));
+            stmt.setString(12, p.getStatus());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) { return false; }
     }
@@ -198,9 +205,11 @@ public class DataStorage {
                 Product p = new Product(
                         rs.getString("id"), rs.getString("name"), rs.getString("description"),
                         rs.getDouble("initial_price"),
+                        rs.getDouble("bid_increment"),
                         rs.getTimestamp("start_time").toLocalDateTime(),
                         rs.getTimestamp("end_time").toLocalDateTime(),
-                        rs.getString("seller_name")
+                        rs.getString("seller_name"),
+                        rs.getString("image_path")
                 );
                 p.setCurrentPrice(rs.getDouble("current_price"));
                 p.setHighestBidder(rs.getString("highest_bidder"));
