@@ -36,7 +36,7 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onNewProduct" prefHeight="106.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Sản phẩm mới">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onMyProducts" prefHeight="106.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Sản phẩm mới">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -75,7 +75,7 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="237.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActive" prefHeight="86.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text=" Đấu giá đang thắng">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onManage" prefHeight="86.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text=" Đấu giá đang thắng">
                            <font>
                               <Font size="10.0" />
                            </font>
