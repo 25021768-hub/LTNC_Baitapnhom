@@ -129,7 +129,6 @@ public class UserProfile extends MenuController{
     }
 
 
-    @FXML
-    protected void onAccount(ActionEvent event) {switchScene(event, SceneConfig.BIDDER_HOME);}
+
 
 }
