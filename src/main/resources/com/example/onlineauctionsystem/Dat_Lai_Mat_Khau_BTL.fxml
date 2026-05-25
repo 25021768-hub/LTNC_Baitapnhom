@@ -22,7 +22,7 @@
                <children>
                   <ImageView fitHeight="119.0" fitWidth="113.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../LTNC_Baitapnhom/Kho_anh/DatLaiMatKhau.png" />
+                        <Image url="@../../../Kho_anh/DatLaiMatKhau.png" />
                      </image>
                   </ImageView>
                </children>
@@ -78,7 +78,7 @@
                         <font><Font size="11.0" /></font>
                     </Label>
                 </VBox>
-                <Button fx:id="btnComplete" mnemonicParsing="false" onAction="#onChangeForgotPassword" prefHeight="38.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" disable="true" text="HOÀN TẤT" textFill="WHITE">
+                <Button fx:id="btnComplete" disable="true" mnemonicParsing="false" onAction="#onChangeForgotPassword" prefHeight="38.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="HOÀN TẤT" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>

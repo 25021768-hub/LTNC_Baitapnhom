@@ -80,22 +80,22 @@
                         </VBox>
                     </children>
                 </GridPane>
-                <TextField promptText="Họ và tên" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
+                <TextField fx:id="txtFullName" promptText="Họ và tên" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
                 <GridPane hgap="10.0" vgap="10.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints vgrow="SOMETIMES" valignment="TOP" />
-                        <RowConstraints vgrow="SOMETIMES" valignment="TOP" />
+                        <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
+                        <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
                         <VBox spacing="2.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <children>
                                 <TextField fx:id="txtPhone" promptText="Số điện thoại (SĐT)" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
                                 <Label fx:id="lblPhoneMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
-                                    <font><Font size="10.0"/> </font>
+                                    <font><Font size="10.0" /> </font>
                                 </Label>
                             </children>
                         </VBox>
@@ -104,7 +104,7 @@
                             <children>
                                 <TextField fx:id="txtIDCard" promptText="CCCD / Hộ chiếu (ID)" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
                                 <Label fx:id="lblIDCardMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
-                                    <font><Font size="10.0"/> </font>
+                                    <font><Font size="10.0" /> </font>
                                 </Label>
                             </children>
                         </VBox>
@@ -129,8 +129,8 @@
                                 <ComboBox fx:id="cbRole" prefHeight="26.0" prefWidth="217.0" promptText="Chọn vai trò..." style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8; -fx-background-color: white;">
                                     <items>
                                         <FXCollections fx:factory="observableArrayList">
-                                            <String fx:value="Người mua" />
-                                            <String fx:value="Người bán" />
+                                            <String fx:value="Seller" />
+                                            <String fx:value="Bidder" />
                                         </FXCollections>
                                     </items>
                                 </ComboBox>
@@ -138,7 +138,7 @@
                         </VBox>
                     </children>
                 </GridPane>
-                <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#registerNewUser" disable="true" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="ĐĂNG KÝ" textFill="WHITE">
+                <Button fx:id="btnRegister" disable="true" mnemonicParsing="false" onAction="#registerNewUser" prefHeight="45.0" prefWidth="438.0" style="-fx-background-color: linear-gradient(to right, #113366, #0088CC); -fx-background-radius: 10; -fx-cursor: hand;" text="ĐĂNG KÝ" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>

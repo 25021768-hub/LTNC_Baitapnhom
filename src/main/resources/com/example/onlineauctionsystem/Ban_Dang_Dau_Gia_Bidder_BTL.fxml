@@ -1,28 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.collections.FXCollections?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox prefHeight="78.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
+      <HBox minHeight="78.0" prefHeight="78.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
          <children>
             <HBox alignment="CENTER" prefHeight="78.0" prefWidth="286.0">
                <children>
@@ -31,7 +21,7 @@
                         <Insets />
                      </HBox.margin>
                      <image>
-                        <Image url="@LTNC_Baitapnhom/Kho_anh/vnu-uet-removebg-preview.png" />
+                        <Image url="@../../../Kho_anh/vnu-uet-removebg-preview.png" />
                      </image>
                   </ImageView>
                   <Label text="ĐẤU GIÁ UET" textFill="WHITE">
@@ -48,14 +38,14 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="22.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm mới">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onMyProducts" prefHeight="99.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm mới">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/gift.png" />
+                                    <Image url="@../../../Kho_anh/gift.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -64,14 +54,14 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="22.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử đấu giá">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="108.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử đấu giá">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/history.png" />
+                                    <Image url="@../../../Kho_anh/history.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -80,30 +70,37 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="237.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="22.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Bạn đang đấu giá" wrapText="true">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onManage" prefHeight="113.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Bạn đang đấu giá" wrapText="true">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/trophy.png" />
+                                    <Image url="@../../../Kho_anh/trophy.png" />
                                  </image>
                               </ImageView>
                            </graphic>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
                         </Button>
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" layoutX="276.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="22.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onAccount" prefHeight="96.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/user.png" />
+                                    <Image url="@../../../Kho_anh/user.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -112,14 +109,14 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="293.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onLogout" prefHeight="108.0" prefWidth="146.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/logout.png" />
+                                    <Image url="@../../../Kho_anh/logout.png" />
                                  </image>
                               </ImageView>
                            </graphic>

@@ -23,13 +23,13 @@
                     <children>
                         <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../LTNC_Baitapnhom/Kho_anh/DatLaiMatKhau.png" />
+                                <Image url="@../../../Kho_anh/DatLaiMatKhau.png" />
                             </image>
                         </ImageView>
                     </children>
                 </HBox>
 
-                <Label text="Vui lòng nhập mật khẩu hiện tại và mật khẩu mới bạn muốn đổi." textFill="#1357b7" wrapText="true">
+                <Label text="Vui lòng nhập mật khẩu hiện tại và mật khẩu mới" textFill="#1357b7" wrapText="true">
                     <font>
                         <Font name="System Bold" size="15.0" />
                     </font>

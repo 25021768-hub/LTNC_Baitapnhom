@@ -20,7 +20,7 @@
                         <Insets />
                      </HBox.margin>
                      <image>
-                        <Image url="@LTNC_Baitapnhom/Kho_anh/vnu-uet-removebg-preview.png" />
+                        <Image url="@../../../Kho_anh/vnu-uet-removebg-preview.png" />
                      </image>
                   </ImageView>
                   <Label text="ĐẤU GIÁ UET" textFill="WHITE">
@@ -37,14 +37,14 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onNewProduct" prefHeight="22.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm mới">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onMyProducts" prefHeight="88.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm mới">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/gift.png" />
+                                    <Image url="@../../../Kho_anh/gift.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -53,14 +53,14 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="22.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử đấu giá">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="97.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử đấu giá">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/history.png" />
+                                    <Image url="@../../../Kho_anh/history.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -69,14 +69,14 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="237.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onActive" prefHeight="22.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Bạn đang đấu giá" wrapText="true">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onManage" prefHeight="88.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Bạn đang đấu giá" wrapText="true">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/trophy.png" />
+                                    <Image url="@../../../Kho_anh/trophy.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -85,30 +85,37 @@
                   </VBox>
                   <VBox alignment="CENTER" layoutX="276.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onAccount" prefHeight="22.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onAccount" prefHeight="89.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Tài khoản">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/user.png" />
+                                    <Image url="@../../../Kho_anh/user.png" />
                                  </image>
                               </ImageView>
                            </graphic>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
                         </Button>
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" layoutX="293.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
                      <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
+                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onLogout" prefHeight="85.0" prefWidth="127.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
                            <font>
                               <Font size="10.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@LTNC_Baitapnhom/Kho_anh/logout.png" />
+                                    <Image url="@../../../Kho_anh/logout.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -227,22 +234,25 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <VBox spacing="2.0" GridPane.columnIndex="1">
-                                 <TextField fx:id="txtUsername" editable="false" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" />
+                              <VBox alignment="CENTER" spacing="2.0" GridPane.columnIndex="1">
+                                 <TextField fx:id="txtFullName" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" />
+                                 <Label fx:id="lblFullNameMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
+                                    <font><Font size="10.0" /> </font>
+                                 </Label>
                               </VBox>
-                              <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <VBox alignment="CENTER" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <TextField fx:id="txtEmail" layoutX="130.0" layoutY="12.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="..." />
                                  <Label fx:id="lblEmailMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
                                     <font><Font size="10.0" /> </font>
                                  </Label>
                               </VBox>
-                              <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <VBox alignment="CENTER" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <TextField fx:id="txtPhoneNumber" layoutX="130.0" layoutY="42.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="0999999999" />
                                  <Label fx:id="lblPhoneMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
                                     <font><Font size="10.0" /> </font>
                                  </Label>
                               </VBox>
-                              <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <VBox alignment="CENTER" prefHeight="41.0" prefWidth="419.0" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <TextField fx:id="txtIDCard" layoutX="130.0" layoutY="72.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: white; -fx-border-color: #1357b7; -fx-prompt-text-fill: #a0a0a0;" text="123456789101" />
                                  <Label fx:id="lblIDCardMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
                                     <font><Font size="10.0" /> </font>

@@ -21,9 +21,10 @@ public class Account implements Serializable {
     }
 
     // 1. Constructor ĐẦY ĐỦ dùng cho lúc ĐĂNG KÝ
-    public Account(String username, String password, String role, String idCard, String email, String phoneNumber) {
+    public Account(String username, String fullName, String password, String role, String idCard, String email, String phoneNumber) {
         this.username = username;
         this.password = password;
+        this.fullName = fullName;
         this.role = role;
         this.idCard = idCard;
         this.email = email;
