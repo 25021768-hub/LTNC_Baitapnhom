@@ -8,7 +8,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.seller.SellerController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox prefHeight="78.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
          <children>
@@ -138,10 +138,9 @@
                <children>
                   <GridPane prefHeight="35.0" prefWidth="780.0" style="-fx-background-color: #c4c4c4; -fx-border-radius: 10 10 0 0; -fx-background-radius: 10 10 0 0;">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
@@ -174,7 +173,7 @@
                               <Insets left="5.0" />
                            </padding>
                         </Label>
-                        <Label layoutX="216.0" layoutY="25.0" prefHeight="18.0" prefWidth="90.0" text="Lượt đấu" GridPane.columnIndex="3">
+                        <Label layoutX="299.0" layoutY="25.0" prefHeight="50.0" prefWidth="104.0" text="Giá khởi điểm" wrapText="true" GridPane.columnIndex="3">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -182,7 +181,7 @@
                               <Insets left="5.0" />
                            </padding>
                         </Label>
-                        <Label layoutX="299.0" layoutY="25.0" prefHeight="50.0" prefWidth="104.0" text="Giá khởi điểm" wrapText="true" GridPane.columnIndex="4">
+                        <Label layoutX="397.0" layoutY="25.0" prefHeight="20.0" prefWidth="97.0" text="Bước giá" GridPane.columnIndex="4">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -190,15 +189,7 @@
                               <Insets left="5.0" />
                            </padding>
                         </Label>
-                        <Label layoutX="397.0" layoutY="25.0" prefHeight="20.0" prefWidth="97.0" text="Bước giá" GridPane.columnIndex="5">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
-                        </Label>
-                        <Label layoutX="496.0" layoutY="25.0" prefHeight="18.0" prefWidth="90.0" text="Thời gian" GridPane.columnIndex="6">
+                        <Label layoutX="496.0" layoutY="25.0" prefHeight="18.0" prefWidth="90.0" text="Thời gian" GridPane.columnIndex="5">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -210,28 +201,112 @@
                   </GridPane>
                   <ScrollPane hbarPolicy="NEVER" prefHeight="387.0" prefWidth="780.0">
                      <content>
-                        <VBox fx:id="productListContainer" prefWidth="777.0" spacing="5.0">
+                        <VBox prefHeight="382.0" prefWidth="777.0" spacing="5.0">
+                           <children>
+                              <GridPane prefHeight="91.0" prefWidth="780.0" style="-fx-background-color: white;">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="130.0" minHeight="130.0" prefHeight="130.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                       <effect>
+                                          <DropShadow offsetY="4.0">
+                                             <color>
+                                                <Color red="0.5368421077728271" green="0.5368421077728271" blue="0.5368421077728271" />
+                                             </color>
+                                          </DropShadow>
+                                       </effect>
+                                       <children>
+                                          <ImageView fitHeight="110.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
+                                             <StackPane.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </StackPane.margin>
+                                          </ImageView>
+                                       </children>
+                                    </StackPane>
+                                    <Label prefHeight="110.0" prefWidth="131.0" text="Bộ Pc" wrapText="true" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets left="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label layoutX="125.0" layoutY="50.0" prefHeight="105.0" prefWidth="115.0" text="20.000.000đ" wrapText="true" GridPane.columnIndex="2">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="5.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label layoutX="256.0" layoutY="50.0" prefHeight="102.0" prefWidth="115.0" text="18.000.000đ" wrapText="true" GridPane.columnIndex="3">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="5.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label layoutX="452.0" layoutY="50.0" prefHeight="102.0" prefWidth="110.0" text="200.000đ" wrapText="true" GridPane.columnIndex="4">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="5.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label layoutX="567.0" layoutY="50.0" prefHeight="107.0" prefWidth="102.0" text="02:30:30" wrapText="true" GridPane.columnIndex="5">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="5.0" />
+                                       </padding>
+                                    </Label>
+                                 </children>
+                              </GridPane>
+                           </children>
                            <padding>
                               <Insets top="5.0" />
                            </padding>
-                           <!-- để trống, Controller sẽ tự add row vào đây -->
                         </VBox>
                      </content>
                   </ScrollPane>
                   <HBox alignment="CENTER" maxHeight="60.0" minHeight="60.0" prefHeight="60.0" prefWidth="200.0" spacing="20.0" style="-fx-background-radius: 0 0 10 10; -fx-border-radius: 0 0 10 10; -fx-background-color: #c4c4c4;">
                      <children>
                         <Label contentDisplay="RIGHT" text="Tổng số sản phẩm đang bán:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
                            <graphic>
-                              <Label fx:id="lblTotalProducts" text="0">
-                                 <font><Font name="System Bold" size="16.0" /></font>
+                              <Label text="5">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
                               </Label>
                            </graphic>
                         </Label>
-
-                        <Label contentDisplay="RIGHT" text="Tổng doanh thu dự kiến:">
+                        <Label contentDisplay="RIGHT" layoutX="291.0" layoutY="28.0" text="Tổng doanh thu dự kiến:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
                            <graphic>
-                              <Label fx:id="lblTotalRevenue" text="0đ">
-                                 <font><Font name="System Bold" size="16.0" /></font>
+                              <Label text="100.000.000đ">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
                               </Label>
                            </graphic>
                         </Label>

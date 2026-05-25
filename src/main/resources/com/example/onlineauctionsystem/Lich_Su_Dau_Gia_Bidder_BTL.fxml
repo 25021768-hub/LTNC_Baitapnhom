@@ -185,7 +185,7 @@
                         <Label text="Tên vật phẩm" GridPane.columnIndex="0"><font><Font name="System Bold" size="15.0" /></font></Label>
                         <Label text="Mức giá bạn trả" GridPane.columnIndex="1"><font><Font name="System Bold" size="15.0" /></font></Label>
                         <Label text="Giá cuối cùng" GridPane.columnIndex="2"><font><Font name="System Bold" size="15.0" /></font></Label>
-                        <Label text="Thời gian" GridPane.columnIndex="3"><font><Font name="System Bold" size="15.0" /></font></Label>
+                        <Label text="Ngày kết thúc" GridPane.columnIndex="3"><font><Font name="System Bold" size="15.0" /></font></Label>
                         <Label text="Trạng thái" GridPane.columnIndex="4"><font><Font name="System Bold" size="15.0" /></font></Label>
                      </children>
                   </GridPane>
@@ -205,7 +205,7 @@
                                     <Label text="Laptop Dell XPS" GridPane.columnIndex="0" />
                                     <Label text="15tr" GridPane.columnIndex="1" />
                                     <Label text="15tr" GridPane.columnIndex="2" />
-                                    <Label text="12:00" GridPane.columnIndex="3" />
+                                    <Label text="10/05/2026" GridPane.columnIndex="3" />
                                     <Label alignment="CENTER" prefWidth="65.0" style="-fx-border-color: green; -fx-border-radius: 10;" text="THẮNG" textFill="GREEN" GridPane.columnIndex="4" />
                                  </children>
                                  <rowConstraints>
@@ -224,7 +224,7 @@
                                     <Label text="Laptop Dell XPS" GridPane.columnIndex="0" />
                                     <Label text="15tr" GridPane.columnIndex="1" />
                                     <Label text="15tr" GridPane.columnIndex="2" />
-                                    <Label text="12:00" GridPane.columnIndex="3" />
+                                    <Label text="10/05/2026" GridPane.columnIndex="3" />
                                     <Label alignment="CENTER" prefWidth="65.0" style="-fx-border-color: #ff0101; -fx-border-radius: 10;" text="THUA" textFill="#ff0101" GridPane.columnIndex="4" />
                                  </children>
                                  <rowConstraints>
