@@ -10,13 +10,13 @@ import javafx.scene.control.ButtonType;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class MenuController extends BaseController {
+public class MenuController extends BaseController {
 
     // 1. Tạo các bảng định tuyến (Routing Maps) cố định cho từng nút bấm
-    private static final Map<String, SceneConfig> myProductsRoutes = new HashMap<>();
-    private static final Map<String, SceneConfig> historyRoutes = new HashMap<>();
-    private static final Map<String, SceneConfig> manageRoutes = new HashMap<>();
-    private static final Map<String, SceneConfig> accountRoutes = new HashMap<>();
+    protected static final Map<String, SceneConfig> myProductsRoutes = new HashMap<>();
+    protected static final Map<String, SceneConfig> historyRoutes = new HashMap<>();
+    protected static final Map<String, SceneConfig> manageRoutes = new HashMap<>();
+    protected static final Map<String, SceneConfig> accountRoutes = new HashMap<>();
 
     // 2. Khối static nạp cấu hình đường đi duy nhất một lần khi ứng dụng chạy
     static {
@@ -57,7 +57,7 @@ public abstract class MenuController extends BaseController {
         }
     }
 
-    // 3. CÁC HÀM SỰ KIỆN GIAO DIỆN CHỈ CÒN ĐÚNG 1 DÒNG SIÊU SẠCH (CLEAN CODE)
+    // 3. CÁC HÀM SỰ KIỆN GIAO DIỆN
     @FXML
     public void onMyProducts(ActionEvent event) {
         navigateByRole(event, myProductsRoutes);
@@ -87,5 +87,10 @@ public abstract class MenuController extends BaseController {
             DataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
         }
+    }
+
+    @Override
+    public void initialize() {
+
     }
 }

@@ -3,12 +3,8 @@ package com.example.onlineauctionsystem.controller.seller;
 import com.example.onlineauctionsystem.controller.MenuController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 
-public class SellerController extends MenuController {
-    @FXML private VBox productListContainer;
-    @FXML private Label lblTotalProducts, lblTotalRevenue;
+public class SellerHistoryController extends MenuController {
 
 
     @FXML

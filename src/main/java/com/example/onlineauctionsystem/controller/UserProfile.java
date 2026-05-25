@@ -27,7 +27,7 @@ public class UserProfile extends MenuController{
         lblBalance.setText(String.valueOf(DataStorage.currentAccount.getBalance()));
         lblName.setText(DataStorage.currentAccount.getFullName());
 
-        ValidatorHelp.setupValidation(txtPhoneNumber, lblPhoneMessage, acc.getUsername(), Validator::isValidPhone, "Số điện thoại không hợp lệ.", "Số điện thoại hợp lệ.", this::checkSave);
+        ValidatorHelp.setupValidation(txtPhoneNumber, lblPhoneMessage, acc.getPhoneNumber(), Validator::isValidPhone, "Số điện thoại không hợp lệ.", "Số điện thoại hợp lệ.", this::checkSave);
 
         ValidatorHelp.setupValidation(txtEmail, lblEmailMessage, acc.getEmail(), Validator::isValidEmail, "Email không hợp lệ.", "Email hợp lệ.", this::checkSave);
 
@@ -80,8 +80,25 @@ public class UserProfile extends MenuController{
         alert.setTitle("Xác nhận");
         alert.setHeaderText("Bạn có chắc chắn với các thay đổi?");
         if(alert.showAndWait().get() == ButtonType.OK) {
+            acc.setFullName(txtFullName.getText().trim());
+            acc.setEmail(txtEmail.getText().trim());
+            acc.setPhoneNumber(txtPhoneNumber.getText().trim());
+            acc.setIdCard(txtIDCard.getText().trim());
             if (DataStorage.updateAccount(acc)) {
                 showAlert("Đổi thông tin", "Đổi thành công.");
+
+                lblName.setText(acc.getFullName());
+                txtFullName.setText(acc.getFullName());
+                txtEmail.setText(acc.getEmail());
+                txtPhoneNumber.setText(acc.getPhoneNumber());
+                txtIDCard.setText(acc.getIdCard());
+
+                Label[] labels = {lblEmailMessage, lblPhoneMessage, lblIDCardMessage, lblFullNameMessage};
+                for (Label l : labels) {
+                    ValidatorHelp.setUpLabel(l);
+                }
+
+                btnSave.setDisable(true);
             } else {
                 showAlert("Đổi thông tin", "Lỗi!");
             }
@@ -98,7 +115,7 @@ public class UserProfile extends MenuController{
         txtPhoneNumber.setText(current.getPhoneNumber());
         txtIDCard.setText(current.getIdCard());
 
-        Label[] labels = {lblEmailMessage, lblPhoneMessage, lblIDCardMessage};
+        Label[] labels = {lblFullNameMessage, lblEmailMessage, lblPhoneMessage, lblIDCardMessage};
         for (Label l : labels){
             ValidatorHelp.setUpLabel(l);
         }
@@ -111,24 +128,48 @@ public class UserProfile extends MenuController{
          boolean isUpdate = false;
          if (lblPhoneMessage.getStyle().contains("green") && !(txtPhoneNumber.getText().trim().equals(acc.getPhoneNumber())) ){
              isUpdate = true;
-             acc.setPhoneNumber(txtPhoneNumber.getText());
          }
          if (lblEmailMessage.getStyle().contains("green") && !(txtEmail.getText().trim().equals(acc.getEmail())) ){
-             isUpdate = true;
-             acc.setEmail(txtEmail.getText());
+             isUpdate = true;;
          }
          if (lblIDCardMessage.getStyle().contains("green") && !(txtIDCard.getText().trim().equals(acc.getIdCard())) ){
              isUpdate = true;
-             acc.setIdCard(txtIDCard.getText());
          }
         if (lblFullNameMessage.getStyle().contains("green") && !(txtFullName.getText().trim().equals(acc.getFullName())) ){
             isUpdate = true;
-            acc.setFullName(txtFullName.getText());
+        }
+        Label[] labels = {lblPhoneMessage, lblEmailMessage, lblIDCardMessage, lblFullNameMessage};
+        for (Label lbl : labels) {
+            if (lbl != null && lbl.isVisible() && lbl.getStyle().contains("red")) {
+                isUpdate = false;
+                break;
+            }
         }
          btnSave.setDisable(!isUpdate);
     }
 
+    @FXML
+    @Override
+    public void onMyProducts(ActionEvent event) {
+        super.onMyProducts(event);
+    }
 
+    @FXML
+    @Override
+    public void onHistory(ActionEvent event) {
+        super.onHistory(event);
+    }
 
+    @FXML
+    @Override
+    public void onManage(ActionEvent event) {
+        super.onManage(event);
+    }
+
+    @FXML
+    @Override
+    public void onAccount(ActionEvent event) {
+        super.onAccount(event);
+    }
 
 }
