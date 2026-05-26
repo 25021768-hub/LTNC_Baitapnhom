@@ -33,6 +33,6 @@ public class ProductItemController {
     }
 
     private String formatPrice(double price) {
-        return String.format("%,dđ", price).replace(",", ".");
+        return String.format("%,0fđ", price).replace(",", ".");
     }
 }

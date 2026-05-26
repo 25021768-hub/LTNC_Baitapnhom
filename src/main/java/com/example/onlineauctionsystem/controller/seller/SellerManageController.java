@@ -81,7 +81,14 @@ public class SellerManageController extends MenuController {
     }
 
     @FXML
-    private void onAddProduct() {
+    private void onAddProduct(ActionEvent event) {
+        if (DataStorage.currentAccount.isLocked()) {
+            showAlert("Lỗi", "Tài khoản của bạn đã bị khóa! Không thể thực hiện chức năng này.");
+            stopAutoRefresh();
+            // Ép đăng xuất ngay lập tức
+            forceLogout(event);
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource(SceneConfig.ADD_PRODUCT.getPath())

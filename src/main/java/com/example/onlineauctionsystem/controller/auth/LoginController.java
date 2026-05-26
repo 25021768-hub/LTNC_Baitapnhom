@@ -32,13 +32,22 @@ public class LoginController extends BaseController {
 
     //Đăng nhập
     @FXML
-    private void onLogin(ActionEvent event){
+    private void onLogin(ActionEvent event) {
         String user = txtUsername.getText();
         String password = txtPassword.getText();
 
         DataStorage.currentAccount = DataStorage.checkLogin(user, password);
-        if(DataStorage.currentAccount != null){
+        if (DataStorage.currentAccount != null) {
             Stage stage = (Stage) btnLogin.getScene().getWindow();
+
+            // THÊM BỘ KIỂM TRA TRẠNG THÁI KHÓA TÀI KHOẢN TẠI ĐÂY
+            if (DataStorage.currentAccount.isLocked()) {
+                showAlert("Đăng nhập thất bại", "Tài khoản của bạn đã bị khóa bởi Quản trị viên!");
+                DataStorage.currentAccount = null; // Reset lại phiên đăng nhập để đảm bảo an toàn
+                return; // Dừng hàm luôn, không cho chạy tiếp xuống phần phân quyền
+            }
+
+            // Nếu vượt qua bộ lọc khóa ở trên thì mới báo thành công và phân quyền
             showAlert("Đăng nhập", "Đăng nhập thành công.");
 
             String role = DataStorage.currentAccount.getRole() != null
@@ -50,14 +59,16 @@ public class LoginController extends BaseController {
                     switchScene(stage, SceneConfig.BIDDER_HOME);
                     break;
                 case "SELLER":
-                    switchScene(stage, SceneConfig.SELLER_HOME); // Hoặc trang quản lý của Seller tùy bạn cấu hình
+                    switchScene(stage, SceneConfig.SELLER_HOME);
+                    break;
+                case "ADMIN":
+                    switchScene(stage, SceneConfig.ADMIN_USER);
                     break;
                 default:
                     showAlert("Lỗi phân quyền", "Tài khoản của bạn chưa được cấp quyền truy cập hệ thống.");
                     break;
             }
-        }
-        else{
+        } else {
             ValidatorHelp.updateLabel(lblLoginMessage, "Sai tên đăng nhập hoặc mật khẩu.", "red");
         }
     }

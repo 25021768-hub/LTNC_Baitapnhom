@@ -13,6 +13,7 @@ public class Account implements Serializable {
     private String idCard;
     private String email;
     private String phoneNumber;
+    private boolean isLocked = false;
 
 
     private double balance;
@@ -47,6 +48,7 @@ public class Account implements Serializable {
     public String getPhoneNumber() { return phoneNumber; }
     public String getFullName() { return fullName;}
     public double getBalance() { return balance; }
+    public boolean isLocked() { return isLocked; }
 
     // SETTER
     public void setPassword(String password) {
@@ -70,7 +72,6 @@ public class Account implements Serializable {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
+    public void setBalance(double balance) {this.balance = balance;}
+    public void setLocked(boolean locked) { this.isLocked = locked; }
 }

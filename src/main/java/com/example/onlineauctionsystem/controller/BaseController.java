@@ -57,8 +57,15 @@ public abstract class BaseController{
         }
         public String formatPrice(double price) {
         return String.format("%,.0fđ", price).replace(",", ".");
-    }
+        }
 
+    public void forceLogout(ActionEvent event) {
+        showAlert("Tài khoản bị khóa", "Tài khoản của bạn đã bị Quản trị viên khóa! Hệ thống sẽ tự động đăng xuất.");
+        DataStorage.currentAccount = null;
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        switchScene(stage, SceneConfig.LOGIN);
+    }
         // Hàm initialize abstract để các con bắt buộc phải triển khai
         @FXML
         public abstract void initialize();

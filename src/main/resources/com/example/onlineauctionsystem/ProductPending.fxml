@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.image.ImageView?>
+
+<VBox fx:id="productCard" alignment="TOP_CENTER" maxHeight="260.0" minHeight="260.0" minWidth="390.0" prefHeight="260.0" prefWidth="390.0" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.common.ProductPendingController">
+    <effect>
+        <DropShadow>
+            <color>
+                <Color red="0.5372549295425415" green="0.5372549295425415" blue="0.5372549295425415" />
+            </color>
+        </DropShadow>
+    </effect>
+    <padding>
+        <Insets left="5.0" />
+    </padding>
+    <children>
+        <HBox prefHeight="187.0" prefWidth="386.0" spacing="10.0" style="-fx-background-radius: 10 10 0 0; -fx-border-radius: 10 10 0 0;">
+            <padding>
+                <Insets bottom="5.0" right="5.0" top="5.0" />
+            </padding>
+            <children>
+                <StackPane maxHeight="140.0" maxWidth="140.0" minHeight="140.0" minWidth="140.0" prefHeight="140.0" prefWidth="140.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #898989;">
+                    <children>
+                        <ImageView fx:id="imgProduct" fitHeight="140.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true" />
+                    </children>
+                </StackPane>
+                <VBox prefHeight="141.0" prefWidth="238.0">
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="35.0" prefWidth="230.0" text="Tên sản phẩm:">
+                            <font><Font name="System Bold" size="12.0" /></font>
+                            <graphic>
+                                <Label fx:id="lblProductName" prefHeight="42.0" prefWidth="143.0" text="Bộ Pc" wrapText="true" />
+                            </graphic>
+                        </Label>
+                        <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="35.0" prefWidth="230.0" text="Người đăng bán:">
+                            <font><Font name="System Bold" size="12.0" /></font>
+                            <graphic>
+                                <Label fx:id="lblSellerName" prefHeight="42.0" prefWidth="129.0" text="Nguyễn Văn A" wrapText="true" />
+                            </graphic>
+                        </Label>
+                        <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="35.0" prefWidth="230.0" text="Giá khởi điểm:">
+                            <font><Font name="System Bold" size="12.0" /></font>
+                            <graphic>
+                                <Label fx:id="lblStartPrice" prefHeight="42.0" prefWidth="143.0" text="5.000.000 VNĐ" wrapText="true" />
+                            </graphic>
+                        </Label>
+                        <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="35.0" prefWidth="226.0" text="Bước giá:">
+                            <font><Font name="System Bold" size="12.0" /></font>
+                            <graphic>
+                                <Label fx:id="lblPriceStep" prefHeight="42.0" prefWidth="164.0" text="100.000 VNĐ" wrapText="true" />
+                            </graphic>
+                        </Label>
+                        <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="35.0" prefWidth="226.0" text="Thời gian đấu giá:">
+                            <font><Font name="System Bold" size="12.0" /></font>
+                            <graphic>
+                                <Label fx:id="lblDuration" prefHeight="42.0" prefWidth="118.0" text="2 giờ" wrapText="true" />
+                            </graphic>
+                        </Label>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox alignment="CENTER" prefHeight="92.0" prefWidth="386.0" spacing="15.0">
+            <VBox.margin><Insets right="5.0" /></VBox.margin>
+            <children>
+                <Button fx:id="btnApprove" mnemonicParsing="false" onAction="#onApproveAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: green; -fx-background-radius: 15; -fx-border-radius: 15;" text="Phê duyệt" textFill="WHITE">
+                    <font><Font name="System Bold" size="12.0" /></font>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Button>
+                <Button fx:id="btnReject" mnemonicParsing="false" onAction="#onRejectAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: red; -fx-background-radius: 15; -fx-border-radius: 15;" text="Từ chối" textFill="WHITE">
+                    <font><Font name="System Bold" size="12.0" /></font>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Button>
+            </children>
+        </HBox>
+    </children>
+</VBox>

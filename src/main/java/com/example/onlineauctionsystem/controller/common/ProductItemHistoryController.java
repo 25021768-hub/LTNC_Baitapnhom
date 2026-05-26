@@ -36,7 +36,7 @@ public class ProductItemHistoryController {
                 lblStatus.setText("Thành công");
                 lblStatus.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-background-radius: 20; -fx-border-radius: 20;");
             }
-            case "CANCEL" -> {
+            case "CANCELED" -> {
                 lblStatus.setText("Đã hủy");
                 lblStatus.setStyle("-fx-background-color: gray; -fx-text-fill: white; -fx-background-radius: 20; -fx-border-radius: 20;");
             }
@@ -49,7 +49,7 @@ public class ProductItemHistoryController {
     }
 
     public String formatPrice(double price) {
-        return String.format("%,dđ", price).replace(",", ".");
+        return String.format("%,0fđ", price).replace(",", ".");
     }
 
 }

@@ -35,6 +35,7 @@ public class DataStorage {
                 acc.setBalance(rs.getDouble("balance"));
                 acc.setPassword(rs.getString("password"));
                 acc.setFullName(rs.getString("fullname"));
+                acc.setLocked(rs.getBoolean("is_locked"));
                 return acc;
             }
         } catch (SQLException e) { e.printStackTrace(); }
@@ -70,7 +71,7 @@ public class DataStorage {
     //Đăng kí tài khoản
     public static boolean register(Account acc) {
 
-        String sql = "INSERT INTO accounts (username, password, role, fullname, id_card, email, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO accounts (username, password, role, fullname, id_card, email, phone_number, is_locked) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -82,6 +83,7 @@ public class DataStorage {
             stmt.setString(5, acc.getIdCard());
             stmt.setString(6, acc.getEmail());
             stmt.setString(7, acc.getPhoneNumber());
+            stmt.setBoolean(8,acc.isLocked());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -156,6 +158,14 @@ public class DataStorage {
                 p.setCurrentPrice(rs.getDouble("current_price"));
                 p.setHighestBidder(rs.getString("highest_bidder"));
                 p.setStatus(rs.getString("status"));
+                Timestamp startTs = rs.getTimestamp("start_time");
+                if (startTs != null) {
+                    p.setStartTime(startTs.toLocalDateTime()); // Đã duyệt rồi thì lấy start_time lên đây!
+                }
+                Timestamp endTs = rs.getTimestamp("end_time");
+                if (endTs != null) {
+                    p.setEndTime(endTs.toLocalDateTime());
+                }
                 p.updateStatus();
                 list.add(p);
             }
@@ -274,14 +284,60 @@ public class DataStorage {
             return false;
         }
     }
-
-    public static void approveProduct(String productId) {
-        String sql = "UPDATE products SET status='OPEN', start_time=NOW() WHERE id=?";
+    // Lấy tất cả tài khoản
+    public static List<Account> getAllAccounts() {
+        List<Account> list = new ArrayList<>();
+        String sql = "SELECT * FROM accounts";
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, productId);
-            ps.executeUpdate();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Account acc = new Account();
+                acc.setUsername(rs.getString("username"));
+                acc.setFullName(rs.getString("fullname"));
+                acc.setEmail(rs.getString("email"));
+                acc.setPhoneNumber(rs.getString("phone_number"));
+                acc.setIdCard(rs.getString("id_card"));
+                acc.setRole(rs.getString("role"));
+                acc.setLocked(rs.getBoolean("is_locked")); // cần thêm cột này
+                list.add(acc);
+            }
         } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
+    // Khóa / Mở tài khoản
+    public static boolean setAccountLocked(String username, boolean locked) {
+        String sql = "UPDATE accounts SET is_locked = ? WHERE username = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBoolean(1, locked);
+            stmt.setString(2, username);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateProductStatus(String productId, String newStatus) {
+        // Nếu duyệt thành công (RUNNING), ta đồng thời kích hoạt luôn giờ bắt đầu đấu giá (NOW())
+        String sql;
+        if ("RUNNING".equals(newStatus)) {
+            sql = "UPDATE products SET status = ?, start_time = NOW(), end_time = DATE_ADD(NOW(), INTERVAL duration_hours HOUR) end_time = ? WHERE id = ?";
+        } else {
+            sql = "UPDATE products SET status = ? WHERE id = ?";
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newStatus);
+            stmt.setString(2, productId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // Lấy số dư hiện tại của tài khoản

@@ -49,7 +49,7 @@ public class SellerHistoryController extends MenuController {
                 .filter(p -> seller_username.equals(p.getSellerName()))
                 .filter(p -> "FINISHED".equals(p.getStatus())
                         || "PAID".equals(p.getStatus())
-                        || "CANCEL".equals(p.getStatus()))
+                        || "CANCELED".equals(p.getStatus()))
                 .collect(Collectors.toList());
     }
 

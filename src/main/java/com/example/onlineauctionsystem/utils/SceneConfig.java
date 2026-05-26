@@ -19,7 +19,12 @@ public enum SceneConfig {
     PRODUCT_CARD("ProductCard.fxml", "Ô sản phẩm"),
     ADD_PRODUCT("Cua_So_Dang_Ban_San_Pham_Seller_BTL.fxml", "Cửa số đăng bán sản phẩm"),
     PRODUCT_ITEM("ProductItem.fxml", "Ô sản phảm đang đấu giá"),
-    PRODUCT_ITEM_HISTORY("ProductItemHistory.fxml", "Ô sản phẩm lịch sử");
+    PRODUCT_ITEM_HISTORY("ProductItemHistory.fxml", "Ô sản phẩm lịch sử"),
+    PRODUCT_PENDING("ProductPending.fxml", "Ô sản phẩm chờ phê duyệt"),
+    USER("User.fxml", "Ô người dùng trong hệ thống"),
+
+    ADMIN_USER("QuanTriHeThong_Admin.fxml","Người dùng"),
+    ADMIN_PRODUCT("PheDuyetSanPham_Admin.fxml", "Sản phẩm chờ phê duyệt");
 
     private final String fileName;
     private final String title;

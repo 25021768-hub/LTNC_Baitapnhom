@@ -45,7 +45,6 @@ public enum ProductImage {
         if (imagePath == null || imagePath.isEmpty()) return null;
 
         try {
-            // Cách 1: Load từ resources (sau khi build/jar)
             InputStream stream = ProductImage.class.getResourceAsStream("/" + imagePath);
             if (stream != null) {
                 return new Image(stream, width, height, true, true);

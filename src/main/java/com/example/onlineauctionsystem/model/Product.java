@@ -63,20 +63,26 @@ public class Product implements Serializable {
         LocalDateTime now = LocalDateTime.now();
 
         // Các trạng thái này không tự thay đổi
-        if (status.equals("PENDING") ||
-                status.equals("CANCELED") ||
-                status.equals("PAID")) return;
+        if (startTime == null) {
+            // Nếu sản phẩm không phải trạng thái kết thúc/hủy, giữ nguyên nó là PENDING
+            if (!"RUNNING".equals(status) && !"FINISHED".equals(status) && !"CANCELED".equals(status)) {
+                status = "PENDING";
+            }
+            return; // Thoát hàm ngay lập tức, tuyệt đối không chạy xuống đoạn so sánh phía dưới
+        }
 
         // startTime chỉ có sau khi admin duyệt
         if (startTime == null) {
-            status = "PENDING";
+            if (!status.equals("RUNNING") && !status.equals("FINISHED")) {
+                status = "PENDING";
+            }
             return;
         }
 
         LocalDateTime end = getEndTime(); // startTime + durationMinutes
 
         if (now.isBefore(startTime)) {
-            status = "OPEN";
+            status = "PENDING";
         } else if (now.isAfter(startTime) && now.isBefore(end)) {
             status = "RUNNING";
         } else if (now.isAfter(end)) {
@@ -178,4 +184,6 @@ public class Product implements Serializable {
     public void setDurationHours(long durationHours){this.durationHours = durationHours;}
 
     public void setStartTime(LocalDateTime startTime){this.startTime = startTime;}
+
+    public void setEndTime(LocalDateTime endTime) {this.endTime = endTime;}
 }
