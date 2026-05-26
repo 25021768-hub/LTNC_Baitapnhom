@@ -1,5 +1,6 @@
 package com.example.onlineauctionsystem.controller.common;
 
+import com.example.onlineauctionsystem.utils.ProductImage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -22,11 +23,12 @@ public class ProductItemController {
         lblStartPrice.setText(formatPrice(p.getInitialPrice()));
         lblStep.setText(formatPrice(p.getBidIncrement()));
         lblTime.setText(String.valueOf(p.getDurationHours()));
+        lblBidCount.setText(String.valueOf(p.getBidIncrement()));
 
         // Load ảnh bất đồng bộ (không block UI)
         if (p.getImagePath() != null && !p.getImagePath().isEmpty()) {
-            Image img = new Image(p.getImagePath(), 90, 90, true, true, true);
-            imgProduct.setImage(img);
+            Image img = ProductImage.load(p.getImagePath(), 110, 110);
+            if (img != null) imgProduct.setImage(img);
         }
     }
 

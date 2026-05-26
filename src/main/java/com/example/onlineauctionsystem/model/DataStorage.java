@@ -147,7 +147,6 @@ public class DataStorage {
                 Product p = new Product(
                         rs.getString("id"),
                         rs.getString("name"),
-                        rs.getString("description"),
                         rs.getDouble("initial_price"),
                         rs.getDouble("bid_increment"),
                         rs.getLong("duration_hours"),
@@ -165,29 +164,41 @@ public class DataStorage {
     }
 
     public static boolean addProduct(Product p) {
-        String sql = "INSERT INTO products (id, name, description, initial_price, bid_increment, " +
-                "current_price, seller_name, image_path, highest_bidder, start_time, end_time, status) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO products (id, name, initial_price, bid_increment, " +
+                "current_price, seller_name, image_path, highest_bidder, " +
+                "duration_hours, start_time, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, p.getId());
             stmt.setString(2, p.getName());
-            stmt.setString(3, p.getDescription());
-            stmt.setDouble(4, p.getInitialPrice());
-            stmt.setDouble(5, p.getBidIncrement()); // <-- THÊM MỚI: Lưu bước giá
-            stmt.setDouble(6, p.getCurrentPrice());
-            stmt.setString(7, p.getSellerName());
-            stmt.setString(8, p.getImagePath());     // <-- THÊM MỚI: Lưu đường dẫn ảnh
-            stmt.setString(9, p.getHighestBidder());
-            stmt.setTimestamp(10, Timestamp.valueOf(p.getStartTime()));
-            stmt.setTimestamp(11, Timestamp.valueOf(p.getEndTime()));
-            stmt.setString(12, p.getStatus());
+            stmt.setDouble(3, p.getInitialPrice());
+            stmt.setDouble(4, p.getBidIncrement());
+            stmt.setDouble(5, p.getCurrentPrice());
+            stmt.setString(6, p.getSellerName());
+            stmt.setString(7, p.getImagePath());
+            stmt.setString(8, p.getHighestBidder());
+            stmt.setLong(9, p.getDurationHours());
+
+            // start_time NULL vì chờ admin duyệt
+            if (p.getStartTime() != null) {
+                stmt.setTimestamp(10, Timestamp.valueOf(p.getStartTime()));
+            } else {
+                stmt.setNull(10, Types.TIMESTAMP);
+            }
+
+            stmt.setString(11, p.getStatus());
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) { return false; }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean updateBid(String productId, double newPrice, String bidderName) {
-        String sql = "UPDATE products SET current_price = ?, highest_bidder = ? WHERE id = ? AND status = 'RUNNING'";
+        String sql = "UPDATE products SET current_price = ?, highest_bidder = ?, " +
+                "bid_increment = bid_increment + 1 " +
+                "WHERE id = ? AND status = 'RUNNING'";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDouble(1, newPrice);
@@ -207,7 +218,6 @@ public class DataStorage {
                 Product p = new Product(
                         rs.getString("id"),
                         rs.getString("name"),
-                        rs.getString("description"),
                         rs.getDouble("initial_price"),
                         rs.getDouble("bid_increment"),
                         rs.getLong("duration_hours"),
@@ -226,6 +236,24 @@ public class DataStorage {
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
+    }
+
+    // Seller tự xóa SP của mình — chỉ được xóa khi PENDING
+    public static boolean deleteMyProduct(String productId, String sellerUsername) {
+        String sql = "DELETE FROM products WHERE id = ? AND seller_name = ? AND status = 'PENDING'";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productId);
+            stmt.setString(2, sellerUsername);
+            int rows = stmt.executeUpdate();
+            if (rows == 0) {
+                System.err.println("Không thể xóa: SP không tồn tại, không phải của bạn, hoặc không ở trạng thái PENDING");
+            }
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // 2. Hàm xóa sản phẩm khỏi Database(chỉ cho ADMIN)

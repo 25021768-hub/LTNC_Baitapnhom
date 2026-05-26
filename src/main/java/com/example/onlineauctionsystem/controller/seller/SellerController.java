@@ -4,6 +4,7 @@ import com.example.onlineauctionsystem.controller.MenuController;
 import com.example.onlineauctionsystem.controller.common.ProductItemController;
 import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.model.Product;
+import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -12,6 +13,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
@@ -35,6 +38,8 @@ public class SellerController extends MenuController {
             renderProductList();
             updateFooter();
         } );
+        renderProductList();
+        updateFooter();
         startAutoRefresh();
     }
     private List<Product> fetchMyProducts(){
@@ -46,7 +51,7 @@ public class SellerController extends MenuController {
                 .collect(Collectors.toList());
     }
     private void startAutoRefresh(){
-        if(scheduler != null || !scheduler.isShutdown()) return;
+        if(scheduler != null && !scheduler.isShutdown()) return;
         scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r, "seller-refresh");
             t.setDaemon(true); //biến thành luồng chạy nền
@@ -58,7 +63,7 @@ public class SellerController extends MenuController {
         }, 0, REFRESH_SECONDS, TimeUnit.SECONDS);
     }
     private  void stopAutoRefresh() {
-        if (scheduler != null || !scheduler.isShutdown()) {
+        if (scheduler != null && !scheduler.isShutdown()) {
             scheduler.shutdownNow();
             scheduler = null;
         }
@@ -67,18 +72,21 @@ public class SellerController extends MenuController {
         productListContainer.getChildren().clear();
 
         if (productList.isEmpty()) {
+            productListContainer.setPrefHeight(380);
             Label empty = new Label("Bạn chưa có sản phẩm nào đang bán");
             empty.setStyle("-fx-font-size: 16; -fx-text-fill: #999999;");
-            empty.setPrefHeight(200);
+            empty.setPrefWidth(770);
+            empty.setPrefHeight(380);
+            empty.setAlignment(javafx.geometry.Pos.CENTER);
             productListContainer.getChildren().add(empty);
             return;
         }
-
+        productListContainer.setPrefHeight(javafx.scene.layout.Region.USE_COMPUTED_SIZE);
         for (Product p : productList) {
             try {
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource(
-                                "/com/example/onlineauctionsystem/ProductItem.fxml"
+                                SceneConfig.PRODUCT_ITEM.getPath()
                         )
                 );
                 Node row = loader.load();
@@ -100,31 +108,44 @@ public class SellerController extends MenuController {
         lblTotalRevenue.setText(formatPrice(total));
     }
 
-    private String formatPrice(double price) {
-        return String.format("%,.0fđ", price).replace(",", ".");
-    }
-
     @FXML
     @Override
     public void onMyProducts(ActionEvent event) {
         super.onMyProducts(event);
+        stopAutoRefresh();
     }
 
     @FXML
     @Override
     public void onHistory(ActionEvent event) {
         super.onHistory(event);
+        stopAutoRefresh();
     }
 
     @FXML
     @Override
     public void onManage(ActionEvent event) {
         super.onManage(event);
+        stopAutoRefresh();
     }
 
     @FXML
     @Override
     public void onAccount(ActionEvent event) {
         super.onAccount(event);
+        stopAutoRefresh();
+    }
+
+    @Override
+    @FXML
+    public void onLogout(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác nhận");
+        alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            DataStorage.currentAccount = null;
+            switchScene(event, SceneConfig.LOGIN);
+            stopAutoRefresh();
+        }
     }
 }

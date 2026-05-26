@@ -55,6 +55,9 @@ public abstract class BaseController{
             alert.setContentText(content);
             alert.showAndWait();
         }
+        public String formatPrice(double price) {
+        return String.format("%,.0fđ", price).replace(",", ".");
+    }
 
         // Hàm initialize abstract để các con bắt buộc phải triển khai
         @FXML

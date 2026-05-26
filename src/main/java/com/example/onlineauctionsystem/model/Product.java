@@ -7,7 +7,6 @@ import java.time.temporal.ChronoUnit;
 public class Product implements Serializable {
     private String id;
     private String name;
-    private String description;
     private double initialPrice;
     private double currentPrice;
     private double bidIncrement; // 🌟 MỚI: Bước giá (Số tiền chênh lệch tối thiểu)
@@ -20,10 +19,9 @@ public class Product implements Serializable {
     private long durationHours;
 
 
-    public Product(String id, String name, String description, double initialPrice, double bidIncrement, long durationHours, String sellerName, String imagePath) {
+    public Product(String id, String name, double initialPrice, double bidIncrement, long durationHours, String sellerName, String imagePath) {
         this.id = id;
         this.name = name;
-        this.description = description;
         this.initialPrice = initialPrice;
         this.currentPrice = initialPrice;
         this.bidIncrement = bidIncrement;
@@ -50,6 +48,7 @@ public class Product implements Serializable {
         if (newAmount >= minimumRequiredPrice) {
             this.currentPrice = newAmount;
             this.highestBidder = bidderName;
+            this.bidIncrement++;
             return true;
         }
         return false;
@@ -107,10 +106,6 @@ public class Product implements Serializable {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public double getInitialPrice() {
         return initialPrice;
     }
@@ -155,10 +150,6 @@ public class Product implements Serializable {
     // Cho phép sửa thông tin hiển thị sản phẩm khi cần thiết
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     // Giá hiện tại và Người giữ giá cao nhất sẽ thay đổi liên tục mỗi khi hàm placeBid() chạy thành công

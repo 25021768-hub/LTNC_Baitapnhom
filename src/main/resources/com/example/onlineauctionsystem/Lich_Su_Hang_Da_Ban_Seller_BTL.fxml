@@ -196,296 +196,11 @@
                   </GridPane>
                   <ScrollPane hbarPolicy="NEVER" prefHeight="442.0" prefWidth="780.0" style="-fx-background-radius: 0 0 10 10; -fx-border-radius: 0 0 10 10;">
                      <content>
-                        <VBox prefHeight="441.0" prefWidth="778.0" spacing="5.0" style="-fx-background-radius: 0 0 10 10; -fx-border-radius: 0 0 10 10;">
-                           <children>
-                              <GridPane prefHeight="91.0" prefWidth="780.0" style="-fx-background-color: white;">
-                                <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
-                                 <children>
-                                    <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;">
-                                       <GridPane.margin>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </GridPane.margin>
-                                       <effect>
-                                          <DropShadow offsetY="4.0">
-                                             <color>
-                                                <Color red="0.5368421077728271" green="0.5368421077728271" blue="0.5368421077728271" />
-                                             </color>
-                                          </DropShadow>
-                                       </effect>
-                                       <children>
-                                          <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
-                                             <StackPane.margin>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </StackPane.margin>
-                                          </ImageView>
-                                       </children>
-                                    </StackPane>
-                                    <Label prefHeight="110.0" prefWidth="131.0" text="Bộ Pc" wrapText="true" GridPane.columnIndex="1">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <GridPane.margin>
-                                          <Insets left="5.0" />
-                                       </GridPane.margin>
-                                    </Label>
-                                    <Label layoutX="125.0" layoutY="50.0" prefHeight="105.0" prefWidth="115.0" text="20.000.000đ" wrapText="true" GridPane.columnIndex="2">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label layoutX="256.0" layoutY="50.0" prefHeight="100.0" prefWidth="151.0" text="Nguyễn Văn A" wrapText="true" GridPane.columnIndex="3">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label layoutX="256.0" layoutY="50.0" prefHeight="102.0" prefWidth="115.0" text="10/05/2026" wrapText="true" GridPane.columnIndex="4">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label alignment="CENTER" prefHeight="29.0" prefWidth="94.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: green;" text="Thành công" textFill="WHITE" GridPane.columnIndex="5">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </GridPane>
-                              <GridPane layoutX="10.0" layoutY="15.0" prefHeight="91.0" prefWidth="780.0" style="-fx-background-color: white;">
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <children>
-                                    <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;">
-                                       <GridPane.margin>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </GridPane.margin>
-                                       <effect>
-                                          <DropShadow offsetY="4.0">
-                                             <color>
-                                                <Color red="0.5368421077728271" green="0.5368421077728271" blue="0.5368421077728271" />
-                                             </color>
-                                          </DropShadow>
-                                       </effect>
-                                       <children>
-                                          <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
-                                             <StackPane.margin>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </StackPane.margin>
-                                          </ImageView>
-                                       </children>
-                                    </StackPane>
-                                    <Label prefHeight="110.0" prefWidth="131.0" text="Bộ Pc" wrapText="true" GridPane.columnIndex="1">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <GridPane.margin>
-                                          <Insets left="5.0" />
-                                       </GridPane.margin>
-                                    </Label>
-                                    <Label layoutX="125.0" layoutY="50.0" prefHeight="105.0" prefWidth="115.0" text="20.000.000đ" wrapText="true" GridPane.columnIndex="2">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label layoutX="256.0" layoutY="50.0" prefHeight="100.0" prefWidth="150.0" text="Nguyễn Văn B" wrapText="true" GridPane.columnIndex="3">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label layoutX="256.0" layoutY="50.0" prefHeight="102.0" prefWidth="115.0" text="10/05/2026" wrapText="true" GridPane.columnIndex="4">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label alignment="CENTER" prefHeight="29.0" prefWidth="94.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: yellow;" text="Chờ thanh toán" GridPane.columnIndex="5">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </GridPane>
-                              <GridPane layoutX="10.0" layoutY="120.0" prefHeight="91.0" prefWidth="780.0" style="-fx-background-color: white;">
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <children>
-                                    <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;">
-                                       <GridPane.margin>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </GridPane.margin>
-                                       <effect>
-                                          <DropShadow offsetY="4.0">
-                                             <color>
-                                                <Color red="0.5368421077728271" green="0.5368421077728271" blue="0.5368421077728271" />
-                                             </color>
-                                          </DropShadow>
-                                       </effect>
-                                       <children>
-                                          <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
-                                             <StackPane.margin>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </StackPane.margin>
-                                          </ImageView>
-                                       </children>
-                                    </StackPane>
-                                    <Label prefHeight="110.0" prefWidth="131.0" text="Bộ Pc" wrapText="true" GridPane.columnIndex="1">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <GridPane.margin>
-                                          <Insets left="5.0" />
-                                       </GridPane.margin>
-                                    </Label>
-                                    <Label layoutX="125.0" layoutY="50.0" prefHeight="105.0" prefWidth="115.0" text="20.000.000đ" wrapText="true" GridPane.columnIndex="2">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label layoutX="256.0" layoutY="50.0" prefHeight="100.0" prefWidth="151.0" text="---" wrapText="true" GridPane.columnIndex="3">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label layoutX="256.0" layoutY="50.0" prefHeight="102.0" prefWidth="115.0" text="10/05/2026" wrapText="true" GridPane.columnIndex="4">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label alignment="CENTER" prefHeight="30.0" prefWidth="104.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: red;" text="Không người đấu" textFill="WHITE" GridPane.columnIndex="5">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </GridPane>
-                              <GridPane layoutX="10.0" layoutY="15.0" prefHeight="91.0" prefWidth="780.0" style="-fx-background-color: white;">
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <children>
-                                    <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;">
-                                       <GridPane.margin>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </GridPane.margin>
-                                       <effect>
-                                          <DropShadow offsetY="4.0">
-                                             <color>
-                                                <Color red="0.5368421077728271" green="0.5368421077728271" blue="0.5368421077728271" />
-                                             </color>
-                                          </DropShadow>
-                                       </effect>
-                                       <children>
-                                          <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
-                                             <StackPane.margin>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </StackPane.margin>
-                                          </ImageView>
-                                       </children>
-                                    </StackPane>
-                                    <Label prefHeight="110.0" prefWidth="131.0" text="Bộ Pc" wrapText="true" GridPane.columnIndex="1">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <GridPane.margin>
-                                          <Insets left="5.0" />
-                                       </GridPane.margin>
-                                    </Label>
-                                    <Label layoutX="125.0" layoutY="50.0" prefHeight="105.0" prefWidth="115.0" text="20.000.000đ" wrapText="true" GridPane.columnIndex="2">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label layoutX="256.0" layoutY="50.0" prefHeight="100.0" prefWidth="151.0" text="Nguyễn Văn A" wrapText="true" GridPane.columnIndex="3">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label layoutX="256.0" layoutY="50.0" prefHeight="102.0" prefWidth="115.0" text="10/05/2026" wrapText="true" GridPane.columnIndex="4">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <padding>
-                                          <Insets left="5.0" />
-                                       </padding>
-                                    </Label>
-                                    <Label alignment="CENTER" prefHeight="29.0" prefWidth="94.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: green;" text="Thành công" textFill="WHITE" GridPane.columnIndex="5">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </GridPane>
-                           </children>
+                        <VBox fx:id="productListContainer" prefWidth="777.0" spacing="5.0">
                            <padding>
                               <Insets top="5.0" />
                            </padding>
+                           <!-- KHÔNG có gì ở đây, để Controller tự add -->
                         </VBox>
                      </content>
                   </ScrollPane>
@@ -502,12 +217,12 @@
                         </DropShadow>
                      </effect>
                      <children>
-                        <Label text="Tổng doanh thu">
+                        <Label fx:id="lblSum" text="Tổng doanh thu">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="48.0" prefWidth="230.0" text="60.000.000đ ">
+                        <Label prefHeight="48.0" prefWidth="230.0" text="0.0đ">
                            <font>
                               <Font name="System Bold" size="25.0" />
                            </font>
@@ -526,12 +241,12 @@
                         </DropShadow>
                      </effect>
                      <children>
-                        <Label text="Sản phẩm đã bán">
+                        <Label fx:id="lblProductSell" text="Sản phẩm đã bán">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="48.0" prefWidth="230.0" text="3">
+                        <Label prefHeight="48.0" prefWidth="230.0" text="0">
                            <font>
                               <Font name="System Bold" size="25.0" />
                            </font>
@@ -550,12 +265,12 @@
                         </DropShadow>
                      </effect>
                      <children>
-                        <Label text="Tỉ lệ thành công">
+                        <Label fx:id="lblRate" text="Tỉ lệ thành công">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="48.0" prefWidth="230.0" text="75%">
+                        <Label prefHeight="48.0" prefWidth="230.0" text="0%">
                            <font>
                               <Font name="System Bold" size="25.0" />
                            </font>
