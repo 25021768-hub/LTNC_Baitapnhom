@@ -2,6 +2,7 @@ package com.example.onlineauctionsystem.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Product implements Serializable {
     private String id;
@@ -16,18 +17,17 @@ public class Product implements Serializable {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String status;
+    private long durationHours;
 
 
-    public Product(String id, String name, String description, double initialPrice, double bidIncrement,
-                   LocalDateTime startTime, LocalDateTime endTime, String sellerName, String imagePath) {
+    public Product(String id, String name, String description, double initialPrice, double bidIncrement, long durationHours, String sellerName, String imagePath) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.initialPrice = initialPrice;
         this.currentPrice = initialPrice;
         this.bidIncrement = bidIncrement;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.durationHours = durationHours;
         this.sellerName = sellerName;
         this.imagePath = imagePath;
         this.highestBidder = "None";
@@ -55,17 +55,46 @@ public class Product implements Serializable {
         return false;
     }
 
+    public void setEndTime(){
+
+        this.endTime = startTime.plusHours(durationHours);
+    }
+
     public void updateStatus() {
         LocalDateTime now = LocalDateTime.now();
-        if (status.equals("CANCELED") || status.equals("PAID")) return;
+
+        // Các trạng thái này không tự thay đổi
+        if (status.equals("PENDING") ||
+                status.equals("CANCELED") ||
+                status.equals("PAID")) return;
+
+        // startTime chỉ có sau khi admin duyệt
+        if (startTime == null) {
+            status = "PENDING";
+            return;
+        }
+
+        LocalDateTime end = getEndTime(); // startTime + durationMinutes
 
         if (now.isBefore(startTime)) {
             status = "OPEN";
-        } else if (now.isAfter(startTime) && now.isBefore(endTime)) {
+        } else if (now.isAfter(startTime) && now.isBefore(end)) {
             status = "RUNNING";
-        } else if (now.isAfter(endTime)) {
+        } else if (now.isAfter(end)) {
             status = "FINISHED";
         }
+    }
+
+    public String getRemainingTime() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime end = getEndTime();
+        if (now.isAfter(end)) return "Hết giờ";
+
+        long totalSeconds = ChronoUnit.SECONDS.between(now, end);
+        long h = totalSeconds / 3600;
+        long m = (totalSeconds % 3600) / 60;
+        long s = totalSeconds % 60;
+        return String.format("%02d:%02d:%02d", h, m, s);
     }
 
     // --- CÁC HÀM GETTER / SETTER
@@ -118,6 +147,8 @@ public class Product implements Serializable {
         return status;
     }
 
+    public long getDurationHours() {return  durationHours;}
+
 
     // 2. KHU VỰC SETTER (Chỉ tạo cho các thuộc tính ĐƯỢC PHÉP thay đổi)
 
@@ -152,4 +183,8 @@ public class Product implements Serializable {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
+    public void setDurationHours(long durationHours){this.durationHours = durationHours;}
+
+    public void setStartTime(LocalDateTime startTime){this.startTime = startTime;}
 }

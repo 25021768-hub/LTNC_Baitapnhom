@@ -145,11 +145,12 @@ public class DataStorage {
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Product p = new Product(
-                        rs.getString("id"), rs.getString("name"), rs.getString("description"),
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
                         rs.getDouble("initial_price"),
                         rs.getDouble("bid_increment"),
-                        rs.getTimestamp("start_time").toLocalDateTime(),
-                        rs.getTimestamp("end_time").toLocalDateTime(),
+                        rs.getLong("duration_hours"),
                         rs.getString("seller_name"),
                         rs.getString("image_path")
                 );
@@ -204,17 +205,22 @@ public class DataStorage {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 Product p = new Product(
-                        rs.getString("id"), rs.getString("name"), rs.getString("description"),
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
                         rs.getDouble("initial_price"),
                         rs.getDouble("bid_increment"),
-                        rs.getTimestamp("start_time").toLocalDateTime(),
-                        rs.getTimestamp("end_time").toLocalDateTime(),
+                        rs.getLong("duration_hours"),
                         rs.getString("seller_name"),
                         rs.getString("image_path")
                 );
                 p.setCurrentPrice(rs.getDouble("current_price"));
                 p.setHighestBidder(rs.getString("highest_bidder"));
                 p.setStatus(rs.getString("status"));
+                Timestamp startTs = rs.getTimestamp("start_time");
+                if (startTs != null) {
+                    p.setStartTime(startTs.toLocalDateTime());
+                }
                 p.updateStatus(); // Tự cập nhật trạng thái theo thời gian thực
                 return p;
             }
@@ -239,6 +245,15 @@ public class DataStorage {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static void approveProduct(String productId) {
+        String sql = "UPDATE products SET status='OPEN', start_time=NOW() WHERE id=?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, productId);
+            ps.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
     }
 
     // Lấy số dư hiện tại của tài khoản

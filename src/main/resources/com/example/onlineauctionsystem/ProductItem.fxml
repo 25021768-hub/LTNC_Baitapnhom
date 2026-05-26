@@ -9,25 +9,25 @@
 <?import javafx.scene.text.*?>
 
 <GridPane xmlns="http://javafx.com/javafx/25"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.onlineauctionsystem.controller.common.ProductItemController"
-            prefHeight="100.0" prefWidth="780.0">
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.example.onlineauctionsystem.controller.common.ProductItemController"
+          prefWidth="777.0"
+          style="-fx-background-color: white;">
+
     <columnConstraints>
-        <ColumnConstraints minWidth="110.0" maxWidth="110.0" prefWidth="110.0" />
+        <ColumnConstraints minWidth="130.0" maxWidth="130.0" prefWidth="130.0" />
         <ColumnConstraints minWidth="10.0"  prefWidth="100.0" />
         <ColumnConstraints minWidth="115.0" maxWidth="115.0" prefWidth="115.0" />
-        <ColumnConstraints minWidth="80.0"  maxWidth="80.0"  prefWidth="80.0"  />
         <ColumnConstraints minWidth="115.0" maxWidth="115.0" prefWidth="115.0" />
         <ColumnConstraints minWidth="110.0" maxWidth="110.0" prefWidth="110.0" />
         <ColumnConstraints minWidth="110.0" maxWidth="110.0" prefWidth="110.0" />
     </columnConstraints>
 
     <rowConstraints>
-        <RowConstraints minHeight="100.0" maxHeight="100.0" prefHeight="100.0" />
+        <RowConstraints minHeight="130.0" maxHeight="130.0" prefHeight="130.0" />
     </rowConstraints>
 
     <children>
-
         <!-- Cột 0: Hình ảnh -->
         <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;">
             <GridPane.margin>
@@ -42,7 +42,7 @@
             </effect>
             <children>
                 <ImageView fx:id="imgProduct"
-                           fitHeight="90.0" fitWidth="90.0"
+                           fitHeight="110.0" fitWidth="110.0"
                            pickOnBounds="true" preserveRatio="true">
                     <StackPane.margin>
                         <Insets top="5.0" bottom="5.0" left="5.0" right="5.0" />
@@ -53,7 +53,7 @@
 
         <!-- Cột 1: Tên sản phẩm -->
         <Label fx:id="lblName" text="---"
-               prefHeight="100.0" prefWidth="100.0"
+               prefHeight="130.0" prefWidth="100.0"
                wrapText="true" GridPane.columnIndex="1">
             <font><Font size="14.0" /></font>
             <GridPane.margin><Insets left="5.0" /></GridPane.margin>
@@ -61,43 +61,34 @@
 
         <!-- Cột 2: Giá hiện tại -->
         <Label fx:id="lblCurrentPrice" text="---"
-               prefHeight="100.0" prefWidth="115.0"
+               prefHeight="130.0" prefWidth="115.0"
                wrapText="true" GridPane.columnIndex="2">
             <font><Font size="14.0" /></font>
             <padding><Insets left="5.0" /></padding>
         </Label>
 
-        <!-- Cột 3: Lượt đấu -->
-        <Label fx:id="lblBidCount" text="0"
-               prefHeight="100.0" prefWidth="80.0"
+        <!-- Cột 3: Giá khởi điểm -->
+        <Label fx:id="lblStartPrice" text="---"
+               prefHeight="130.0" prefWidth="115.0"
                wrapText="true" GridPane.columnIndex="3">
             <font><Font size="14.0" /></font>
             <padding><Insets left="5.0" /></padding>
         </Label>
 
-        <!-- Cột 4: Giá khởi điểm -->
-        <Label fx:id="lblStartPrice" text="---"
-               prefHeight="100.0" prefWidth="115.0"
+        <!-- Cột 4: Bước giá -->
+        <Label fx:id="lblStep" text="---"
+               prefHeight="130.0" prefWidth="110.0"
                wrapText="true" GridPane.columnIndex="4">
             <font><Font size="14.0" /></font>
             <padding><Insets left="5.0" /></padding>
         </Label>
 
-        <!-- Cột 5: Bước giá -->
-        <Label fx:id="lblStep" text="---"
-               prefHeight="100.0" prefWidth="110.0"
+        <!-- Cột 5: Thời gian còn lại -->
+        <Label fx:id="lblTime" text="--:--:--"
+               prefHeight="130.0" prefWidth="110.0"
                wrapText="true" GridPane.columnIndex="5">
             <font><Font size="14.0" /></font>
             <padding><Insets left="5.0" /></padding>
         </Label>
-
-        <!-- Cột 6: Thời gian còn lại -->
-        <Label fx:id="lblTime" text="--:--:--"
-               prefHeight="100.0" prefWidth="110.0"
-               wrapText="true" GridPane.columnIndex="6">
-            <font><Font size="14.0" /></font>
-            <padding><Insets left="5.0" /></padding>
-        </Label>
-
     </children>
-    </GridPane>
+</GridPane>
