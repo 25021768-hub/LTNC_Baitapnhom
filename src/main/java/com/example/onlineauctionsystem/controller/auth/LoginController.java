@@ -32,15 +32,9 @@ public class LoginController extends BaseController {
 
     //Đăng nhập
     @FXML
-<<<<<<< Updated upstream
-    private void onLogin(ActionEvent event) {
-        String user = txtUsername.getText();
-        String password = txtPassword.getText();
-=======
     private void onLogin(ActionEvent event){
         String user = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
->>>>>>> Stashed changes
 
         DataStorage.currentAccount = DataStorage.checkLogin(user, password);
         if (DataStorage.currentAccount != null) {
