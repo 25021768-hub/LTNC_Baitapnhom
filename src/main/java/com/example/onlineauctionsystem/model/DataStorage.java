@@ -209,7 +209,7 @@ public class DataStorage {
         // Chỉ update nếu newPrice > current_price hiện tại trong DB
         // Nếu 2 người cùng gửi, người nào vào DB trước thắng
         // Người sau sẽ bị từ chối vì newPrice <= current_price mới
-        String sql = "UPDATE products SET current_price = ?, highest_bidder = ?, " +
+        String sql = "UPDATE products SET current_price = ?, highest_bidder = ? " +
                 "WHERE id = ? AND status = 'RUNNING' AND current_price < ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
