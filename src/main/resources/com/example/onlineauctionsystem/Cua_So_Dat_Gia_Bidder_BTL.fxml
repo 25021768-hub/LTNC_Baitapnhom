@@ -41,7 +41,7 @@
                   </ImageView>
                </children>
             </StackPane>
-            <Label fx:id="lblNameProduct" alignment="CENTER" prefHeight="30.0" prefWidth="240.0" text="Tên sản phẩm..." wrapText="true">
+            <Label fx:id="lblProductName" alignment="CENTER" prefHeight="30.0" prefWidth="240.0" text="Tên sản phẩm..." wrapText="true">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
