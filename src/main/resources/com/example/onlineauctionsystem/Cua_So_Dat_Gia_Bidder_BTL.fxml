@@ -237,7 +237,7 @@
                   <Font name="System Bold" size="22.0" />
                </font>
             </Label>
-            <Button alignment="CENTER" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="23.0" style="-fx-background-color: #ff4949;" text="x" textFill="WHITE">
+            <Button alignment="CENTER" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="23.0" style="-fx-background-color: #ff4949;" textFill="WHITE">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -245,8 +245,15 @@
                   <Glow />
                </effect>
                <font>
-                  <Font name="System Bold" size="12.0" />
-               </font></Button>
+                  <Font size="10.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../Kho_anh/logout.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
          </children>
       </HBox>
    </children>
