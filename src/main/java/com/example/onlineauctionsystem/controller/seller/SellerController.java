@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -30,16 +31,16 @@ public class SellerController extends MenuController {
     @FXML private VBox productListContainer;
     @FXML private Label lblTotalProducts, lblTotalRevenue;
     private final ObservableList<Product> productList = FXCollections.observableArrayList();
+    private final List<ProductItemController> cardControllers = new ArrayList<>();
     private ScheduledExecutorService scheduler; //tạo luồng chạy ngầm lặp lại theo lịch trình
-    private  final int REFRESH_SECONDS = 5;
+    private int refreshCounter = 0;
+    private final int DATA_REFRESH_INTERVAL = 5;
     @Override
     public void initialize(){
         productList.addListener((ListChangeListener<Product>) change -> {
             renderProductList();
             updateFooter();
         } );
-        renderProductList();
-        updateFooter();
         startAutoRefresh();
     }
     private List<Product> fetchMyProducts(){
@@ -58,9 +59,23 @@ public class SellerController extends MenuController {
             return t;
         });
         scheduler.scheduleAtFixedRate(() -> {
-            List<Product> fresh = fetchMyProducts();
-            Platform.runLater(() -> productList.setAll(fresh));
-        }, 0, REFRESH_SECONDS, TimeUnit.SECONDS);
+            refreshCounter++;
+
+            if (refreshCounter >= DATA_REFRESH_INTERVAL) {
+                refreshCounter = 0;
+                List<Product> fresh = fetchMyProducts();
+                Platform.runLater(() -> productList.setAll(fresh));
+            } else {
+                // Mỗi giây cập nhật đồng hồ
+                Platform.runLater(() -> {
+                    for (ProductItemController ctrl : cardControllers) {
+                        ctrl.updateTime();
+                    }
+                });
+            }
+
+        }, 0, 1, TimeUnit.SECONDS);
+
     }
     private  void stopAutoRefresh() {
         if (scheduler != null && !scheduler.isShutdown()) {
@@ -70,7 +85,7 @@ public class SellerController extends MenuController {
     }
     private void renderProductList(){
         productListContainer.getChildren().clear();
-
+        cardControllers.clear();
         if (productList.isEmpty()) {
             productListContainer.setPrefHeight(380);
             Label empty = new Label("Bạn chưa có sản phẩm nào đang bán");
@@ -93,6 +108,7 @@ public class SellerController extends MenuController {
                 ProductItemController rowCtrl = loader.getController();
                 rowCtrl.setData(p);
                 productListContainer.getChildren().add(row);
+                cardControllers.add(rowCtrl);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -111,29 +127,33 @@ public class SellerController extends MenuController {
     @FXML
     @Override
     public void onMyProducts(ActionEvent event) {
-        super.onMyProducts(event);
         stopAutoRefresh();
+        super.onMyProducts(event);
+
     }
 
     @FXML
     @Override
     public void onHistory(ActionEvent event) {
-        super.onHistory(event);
         stopAutoRefresh();
+        super.onHistory(event);
+
     }
 
     @FXML
     @Override
     public void onManage(ActionEvent event) {
-        super.onManage(event);
         stopAutoRefresh();
+        super.onManage(event);
+
     }
 
     @FXML
     @Override
     public void onAccount(ActionEvent event) {
-        super.onAccount(event);
         stopAutoRefresh();
+        super.onAccount(event);
+
     }
 
     @Override
@@ -143,9 +163,10 @@ public class SellerController extends MenuController {
         alert.setTitle("Xác nhận");
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
+            stopAutoRefresh();
             DataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
-            stopAutoRefresh();
+
         }
     }
 }

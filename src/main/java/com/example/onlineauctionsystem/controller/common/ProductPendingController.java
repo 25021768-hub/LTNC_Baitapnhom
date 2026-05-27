@@ -23,7 +23,7 @@ public class ProductPendingController {
         this.product = p;
         this.onActionCallBack = callBack;
         lblProductName.setText(p.getName());
-        lblDuration.setText(String.valueOf(p.getDurationHours()));
+        lblDuration.setText(String.valueOf(p.getDurationHours() + "h"));
         lblSellerName.setText(p.getSellerName());
         lblStartPrice.setText(formatPrice(p.getInitialPrice()));
         lblPriceStep.setText(formatPrice(p.getBidIncrement()));

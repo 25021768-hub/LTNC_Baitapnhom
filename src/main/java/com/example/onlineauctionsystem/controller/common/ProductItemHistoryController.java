@@ -49,7 +49,7 @@ public class ProductItemHistoryController {
     }
 
     public String formatPrice(double price) {
-        return String.format("%,0fđ", price).replace(",", ".");
+        return String.format("%,.0fđ", price).replace(",", ".");
     }
 
 }

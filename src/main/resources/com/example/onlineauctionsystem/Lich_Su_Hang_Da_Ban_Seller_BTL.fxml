@@ -217,12 +217,12 @@
                         </DropShadow>
                      </effect>
                      <children>
-                        <Label fx:id="lblSum" text="Tổng doanh thu">
+                        <Label  text="Tổng doanh thu">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="48.0" prefWidth="230.0" text="0.0đ">
+                        <Label fx:id="lblSum" prefHeight="48.0" prefWidth="230.0" text="0.0đ">
                            <font>
                               <Font name="System Bold" size="25.0" />
                            </font>
@@ -241,12 +241,12 @@
                         </DropShadow>
                      </effect>
                      <children>
-                        <Label fx:id="lblProductSell" text="Sản phẩm đã bán">
+                        <Label  text="Sản phẩm đã bán">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="48.0" prefWidth="230.0" text="0">
+                        <Label fx:id="lblProductSell" prefHeight="48.0" prefWidth="230.0" text="0">
                            <font>
                               <Font name="System Bold" size="25.0" />
                            </font>
@@ -265,12 +265,12 @@
                         </DropShadow>
                      </effect>
                      <children>
-                        <Label fx:id="lblRate" text="Tỉ lệ thành công">
+                        <Label  text="Tỉ lệ thành công">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="48.0" prefWidth="230.0" text="0%">
+                        <Label fx:id="lblRate" prefHeight="48.0" prefWidth="230.0" text="0%">
                            <font>
                               <Font name="System Bold" size="25.0" />
                            </font>

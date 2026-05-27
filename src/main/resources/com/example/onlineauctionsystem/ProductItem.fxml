@@ -8,21 +8,20 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane xmlns="http://javafx.com/javafx/25"
+<GridPane xmlns="http://javafx.com/javafx/23.0.6"
           xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.example.onlineauctionsystem.controller.common.ProductItemController"
           prefWidth="777.0"
           style="-fx-background-color: white;">
 
     <columnConstraints>
+        <ColumnConstraints minWidth="140.0" maxWidth="140.0" prefWidth="140.0" />
         <ColumnConstraints minWidth="130.0" maxWidth="130.0" prefWidth="130.0" />
-        <ColumnConstraints minWidth="10.0"  prefWidth="100.0" />
         <ColumnConstraints minWidth="115.0" maxWidth="115.0" prefWidth="115.0" />
         <ColumnConstraints minWidth="115.0" maxWidth="115.0" prefWidth="115.0" />
         <ColumnConstraints minWidth="110.0" maxWidth="110.0" prefWidth="110.0" />
         <ColumnConstraints minWidth="110.0" maxWidth="110.0" prefWidth="110.0" />
     </columnConstraints>
-
     <rowConstraints>
         <RowConstraints minHeight="130.0" maxHeight="130.0" prefHeight="130.0" />
     </rowConstraints>

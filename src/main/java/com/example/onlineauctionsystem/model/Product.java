@@ -62,40 +62,41 @@ public class Product implements Serializable {
     public void updateStatus() {
         LocalDateTime now = LocalDateTime.now();
 
-        // Các trạng thái này không tự thay đổi
         if (startTime == null) {
-            // Nếu sản phẩm không phải trạng thái kết thúc/hủy, giữ nguyên nó là PENDING
-            if (!"RUNNING".equals(status) && !"FINISHED".equals(status) && !"CANCELED".equals(status)) {
-                status = "PENDING";
-            }
-            return; // Thoát hàm ngay lập tức, tuyệt đối không chạy xuống đoạn so sánh phía dưới
-        }
-
-        // startTime chỉ có sau khi admin duyệt
-        if (startTime == null) {
-            if (!status.equals("RUNNING") && !status.equals("FINISHED")) {
+            if (!"RUNNING".equals(status) && !"FINISHED".equals(status)
+                    && !"PAID".equals(status) && !"CANCELED".equals(status)) {
                 status = "PENDING";
             }
             return;
         }
 
-        LocalDateTime end = getEndTime(); // startTime + durationMinutes
+
+        LocalDateTime end = getEndTime();
+        if (end == null) {
+            if ("RUNNING".equals(status)) {
+                return;
+            }
+            end = startTime.plusHours(durationHours);
+        }
 
         if (now.isBefore(startTime)) {
             status = "PENDING";
         } else if (now.isAfter(startTime) && now.isBefore(end)) {
             status = "RUNNING";
         } else if (now.isAfter(end)) {
-            status = "FINISHED";
+            if ("RUNNING".equals(status)) {
+                status = "FINISHED";
+            }
         }
     }
 
     public String getRemainingTime() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime end = getEndTime();
-        if (now.isAfter(end)) return "Hết giờ";
+        if (startTime == null || endTime == null) return "--:--:--";
 
-        long totalSeconds = ChronoUnit.SECONDS.between(now, end);
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isAfter(endTime)) return "Hết giờ";
+
+        long totalSeconds = ChronoUnit.SECONDS.between(now, endTime);
         long h = totalSeconds / 3600;
         long m = (totalSeconds % 3600) / 60;
         long s = totalSeconds % 60;

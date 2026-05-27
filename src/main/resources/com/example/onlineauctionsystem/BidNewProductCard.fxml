@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane xmlns="http://javafx.com/javafx/23.0.6"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.example.onlineauctionsystem.controller.common.BidNewProductCardController"
+          hgap="5.0" vgap="10.0"
+          maxWidth="420.0" minWidth="420.0" prefWidth="420.0"
+          minHeight="120.0" prefHeight="130.0"
+          style="-fx-background-color: white; -fx-background-radius: 10;
+                 -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+
+    <columnConstraints>
+        <ColumnConstraints minWidth="90.0" maxWidth="90.0" prefWidth="90.0" />
+        <ColumnConstraints minWidth="240.0" maxWidth="240.0" prefWidth="240.0" />
+        <ColumnConstraints minWidth="90.0" maxWidth="90.0" prefWidth="90.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="110.0" prefHeight="110.0" />
+    </rowConstraints>
+
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+    <!-- Cột 0: Hình ảnh -->
+    <StackPane style="-fx-background-radius: 15; -fx-background-color: white;
+                      -fx-border-radius: 15; -fx-border-color: #e0e0e0; -fx-border-width: 1;">
+        <GridPane.margin>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+        </GridPane.margin>
+        <effect><DropShadow offsetY="4.0" /></effect>
+        <children>
+            <ImageView fx:id="imgProduct"
+                       fitHeight="87.0" fitWidth="80.0"
+                       pickOnBounds="true" preserveRatio="true">
+                <StackPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </StackPane.margin>
+            </ImageView>
+        </children>
+    </StackPane>
+
+    <!-- Cột 1: Thông tin -->
+    <VBox GridPane.columnIndex="1" prefHeight="110.0" prefWidth="240.0" spacing="5.0">
+        <GridPane.margin><Insets left="5.0" /></GridPane.margin>
+        <children>
+            <Label fx:id="lblName" text="---" wrapText="true">
+                <font><Font name="System Bold" size="15.0" /></font>
+            </Label>
+            <Label fx:id="lblPrice" text="Giá hiện tại: ---" />
+            <Label fx:id="lblTime" text="Thời gian còn: ---" />
+        </children>
+    </VBox>
+
+    <!-- Cột 2: Nút đấu giá -->
+    <VBox GridPane.columnIndex="2" alignment="CENTER">
+        <children>
+            <Button fx:id="btnBid"
+                    mnemonicParsing="false"
+                    onAction="#onBid"
+                    text="Đấu giá ngay"
+                    textFill="WHITE"
+                    wrapText="true"
+                    prefWidth="80.0"
+                    style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);
+                           -fx-background-radius: 20; -fx-cursor: hand;">
+                <cursor><Cursor fx:constant="HAND" /></cursor>
+            </Button>
+        </children>
+    </VBox>
+
+</GridPane>

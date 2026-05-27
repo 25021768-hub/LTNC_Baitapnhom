@@ -324,7 +324,7 @@ public class DataStorage {
         // Nếu duyệt thành công (RUNNING), ta đồng thời kích hoạt luôn giờ bắt đầu đấu giá (NOW())
         String sql;
         if ("RUNNING".equals(newStatus)) {
-            sql = "UPDATE products SET status = ?, start_time = NOW(), end_time = DATE_ADD(NOW(), INTERVAL duration_hours HOUR) end_time = ? WHERE id = ?";
+            sql = "UPDATE products SET status = ?, start_time = NOW(), end_time = DATE_ADD(NOW(), INTERVAL duration_hours HOUR) WHERE id = ?";
         } else {
             sql = "UPDATE products SET status = ? WHERE id = ?";
         }

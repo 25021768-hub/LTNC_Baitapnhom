@@ -24,7 +24,7 @@ public class UserProfile extends MenuController{
         txtEmail.setText(DataStorage.currentAccount.getEmail());
         txtIDCard.setText(DataStorage.currentAccount.getIdCard());
         txtPhoneNumber.setText(DataStorage.currentAccount.getPhoneNumber());
-        lblBalance.setText(String.valueOf(DataStorage.currentAccount.getBalance()));
+        lblBalance.setText(formatPrice(DataStorage.currentAccount.getBalance()));
         lblName.setText(DataStorage.currentAccount.getFullName());
 
         ValidatorHelp.setupValidation(txtPhoneNumber, lblPhoneMessage, acc.getPhoneNumber(), Validator::isValidPhone, "Số điện thoại không hợp lệ.", "Số điện thoại hợp lệ.", this::checkSave);
@@ -56,7 +56,7 @@ public class UserProfile extends MenuController{
                     double newBalance = acc.getBalance() + amount;
                     showAlert("Nạp thành công", "Nạp thành công " + amountStr + " vào tài khoản");
                     DataStorage.currentAccount.setBalance(newBalance);
-                    lblBalance.setText(String.valueOf(newBalance));
+                    lblBalance.setText(formatPrice(newBalance));
                 }
                 else{
                     showAlert("Lỗi", "Lỗi hệ thống.");

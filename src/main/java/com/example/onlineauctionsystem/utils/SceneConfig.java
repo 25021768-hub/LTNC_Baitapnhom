@@ -1,5 +1,7 @@
 package com.example.onlineauctionsystem.utils;
 
+import com.example.onlineauctionsystem.controller.common.BidNewProductCardController;
+
 public enum SceneConfig {
     LOGIN("Dang_Nhap_BTL.fxml", "Đăng nhập"),
     REGISTER("Dang_Ky.fxml", "Đăng ký tài khoản"),
@@ -22,6 +24,8 @@ public enum SceneConfig {
     PRODUCT_ITEM_HISTORY("ProductItemHistory.fxml", "Ô sản phẩm lịch sử"),
     PRODUCT_PENDING("ProductPending.fxml", "Ô sản phẩm chờ phê duyệt"),
     USER("User.fxml", "Ô người dùng trong hệ thống"),
+    BID_NEW_PRODUCT("BidNewProductCardController", "Ô sản phẩm bidder"),
+    BID_PRODUCT("Cua_So_Dat_Gia_Bidder_BTL.fxml", "Ô đặt giá bidder"),
 
     ADMIN_USER("QuanTriHeThong_Admin.fxml","Người dùng"),
     ADMIN_PRODUCT("PheDuyetSanPham_Admin.fxml", "Sản phẩm chờ phê duyệt");

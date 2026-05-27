@@ -24,4 +24,7 @@ module com.example.onlineauctionsystem {
 
     opens com.example.onlineauctionsystem.controller.admin to javafx.fxml;
     exports com.example.onlineauctionsystem.controller.admin;
+
+    opens com.example.onlineauctionsystem.controller.bidder to javafx.fxml;
+    exports com.example.onlineauctionsystem.controller.bidder;
 }
