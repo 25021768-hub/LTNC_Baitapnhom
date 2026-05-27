@@ -72,13 +72,13 @@ public class RegisterController extends BaseController {
     @FXML
     private void registerNewUser(ActionEvent event) {
         Account acc = new Account(
-                txtUsername.getText(),
-                txtFullName.getText(),
-                txtPassword.getText(),
+                txtUsername.getText().trim(),
+                txtFullName.getText().trim(),
+                txtPassword.getText().trim(),
                 cbRole.getValue().toString(),
-                txtIDCard.getText(),
-                txtEmail.getText(),
-                txtPhone.getText()
+                txtIDCard.getText().trim(),
+                txtEmail.getText().trim(),
+                txtPhone.getText().trim()
         );
         if (DataStorage.register(acc)) {
             showAlert("Đăng kí", "Đăng kí tài khoản thành công!");

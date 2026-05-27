@@ -47,8 +47,8 @@ public class ForgotPasswordController extends BaseController{
                 if (l != null) ValidatorHelp.setUpLabel(l);
             }
             ChangeListener<String> passwordListener = (obs, oldVal, newVal) -> {
-                String p1 = txtNewPassword.getText();
-                String p2 = txtReNewPassword.getText();
+                String p1 = txtNewPassword.getText().trim();
+                String p2 = txtReNewPassword.getText().trim();
                 password = Validator.isValidPassword(p1);
                 if (p1.isEmpty()) ValidatorHelp.setUpLabel(lblPasswordMessage1);
                 else
