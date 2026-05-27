@@ -1,5 +1,4 @@
 package com.example.onlineauctionsystem.controller.bidder;
-
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.model.Product;
@@ -8,6 +7,7 @@ import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -17,7 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
-
 
 public class BidDetailController extends BaseController {
     // ── Thẻ SP bên trái ───────────────────────────────────────────
@@ -44,16 +43,20 @@ public class BidDetailController extends BaseController {
     private int secondsCounter = 0;
 
     public void setProduct(Product p) {
-        product = p;
+        this.product = p;
         loadStaticProductInfo();
         updateDynamicInfo();
         startTimeline();
-
     }
 
     @Override
     public void initialize() {
-
+        //Chỉ cho nhập số
+        txtBidAmount.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                txtBidAmount.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
     }
 
     private void loadStaticProductInfo() {
@@ -68,6 +71,9 @@ public class BidDetailController extends BaseController {
     }
 
     private void updateDynamicInfo() {
+        if (product == null) return;
+
+        // Luôn luôn tính toán lại trạng thái dựa trên thời gian thực
         product.updateStatus();
 
         lblHighestBidder.setText(Objects.requireNonNullElse(product.getHighestBidder(), "Chưa có"));
@@ -80,6 +86,7 @@ public class BidDetailController extends BaseController {
         double minBid = product.getCurrentPrice() + product.getBidIncrement();
         lblMinBid.setText(formatPrice(minBid));
     }
+
     private void startTimeline() {
         if (refreshTimeline != null) {
             refreshTimeline.stop();
@@ -88,19 +95,29 @@ public class BidDetailController extends BaseController {
         refreshTimeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             secondsCounter++;
 
-            // 1. Cứ mỗi 5 giây: Lên Database đồng bộ thông tin đấu giá mới nhất
             if (secondsCounter >= 5) {
                 secondsCounter = 0;
-                Product fresh = DataStorage.findProductById(product.getId());
-                if (fresh != null) {
-                    this.product = fresh;
-                }
-            }
-            updateDynamicInfo();
 
-            // Nếu sản phẩm đã kết thúc đấu giá, ngừng Timeline luôn cho nhẹ bộ nhớ
-            if ("FINISHED".equals(product.getStatus()) || "CANCELED".equals(product.getStatus())) {
-                refreshTimeline.stop();
+                Thread dbThread = new Thread(() -> {
+                    Product fresh = DataStorage.findProductById(product.getId());
+                    if (fresh != null) {
+                        Platform.runLater(() -> {
+                            this.product = fresh;
+                            this.product.updateStatus(); // Đồng bộ trạng thái mới
+                            updateDynamicInfo();
+                        });
+                    }
+                });
+                dbThread.setDaemon(true);
+                dbThread.start();
+            } else {
+                // Các giây lẻ chỉ làm nhiệm vụ trừ thời gian đếm ngược cục bộ
+                updateDynamicInfo();
+            }
+
+            if (product != null && ("FINISHED".equalsIgnoreCase(product.getStatus()) || "CANCELED".equalsIgnoreCase(product.getStatus()))) {
+                lblTime.setText("Đã kết thúc");
+                stopTimeline();
             }
         }));
 
@@ -120,10 +137,17 @@ public class BidDetailController extends BaseController {
         if (DataStorage.currentAccount.isLocked()) {
             showAlert("Lỗi", "Tài khoản của bạn đã bị khóa! Không thể thực hiện chức năng này.");
             stopTimeline();
-            // Ép đăng xuất ngay lập tức
             forceLogout(event);
             return;
         }
+
+        if (product == null || "FINISHED".equalsIgnoreCase(product.getStatus())) {
+            showAlert("Thông báo", "Phiên đấu giá này đã kết thúc! Bạn không thể đặt giá thêm.");
+            stopTimeline();
+            onBack(event);
+            return;
+        }
+
         String input = txtBidAmount.getText().trim().replace(".", "");
         if (input.isEmpty()) {
             showAlert("Lỗi", "Vui lòng nhập số tiền!");
@@ -138,16 +162,26 @@ public class BidDetailController extends BaseController {
             return;
         }
 
-        // Fetch giá mới nhất từ DB trước khi đặt
+        // Fetch giá mới nhất từ DB ngay trước khi nhấn nút ghi nhận
         Product latest = DataStorage.findProductById(product.getId());
         if (latest == null) {
             showAlert("Lỗi", "Sản phẩm không tồn tại!");
             return;
         }
 
-        // Cập nhật lại UI với giá mới nhất
+        latest.updateStatus();
+        if ("FINISHED".equalsIgnoreCase(latest.getStatus())) {
+            this.product = latest;
+            stopTimeline();
+            showAlert("Thất bại", "Quá muộn! Phiên đấu giá vừa mới kết thúc cách đây vài giây.");
+            txtBidAmount.clear();
+            onBack(event);
+            return;
+        }
+
+        // Cập nhật lại UI nếu phát hiện có người thay đổi giá trước đó một bước
         if (latest.getCurrentPrice() != product.getCurrentPrice()) {
-            product = latest;
+            this.product = latest;
             updateDynamicInfo();
             showAlert("Thông báo",
                     "Giá vừa được cập nhật!\n" +
@@ -163,9 +197,7 @@ public class BidDetailController extends BaseController {
             return;
         }
 
-        double balance = DataStorage.getBalance(
-                DataStorage.currentAccount.getUsername()
-        );
+        double balance = DataStorage.getBalance(DataStorage.currentAccount.getUsername());
         if (bidAmount > balance) {
             showAlert("Lỗi", "Số dư không đủ!");
             return;
@@ -177,12 +209,18 @@ public class BidDetailController extends BaseController {
         if (ok) {
             showAlert("Thành công", "Đặt giá thành công: " + formatPrice(bidAmount));
             txtBidAmount.clear();
-            product = DataStorage.findProductById(product.getId());
-            if (product != null) updateDynamicInfo();
+            Product freshSuccess = DataStorage.findProductById(product.getId());
+            if (freshSuccess != null) {
+                this.product = freshSuccess;
+                updateDynamicInfo();
+            }
         } else {
-            // Bị người khác đặt trước trong khoảnh khắc đó
-            product = DataStorage.findProductById(product.getId());
-            if (product != null) updateDynamicInfo();
+            // Bị người khác chèn lệnh đặt trước trong khoảnh khắc tích tắc đó
+            Product freshFail = DataStorage.findProductById(product.getId());
+            if (freshFail != null) {
+                this.product = freshFail;
+                updateDynamicInfo();
+            }
             showAlert("Thất bại",
                     "Có người vừa đặt giá trước bạn!\n" +
                             "Giá hiện tại: " + formatPrice(product.getCurrentPrice()) + "\n" +
@@ -196,5 +234,4 @@ public class BidDetailController extends BaseController {
         stopTimeline();
         switchScene(event, SceneConfig.BIDDER_PRODUCT);
     }
-
 }

@@ -10,7 +10,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:controller="com.example.onlineauctionsystem.controller.bidder.BidHistoryController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox maxHeight="78.0" minHeight="78.0" prefHeight="78.0" prefWidth="900.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
          <children>
@@ -191,47 +191,7 @@
                   </GridPane>
                   <ScrollPane hbarPolicy="NEVER" GridPane.rowIndex="1">
                      <content>
-                        <VBox prefHeight="366.0" prefWidth="839.0">
-                           <children>
-                              <GridPane minWidth="839.0" prefHeight="30.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <children>
-                                    <Label text="Laptop Dell XPS" GridPane.columnIndex="0" />
-                                    <Label text="15tr" GridPane.columnIndex="1" />
-                                    <Label text="15tr" GridPane.columnIndex="2" />
-                                    <Label text="10/05/2026" GridPane.columnIndex="3" />
-                                    <Label alignment="CENTER" prefWidth="65.0" style="-fx-border-color: green; -fx-border-radius: 10;" text="THẮNG" textFill="GREEN" GridPane.columnIndex="4" />
-                                 </children>
-                                 <rowConstraints>
-                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-                                 </rowConstraints>
-                              </GridPane>
-                              <GridPane layoutX="10.0" layoutY="10.0" minWidth="839.0" prefHeight="30.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <children>
-                                    <Label text="Laptop Dell XPS" GridPane.columnIndex="0" />
-                                    <Label text="15tr" GridPane.columnIndex="1" />
-                                    <Label text="15tr" GridPane.columnIndex="2" />
-                                    <Label text="10/05/2026" GridPane.columnIndex="3" />
-                                    <Label alignment="CENTER" prefWidth="65.0" style="-fx-border-color: #ff0101; -fx-border-radius: 10;" text="THUA" textFill="#ff0101" GridPane.columnIndex="4" />
-                                 </children>
-                                 <rowConstraints>
-                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-                                 </rowConstraints>
-                              </GridPane>
-                           </children>
+                        <VBox fx:id="historyContainer" prefHeight="366.0" prefWidth="839.0" spacing="5.0">
                         </VBox>
                      </content>
                   </ScrollPane>

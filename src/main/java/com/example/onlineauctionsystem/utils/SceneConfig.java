@@ -26,6 +26,7 @@ public enum SceneConfig {
     USER("User.fxml", "Ô người dùng trong hệ thống"),
     BID_NEW_PRODUCT("BidNewProductCard.fxml", "Ô sản phẩm bidder"),
     BID_PRODUCT("Cua_So_Dat_Gia_Bidder_BTL.fxml", "Ô đặt giá bidder"),
+    BID_MANAGE_ROW("BidderManagerRow.fxml", "Ô quản lí"),
 
     ADMIN_USER("QuanTriHeThong_Admin.fxml","Người dùng"),
     ADMIN_PRODUCT("PheDuyetSanPham_Admin.fxml", "Sản phẩm chờ phê duyệt");

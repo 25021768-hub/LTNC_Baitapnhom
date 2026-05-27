@@ -2,7 +2,6 @@ package com.example.onlineauctionsystem.controller.bidder;
 
 import com.example.onlineauctionsystem.controller.MenuController;
 import com.example.onlineauctionsystem.controller.common.BidNewProductCardController;
-import com.example.onlineauctionsystem.controller.common.ProductItemController;
 import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.SceneConfig;
@@ -32,7 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class BidderController  extends MenuController {
+public class BidderController extends MenuController {
     @FXML private FlowPane productContainer;
     @FXML private TextField txtSearch;
     private final ObservableList<Product> productList = FXCollections.observableArrayList();
@@ -43,14 +42,16 @@ public class BidderController  extends MenuController {
 
     public void initialize() {
         productList.addListener((ListChangeListener<Product>) change -> {
-            renderProductList(productList);
+            applySearchFilter();
         });
+        List<Product> initialData = fetchProducts();
+        renderProductList(initialData);
         startAutoRefresh();
-
     }
+
     private List<Product> fetchProducts(){
         return DataStorage.getAllProducts().stream()
-                .filter(p ->"RUNNING".equals(p.getStatus()))
+                .filter(p -> "RUNNING".equals(p.getStatus()))
                 .collect(Collectors.toList());
     }
 
@@ -58,7 +59,7 @@ public class BidderController  extends MenuController {
         if(scheduler != null && !scheduler.isShutdown()) return;
         scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r, "bidder-refresh");
-            t.setDaemon(true); //biến thành luồng chạy nền
+            t.setDaemon(true); // biến thành luồng chạy nền
             return t;
         });
         scheduler.scheduleAtFixedRate(() -> {
@@ -75,21 +76,21 @@ public class BidderController  extends MenuController {
                     }
                 });
             }
-
         }, 0, 1, TimeUnit.SECONDS);
     }
 
     private void stopAutoRefresh(){
-    if(scheduler !=null && !scheduler.isShutdown()){
-        scheduler.shutdownNow();
-        scheduler = null;
+        if(scheduler != null && !scheduler.isShutdown()){
+            scheduler.shutdownNow();
+            scheduler = null;
         }
     }
+
     @FXML
     private void renderProductList(List<Product> products){
         productContainer.getChildren().clear();
         cardControllers.clear();
-        if (productList.isEmpty()) {
+        if (products == null || products.isEmpty()) {
             productContainer.setPrefHeight(380);
             Label empty = new Label("Chưa có sản phẩm nào đang bán");
             empty.setStyle("-fx-font-size: 16; -fx-text-fill: #999999;");
@@ -99,6 +100,7 @@ public class BidderController  extends MenuController {
             productContainer.getChildren().add(empty);
             return;
         }
+
         productContainer.setPrefHeight(javafx.scene.layout.Region.USE_COMPUTED_SIZE);
         for (Product p : products) {
             try {
@@ -118,6 +120,7 @@ public class BidderController  extends MenuController {
             }
         }
     }
+
     @FXML
     private void onBidProduct(Product p){
         stopAutoRefresh();
@@ -140,14 +143,24 @@ public class BidderController  extends MenuController {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void onSearch(KeyEvent keyEvent) {
+        applySearchFilter();
+    }
+
+    private void applySearchFilter() {
+        if (txtSearch == null) {
+            renderProductList(productList);
+            return;
+        }
+
         String keyword = txtSearch.getText().trim().toLowerCase();
         if (keyword.isEmpty()) {
             renderProductList(productList);
         } else {
             List<Product> filtered = productList.stream()
-                    .filter(p -> p.getName().toLowerCase().contains(keyword))
+                    .filter(p -> p.getName() != null && p.getName().toLowerCase().contains(keyword))
                     .collect(Collectors.toList());
             renderProductList(filtered);
         }
@@ -158,7 +171,6 @@ public class BidderController  extends MenuController {
     public void onMyProducts(ActionEvent event) {
         stopAutoRefresh();
         super.onMyProducts(event);
-
     }
 
     @FXML
@@ -166,7 +178,6 @@ public class BidderController  extends MenuController {
     public void onHistory(ActionEvent event) {
         stopAutoRefresh();
         super.onHistory(event);
-
     }
 
     @FXML
@@ -174,7 +185,6 @@ public class BidderController  extends MenuController {
     public void onManage(ActionEvent event) {
         stopAutoRefresh();
         super.onManage(event);
-
     }
 
     @FXML
@@ -182,7 +192,6 @@ public class BidderController  extends MenuController {
     public void onAccount(ActionEvent event) {
         stopAutoRefresh();
         super.onAccount(event);
-
     }
 
     @Override
@@ -195,9 +204,6 @@ public class BidderController  extends MenuController {
             stopAutoRefresh();
             DataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
-
         }
     }
-
-
 }

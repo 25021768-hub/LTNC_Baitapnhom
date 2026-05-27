@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane minWidth="839.0" prefHeight="105.0" prefWidth="839.0" style="-fx-background-color: #fdfdfd; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.common.BidderManageRowController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="105.0" minHeight="105.0" prefHeight="105.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <StackPane prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;">
+            <GridPane.margin><Insets bottom="8.0" left="5.0" right="5.0" top="8.0" /></GridPane.margin>
+            <effect><DropShadow offsetY="2.0" /></effect>
+            <children>
+                <ImageView fx:id="imgProduct" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" />
+            </children>
+        </StackPane>
+
+        <Label fx:id="lblProductName" prefHeight="60.0" prefWidth="140.0" text="Tên sản phẩm mẫu" wrapText="true" GridPane.columnIndex="1">
+            <GridPane.margin><Insets left="5.0" /></GridPane.margin>
+            <font><Font name="System Bold" size="13.0" /></font>
+        </Label>
+
+        <Label fx:id="lblMyBidPrice" text="1,200,000đ" textFill="#004488" GridPane.columnIndex="2">
+            <font><Font name="System Bold" size="14.0" /></font>
+        </Label>
+
+        <Label fx:id="lblCurrentPrice" text="1,500,000đ" textFill="#b25900" GridPane.columnIndex="3">
+            <font><Font name="System Bold" size="14.0" /></font>
+        </Label>
+
+        <Label fx:id="lblTimeRemaining" text="00:14:25" GridPane.columnIndex="4">
+            <font><Font size="13.0" /></font>
+        </Label>
+
+        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="8.0" GridPane.columnIndex="5">
+            <children>
+                <Label fx:id="lblStatusBadge" alignment="CENTER" prefHeight="22.0" prefWidth="95.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: green;" text="ĐANG THẮNG" textFill="#358435">
+                    <font><Font name="System Bold" size="11.0" /></font>
+                </Label>
+                <Button fx:id="btnReBid" mnemonicParsing="false" onAction="#onReBidClick" prefHeight="25.0" prefWidth="95.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%); -fx-cursor: hand;" text="Đặt thêm" textFill="WHITE">
+                    <font><Font name="System Bold" size="11.0" /></font>
+                </Button>
+            </children>
+        </VBox>
+    </children>
+</GridPane>

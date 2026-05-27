@@ -255,6 +255,103 @@ public class DataStorage {
         return null;
     }
 
+    // Lấy lịch sử đấu giá của một bidder (sản phẩm đã kết thúc)
+    public static List<BidHistory> getBidHistory(String bidderName) {
+        List<BidHistory> list = new ArrayList<>();
+        String sql = "SELECT * FROM bid_history WHERE bidder_name = ? ORDER BY end_time DESC";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, bidderName);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                BidHistory h = new BidHistory();
+                h.setProductId(rs.getString("product_id"));
+                h.setProductName(rs.getString("product_name"));
+                h.setMyBidPrice(rs.getDouble("my_bid_price"));
+                h.setFinalPrice(rs.getDouble("final_price"));
+                Timestamp ts = rs.getTimestamp("end_time");
+                if (ts != null) h.setEndTime(ts.toLocalDateTime());
+                h.setResult(rs.getString("result"));
+                list.add(h);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
+    // Lấy sản phẩm đang đấu giá (RUNNING) mà bidder đang tham gia
+    public static List<Product> getRunningBidsByBidder(String bidderName) {
+        List<Product> list = new ArrayList<>();
+        // Lấy các sản phẩm RUNNING mà bidder đã từng đặt giá (có tên trong bid_history hoặc là highest_bidder)
+        String sql = "SELECT DISTINCT p.* FROM products p " +
+                "LEFT JOIN bid_history bh ON p.id = bh.product_id " +
+                "WHERE p.status = 'RUNNING' " +
+                "AND (p.highest_bidder = ? OR bh.bidder_name = ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, bidderName);
+            stmt.setString(2, bidderName);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Product p = new Product(
+                        rs.getString("id"), rs.getString("name"),
+                        rs.getDouble("initial_price"), rs.getDouble("bid_increment"),
+                        rs.getLong("duration_hours"), rs.getString("seller_name"),
+                        rs.getString("image_path")
+                );
+                p.setCurrentPrice(rs.getDouble("current_price"));
+                p.setHighestBidder(rs.getString("highest_bidder"));
+                p.setStatus(rs.getString("status"));
+                Timestamp startTs = rs.getTimestamp("start_time");
+                if (startTs != null) p.setStartTime(startTs.toLocalDateTime());
+                Timestamp endTs = rs.getTimestamp("end_time");
+                if (endTs != null) p.setEndTime(endTs.toLocalDateTime());
+                p.updateStatus();
+                list.add(p);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
+    // Ghi lịch sử khi phiên đấu giá kết thúc
+    public static boolean saveBidHistory(String bidderName, String productId,
+                                         String productName, double myBid, double finalPrice,
+                                         LocalDateTime endTime, String result, boolean isPaid) {
+        String sql = "INSERT INTO bid_history (bidder_name, product_id, product_name, " +
+                "my_bid_price, final_price, end_time, result, is_paid) VALUES (?,?,?,?,?,?,?,?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, bidderName);
+            stmt.setString(2, productId);
+            stmt.setString(3, productName);
+            stmt.setDouble(4, myBid);
+            stmt.setDouble(5, finalPrice);
+            stmt.setTimestamp(6, Timestamp.valueOf(endTime));
+            stmt.setString(7, result);
+            stmt.setBoolean(8,isPaid);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
+    }
+
+    public static double getMaxBidByBidderForProduct(String bidderName, String productId, double defaultPrice) {
+        String sql = "SELECT MAX(my_bid_price) FROM bid_history WHERE bidder_name = ? AND product_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, bidderName);
+            stmt.setString(2, productId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    double maxBid = rs.getDouble(1);
+                    if (maxBid > 0) {
+                        return maxBid;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return defaultPrice;
+    }
+
     // Seller tự xóa SP của mình — chỉ được xóa khi PENDING
     public static boolean deleteMyProduct(String productId, String sellerUsername) {
         String sql = "DELETE FROM products WHERE id = ? AND seller_name = ? AND status = 'PENDING'";
@@ -378,18 +475,76 @@ public class DataStorage {
         }
     }
 
-    public static void closeExpiredAuctions() {
-        // SQL: Chuyển từ RUNNING sang FINISHED nếu thời gian hiện tại đã vượt quá end_time
-        String sql = "UPDATE products SET status = 'FINISHED' " +
-                "WHERE status = 'RUNNING' AND end_time <= NOW()";
+
+    public static void autoCloseAndSaveExpiredProducts() {
+        // 1. Lấy danh sách sản phẩm đã hết giờ (end_time <= NOW) nhưng chưa có trong bảng bid_history
+        String findExpiredSql = "SELECT id, name, current_price, highest_bidder FROM products " +
+                "WHERE end_time <= NOW() " +
+                "AND id NOT IN (SELECT DISTINCT product_id FROM bid_history)";
+
+        // 2. Câu lệnh lưu vào bảng lịch sử đấu giá
+        String insertHistorySql = "INSERT INTO bid_history (bidder_name, product_id, product_name, my_bid_price, final_price, end_time, result, is_paid) " +
+                "VALUES (?, ?, ?, ?, ?, NOW(), ?, 0)";
+
+        // 3. Câu lệnh tìm tất cả những người đã từng ra giá cho sản phẩm này (để lưu trạng thái THUA)
+        String findAllBiddersSql = "SELECT DISTINCT bidder_name, MAX(bid_amount) as max_bid FROM bids " +
+                "WHERE product_id = ? AND bidder_name != ? GROUP BY bidder_name";
 
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows > 0) {
-                System.out.println("[Server] Đã tự động đóng " + affectedRows + " phiên đấu giá hết hạn.");
+             PreparedStatement selectStmt = conn.prepareStatement(findExpiredSql);
+             ResultSet rs = selectStmt.executeQuery()) {
+
+            while (rs.next()) {
+                int productId = rs.getInt("id");
+                String productName = rs.getString("name");
+                double finalPrice = rs.getDouble("current_price");
+                String winner = rs.getString("highest_bidder");
+
+                // TRƯỜNG HỢP 1: CÓ NGƯỜI THẮNG CUỘC (highest_bidder không thô/null)
+                if (winner != null && !winner.trim().isEmpty()) {
+
+                    // A. Lưu người THẮNG (WIN) vào bảng lịch sử
+                    try (PreparedStatement insertStmt = conn.prepareStatement(insertHistorySql)) {
+                        insertStmt.setString(1, winner);
+                        insertStmt.setInt(2, productId);
+                        insertStmt.setString(3, productName);
+                        insertStmt.setDouble(4, finalPrice); // Giá họ trả trúng bằng giá cuối
+                        insertStmt.setDouble(5, finalPrice);
+                        insertStmt.setString(6, "WIN");
+                        insertStmt.executeUpdate();
+                    }
+
+                    // B. Tìm tất cả những người khác từng đấu giá sản phẩm này nhưng thất bại để lưu THUA (LOSE)
+                    try (PreparedStatement bidderStmt = conn.prepareStatement(findAllBiddersSql)) {
+                        bidderStmt.setInt(1, productId);
+                        bidderStmt.setString(2, winner); // Loại trừ người thắng ra
+                        try (ResultSet rsBidders = bidderStmt.executeQuery()) {
+                            while (rsBidders.next()) {
+                                String loserName = rsBidders.getString("bidder_name");
+                                double loserMaxBid = rsBidders.getDouble("max_bid");
+
+                                // Lưu người THUA vào lịch sử
+                                try (PreparedStatement insertLooseStmt = conn.prepareStatement(insertHistorySql)) {
+                                    insertLooseStmt.setString(1, loserName);
+                                    insertLooseStmt.setInt(2, productId);
+                                    insertLooseStmt.setString(3, productName);
+                                    insertLooseStmt.setDouble(4, loserMaxBid); // Mức giá lớn nhất họ từng trả
+                                    insertLooseStmt.setDouble(5, finalPrice);  // Giá cuối cùng của sản phẩm
+                                    insertLooseStmt.setString(6, "LOSE");
+                                    insertLooseStmt.executeUpdate();
+                                }
+                            }
+                        }
+                    }
+                    System.out.println("[HỆ THỐNG] Đã chốt phiên tự động và lưu lịch sử cho sản phẩm ID: " + productId + " (Người thắng: " + winner + ")");
+                } else {
+                    // TRƯỜNG HỢP 2: Phiên đấu giá kết thúc nhưng KHÔNG AI THAM GIA ĐẤU
+                    // Có thể bỏ qua hoặc lưu trạng thái sản phẩm bị hủy tùy nhu cầu của bạn.
+                    System.out.println("[HỆ THỐNG] Phiên đấu giá ID: " + productId + " kết thúc nhưng không có người tham gia.");
+                }
             }
         } catch (SQLException e) {
+            System.err.println("Lỗi tự động chốt phiên và lưu lịch sử: " + e.getMessage());
             e.printStackTrace();
         }
     }
