@@ -61,22 +61,14 @@ public class Product implements Serializable {
 
     public void updateStatus() {
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime end = getEndTime();
 
-        if (startTime == null) {
+        if (startTime == null || end == null) {
             if (!"RUNNING".equals(status) && !"FINISHED".equals(status)
-                    && !"PAID".equals(status) && !"CANCELED".equals(status)) {
+                     && !"PAID".equals(status) && !"CANCELED".equals(status)) {
                 status = "PENDING";
             }
             return;
-        }
-
-
-        LocalDateTime end = getEndTime();
-        if (end == null) {
-            if ("RUNNING".equals(status)) {
-                return;
-            }
-            end = startTime.plusHours(durationHours);
         }
 
         if (now.isBefore(startTime)) {
@@ -84,8 +76,15 @@ public class Product implements Serializable {
         } else if (now.isAfter(startTime) && now.isBefore(end)) {
             status = "RUNNING";
         } else if (now.isAfter(end)) {
+            // XỬ LÝ KHI VỪA HẾT GIỜ ĐẤU GIÁ
             if ("RUNNING".equals(status)) {
-                status = "FINISHED";
+                if (highestBidder != null && !highestBidder.trim().isEmpty()) {
+                    // TRƯỜNG HỢP 1: Có người đặt giá -> Chuyển sang ĐỢI XÁC NHẬN
+                    status = "FINISHED";
+                } else {
+                    // TRƯỜNG HỢP 2: Không ai đặt giá -> Kết thúc thất bại luôn
+                    status = "Cancel";
+                }
             }
         }
     }

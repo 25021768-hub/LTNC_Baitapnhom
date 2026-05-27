@@ -34,24 +34,24 @@
                   </DropShadow>
                </effect>
                <children>
-                  <ImageView fitHeight="150.0" fitWidth="229.6" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgProduct" fitHeight="150.0" fitWidth="229.6" pickOnBounds="true" preserveRatio="true">
                      <StackPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </StackPane.margin>
                   </ImageView>
                </children>
             </StackPane>
-            <Label alignment="CENTER" prefHeight="30.0" prefWidth="240.0" text="Tên sản phẩm..." wrapText="true">
+            <Label fx:id="lblNameProduct" alignment="CENTER" prefHeight="30.0" prefWidth="240.0" text="Tên sản phẩm..." wrapText="true">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Label contentDisplay="RIGHT" prefHeight="30.0" prefWidth="240.0" text="Sản phẩm:">
+            <Label contentDisplay="RIGHT" prefHeight="30.0" prefWidth="240.0" text="Bước Giá:">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
                <graphic>
-                  <Label prefHeight="17.0" prefWidth="160.0" text="Tên sản phẩm..." wrapText="true" />
+                  <Label fx:id="lblStep" prefHeight="17.0" prefWidth="160.0" text="Tên sản phẩm..." wrapText="true" />
                </graphic>
             </Label>
             <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="269.0" prefHeight="20.0" prefWidth="240.0" text="Người bán:">
@@ -59,7 +59,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
                <graphic>
-                  <Label prefHeight="17.0" prefWidth="161.0" text="Tên người bán..." wrapText="true" />
+                  <Label fx:id="lblSeller" prefHeight="17.0" prefWidth="161.0" text="Tên người bán..." wrapText="true" />
                </graphic>
             </Label>
             <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="300.0" prefHeight="20.0" prefWidth="240.0" text="Giá khởi điểm:">
@@ -67,7 +67,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
                <graphic>
-                  <Label prefHeight="17.0" prefWidth="135.0" text="2,000,000đ" wrapText="true" />
+                  <Label fx:id="lblInitialPrice" prefHeight="17.0" prefWidth="135.0" text="2,000,000đ" wrapText="true" />
                </graphic>
             </Label>
             <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="340.0" prefHeight="20.0" prefWidth="240.0" text="Thời gian đấu giá còn:">
@@ -75,7 +75,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
                <graphic>
-                  <Label prefHeight="17.0" prefWidth="77.0" text="..." wrapText="true" />
+                  <Label fx:id="lblTime" prefHeight="17.0" prefWidth="77.0" text="..." wrapText="true" />
                </graphic>
             </Label>
          </children>
@@ -123,17 +123,17 @@
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label layoutX="10.0" layoutY="64.0" text="Tên sản phẩm..." GridPane.columnIndex="1">
+                  <Label fx:id="lblCurrentName" layoutX="10.0" layoutY="64.0" text="Tên sản phẩm..." GridPane.columnIndex="1">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label layoutX="150.0" layoutY="21.0" text="Nguyễn Văn A" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Label fx:id="lblHighestBidder" layoutX="150.0" layoutY="21.0" text="Nguyễn Văn A" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label layoutX="150.0" layoutY="64.0" text="3,500,000đ" textFill="#1357b7" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <Label fx:id="lblCurrentPrice" layoutX="150.0" layoutY="64.0" text="3,500,000đ" textFill="#1357b7" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -159,12 +159,12 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Label contentDisplay="RIGHT" text="Sứ dư khả dụng của bạn:">
+            <Label contentDisplay="RIGHT" text="Số dư khả dụng của bạn:">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
                <graphic>
-                  <Label prefHeight="17.0" prefWidth="178.0" text="5,000,000đ" textFill="#1357b7">
+                  <Label fx:id="lblBalance" prefHeight="17.0" prefWidth="178.0" text="5,000,000đ" textFill="#1357b7">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -175,7 +175,7 @@
                <children>
                   <StackPane prefHeight="50.0" prefWidth="208.0">
                      <children>
-                        <TextField prefHeight="36.0" prefWidth="215.0" promptText="Nhập số tiền.." style="-fx-border-color: #1357b7; -fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 5;" />
+                        <TextField fx:id="txtBidAmount" prefHeight="36.0" prefWidth="215.0" promptText="Nhập số tiền.." style="-fx-border-color: #1357b7; -fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 5;" />
                         <Label alignment="TOP_RIGHT" prefHeight="18.0" prefWidth="190.0" text="đ">
                            <StackPane.margin>
                               <Insets />
@@ -186,7 +186,7 @@
                         </Label>
                      </children>
                   </StackPane>
-                  <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="119.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" text="+ Đặt giá thầu" textFill="WHITE">
+                  <Button mnemonicParsing="false" onAction="#onPlaceBid" prefHeight="37.0" prefWidth="119.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: linear-gradient(to bottom, #5cb85c, #449d44);" text="+ Đặt giá thầu" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -205,7 +205,7 @@
                               <Font size="14.0" />
                            </font>
                            <graphic>
-                              <Label text="3,500,000đ">
+                              <Label fx:id="lblMinBid" text="3,500,000đ">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
@@ -237,7 +237,7 @@
                   <Font name="System Bold" size="22.0" />
                </font>
             </Label>
-            <Button alignment="CENTER" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="23.0" style="-fx-background-color: #ff4949;" textFill="WHITE">
+            <Button alignment="CENTER" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#onBack" prefHeight="23.0" prefWidth="23.0" style="-fx-background-color: #ff4949;" textFill="WHITE">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

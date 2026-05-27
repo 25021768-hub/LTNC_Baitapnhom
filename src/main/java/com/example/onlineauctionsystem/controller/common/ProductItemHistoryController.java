@@ -29,7 +29,7 @@ public class ProductItemHistoryController {
         }
         switch (p.getStatus()) {
             case "FINISHED" -> {
-                lblStatus.setText("Đang thanh toán");
+                lblStatus.setText("Đợi thanh toán");
                 lblStatus.setStyle("-fx-background-color: yellow; -fx-text-fill: white; -fx-background-radius: 20; -fx-border-radius: 20;");
             }
             case "PAID" -> {

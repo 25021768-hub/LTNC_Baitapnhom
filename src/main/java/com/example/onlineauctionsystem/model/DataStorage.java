@@ -206,16 +206,23 @@ public class DataStorage {
     }
 
     public static boolean updateBid(String productId, double newPrice, String bidderName) {
+        // Chỉ update nếu newPrice > current_price hiện tại trong DB
+        // Nếu 2 người cùng gửi, người nào vào DB trước thắng
+        // Người sau sẽ bị từ chối vì newPrice <= current_price mới
         String sql = "UPDATE products SET current_price = ?, highest_bidder = ?, " +
-                "bid_increment = bid_increment + 1 " +
-                "WHERE id = ? AND status = 'RUNNING'";
+                "WHERE id = ? AND status = 'RUNNING' AND current_price < ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDouble(1, newPrice);
             stmt.setString(2, bidderName);
             stmt.setString(3, productId);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) { return false; }
+            stmt.setDouble(4, newPrice); // ← điều kiện: giá hiện tại < giá mới
+            int rows = stmt.executeUpdate();
+            return rows > 0; // 0 = bị người khác đặt trước
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     // 1. Hàm tìm một sản phẩm cụ thể theo ID
     public static Product findProductById(String id) {
