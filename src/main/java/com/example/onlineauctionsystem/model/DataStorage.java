@@ -590,4 +590,41 @@ public class DataStorage {
             e.printStackTrace();
         }
     }
+    //BỔ SUNG HÀM THANH TOÁN GỘP TRANSACTION
+    public static boolean executeManualPayment(String username, String productId, double amount) {
+        String updateBalanceSql = "UPDATE accounts SET balance = balance - ? WHERE username = ?";
+        String updateHistorySql = "UPDATE bid_history SET is_paid = 1 WHERE bidder_name = ? AND product_id = ?";
+        String updateProductSql = "UPDATE products SET status = 'PAID' WHERE id = ?";
+
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false); // Bật chế độ giao dịch an toàn
+            try (PreparedStatement ps1 = conn.prepareStatement(updateBalanceSql);
+                 PreparedStatement ps2 = conn.prepareStatement(updateHistorySql);
+                 PreparedStatement ps3 = conn.prepareStatement(updateProductSql)) {
+
+                // 1. Trừ tiền người mua
+                ps1.setDouble(1, amount);
+                ps1.setString(2, username);
+                ps1.executeUpdate();
+
+                // 2. Đánh dấu đã thanh toán lịch sử
+                ps2.setString(1, username);
+                ps2.setString(2, productId);
+                ps2.executeUpdate();
+
+                // 3. Đổi trạng thái sản phẩm
+                ps3.setString(1, productId);
+                ps3.executeUpdate();
+
+                conn.commit();
+                return true;
+            } catch (SQLException e) {
+                conn.rollback(); // Lỗi bất kỳ bước nào thì hủy toàn bộ, không lo mất tiền oan
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

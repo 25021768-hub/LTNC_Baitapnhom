@@ -92,24 +92,24 @@ public class BidderHistoryRowController {
 
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                // Trừ tiền
-                boolean deducted = DataStorage.updateBalance(
-                        DataStorage.currentAccount.getUsername(),
-                        -history.getFinalPrice()
-                );
-                // Cộng tiền cho seller
-                boolean credited = DataStorage.updateBalance(
-                        DataStorage.getSellerByProductId(history.getProductId()),
-                        history.getFinalPrice()
-                );
-                // Đánh dấu đã thanh toán
-                boolean paid = DataStorage.markAsPaid(history.getProductId(),
-                        DataStorage.currentAccount.getUsername());
+                String currentBuyer = DataStorage.currentAccount.getUsername();
+                String sellerName = DataStorage.getSellerByProductId(history.getProductId());
 
-                if (deducted && paid) {
+                // 1. Sử dụng hàm Transaction đồng bộ gộp (Trừ tiền buyer + Cộng tiền seller + Đổi trạng thái PAID)
+                boolean transactionOk = DataStorage.executeManualPayment(currentBuyer, history.getProductId(), history.getFinalPrice());
+
+                if (transactionOk) {
+
+                    if (sellerName != null && !sellerName.trim().isEmpty()) {
+                        DataStorage.updateBalance(sellerName, history.getFinalPrice());
+                    }
+
                     history.setPaid(true);
-                    setStatus("WIN", true); // cập nhật UI
-                    if (onPaidCallback != null) onPaidCallback.accept(history);
+                    setStatus("WIN", true);
+
+                    if (onPaidCallback != null) {
+                        onPaidCallback.accept(history);
+                    }
 
                     Alert success = new Alert(Alert.AlertType.INFORMATION);
                     success.setTitle("Thành công");
@@ -118,7 +118,7 @@ public class BidderHistoryRowController {
                 } else {
                     Alert error = new Alert(Alert.AlertType.ERROR);
                     error.setTitle("Lỗi");
-                    error.setContentText("Thanh toán thất bại, vui lòng thử lại!");
+                    error.setContentText("Thanh toán thất bại! Số dư tài khoản không đủ hoặc hệ thống bận.");
                     error.showAndWait();
                 }
             }
