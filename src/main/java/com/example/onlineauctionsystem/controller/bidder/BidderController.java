@@ -20,7 +20,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class BidderController extends MenuController {
-    @FXML private FlowPane productContainer;
+    @FXML private GridPane productContainer;
     @FXML private TextField txtSearch;
     private final ObservableList<Product> productList = FXCollections.observableArrayList();
     private final List<BidNewProductCardController> cardControllers = new ArrayList<>();
@@ -89,19 +90,23 @@ public class BidderController extends MenuController {
     @FXML
     private void renderProductList(List<Product> products){
         productContainer.getChildren().clear();
+        productContainer.getRowConstraints().clear();
         cardControllers.clear();
         if (products == null || products.isEmpty()) {
             productContainer.setPrefHeight(380);
             Label empty = new Label("Chưa có sản phẩm nào đang bán");
             empty.setStyle("-fx-font-size: 16; -fx-text-fill: #999999;");
-            empty.setPrefWidth(770);
+            GridPane.setColumnSpan(empty, 2);
+            empty.setPrefWidth(860);
             empty.setPrefHeight(380);
             empty.setAlignment(javafx.geometry.Pos.CENTER);
-            productContainer.getChildren().add(empty);
+            productContainer.add(empty, 0, 0);
             return;
         }
 
         productContainer.setPrefHeight(javafx.scene.layout.Region.USE_COMPUTED_SIZE);
+        int column = 0;
+        int row = 0;
         for (Product p : products) {
             try {
                 FXMLLoader loader = new FXMLLoader(
@@ -109,11 +114,18 @@ public class BidderController extends MenuController {
                                 SceneConfig.BID_NEW_PRODUCT.getPath()
                         )
                 );
-                Node row = loader.load();
+                Node rowNode = loader.load();
+                GridPane.setHgrow(rowNode, Priority.ALWAYS);
                 BidNewProductCardController rowCtrl = loader.getController();
                 rowCtrl.setData(p, this::onBidProduct);
-                productContainer.getChildren().add(row);
+                productContainer.add(rowNode, column, row);
                 cardControllers.add(rowCtrl);
+
+                column++;
+                if (column > 1) {
+                    column = 0;
+                    row++;
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();

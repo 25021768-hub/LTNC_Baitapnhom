@@ -53,7 +53,7 @@ public class BidHistoryController extends MenuController {
             cbFilter.setOnAction(e -> applyFilter());
         }
 
-        // ── Kích hoạt bộ tự động làm mới giao diện 5 giây một lần ──
+        loadData();
         startAutoRefresh();
     }
 

@@ -124,9 +124,9 @@
                </children>
             </HBox>
          </children></HBox>
-      <ScrollPane hbarPolicy="NEVER" prefHeight="628.0" prefWidth="900.0">
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="628.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
          <content>
-            <VBox prefWidth="900.0" spacing="25.0">
+            <VBox prefWidth="900.0" spacing="25.0" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
@@ -149,9 +149,14 @@
                      </children>
                   </StackPane>
 
-                  <FlowPane fx:id="productContainer"
+                  <GridPane fx:id="productContainer"
                             hgap="20.0" vgap="20.0"
-                            prefWidth="860.0" />
+                            prefWidth="860.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
+                     </columnConstraints>
+                  </GridPane>
                </children>
             </VBox>
          </content>
