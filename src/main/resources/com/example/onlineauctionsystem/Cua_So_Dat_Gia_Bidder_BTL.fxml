@@ -200,7 +200,7 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                      <graphic>
-                        <Label contentDisplay="RIGHT" text="Bạn chỉ được đặt giá thầu lớn hơn">
+                        <Label contentDisplay="RIGHT" text="Bạn chỉ được đặt giá nhỏ nhất là">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -211,15 +211,6 @@
                                  </font>
                               </Label>
                            </graphic>
-                        </Label>
-                     </graphic>
-                  </Label>
-                  <Label contentDisplay="RIGHT" layoutX="45.0" layoutY="51.0" text="ít nhất">
-                     <graphic>
-                        <Label text="người bán quy định đ">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
                         </Label>
                      </graphic>
                   </Label>
