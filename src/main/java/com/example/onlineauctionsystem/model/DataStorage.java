@@ -109,15 +109,15 @@ public class DataStorage {
 
     public static boolean updateAccount(Account acc){
             // Chỉ SET những thứ cần thay đổi, tuyệt đối không SET password ở đây
-            String sql = "UPDATE accounts SET id_card = ?, email = ?, phone_number = ? WHERE username = ?";
+            String sql = "UPDATE accounts SET fullname = ?, id_card = ?, email = ?, phone_number = ? WHERE username = ?";
 
             try (Connection conn = getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setString(1, acc.getIdCard());     // Khớp với id_card
-                stmt.setString(2, acc.getEmail());      // Khớp với email
-                stmt.setString(3, acc.getPhoneNumber());// Khớp với phone_number
-                stmt.setString(4, acc.getUsername());   // Điều kiện để biết sửa ai
+                stmt.setString(1, acc.getFullName());
+                stmt.setString(2, acc.getIdCard());     // Khớp với id_card
+                stmt.setString(3, acc.getEmail());      // Khớp với email
+                stmt.setString(4, acc.getPhoneNumber());// Khớp với phone_number
+                stmt.setString(5, acc.getUsername());   // Điều kiện để biết sửa ai
 
                 return stmt.executeUpdate() > 0;
             } catch (SQLException e) {
@@ -158,14 +158,19 @@ public class DataStorage {
                 p.setCurrentPrice(rs.getDouble("current_price"));
                 p.setHighestBidder(rs.getString("highest_bidder"));
                 p.setStatus(rs.getString("status"));
+
+                // Đọc start_time
                 Timestamp startTs = rs.getTimestamp("start_time");
                 if (startTs != null) {
-                    p.setStartTime(startTs.toLocalDateTime()); // Đã duyệt rồi thì lấy start_time lên đây!
+                    p.setStartTime(startTs.toLocalDateTime());
                 }
+
+                // ── BỔ SUNG: Đọc thêm cột end_time từ MySQL lên Java ──
                 Timestamp endTs = rs.getTimestamp("end_time");
                 if (endTs != null) {
                     p.setEndTime(endTs.toLocalDateTime());
                 }
+
                 p.updateStatus();
                 list.add(p);
             }
@@ -244,11 +249,20 @@ public class DataStorage {
                 p.setCurrentPrice(rs.getDouble("current_price"));
                 p.setHighestBidder(rs.getString("highest_bidder"));
                 p.setStatus(rs.getString("status"));
+
+                // Đọc start_time
                 Timestamp startTs = rs.getTimestamp("start_time");
                 if (startTs != null) {
                     p.setStartTime(startTs.toLocalDateTime());
                 }
-                p.updateStatus(); // Tự cập nhật trạng thái theo thời gian thực
+
+                // ── BỔ SUNG: Đọc thêm cột end_time từ MySQL lên Java ──
+                Timestamp endTs = rs.getTimestamp("end_time");
+                if (endTs != null) {
+                    p.setEndTime(endTs.toLocalDateTime());
+                }
+
+                p.updateStatus();
                 return p;
             }
         } catch (SQLException e) { e.printStackTrace(); }

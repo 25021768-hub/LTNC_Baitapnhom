@@ -73,7 +73,9 @@ public class BidDetailController extends BaseController {
 
     private void updateDynamicInfo() {
         if (product == null) return;
-
+        if (product.getEndTime() == null && product.getStartTime() != null) {
+            product.setEndTime(product.getStartTime().plusHours(product.getDurationHours()));
+        }
         // Luôn luôn tính toán lại trạng thái dựa trên thời gian thực
         product.updateStatus();
 

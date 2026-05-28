@@ -30,22 +30,28 @@ import java.util.stream.Collectors;
 
 public class BidHistoryController extends MenuController {
 
-    @FXML private VBox historyContainer;
-    @FXML private TextField txtSearch;
-    @FXML private ComboBox<String> cbFilter;
-    @FXML private Label lblTotal;
-    @FXML private Label lblWin;
-    @FXML private Label lblWinRate;
+    @FXML
+    private VBox historyContainer;
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private ComboBox<String> cbFilter;
+    @FXML
+    private Label lblTotal;
+    @FXML
+    private Label lblWin;
+    @FXML
+    private Label lblWinRate;
 
     private ObservableList<BidHistory> allHistory = FXCollections.observableArrayList();
-
-
     private Timeline autoRefreshTimeline;
 
     @Override
     public void initialize() {
         // Khởi chạy đồng bộ và nạp dữ liệu lần đầu tiên
         DataStorage.autoCloseAndSaveExpiredProducts();
+
+        // Đã xóa bớt 1 hàm loadData() thừa bạn viết trùng ở đây
         loadData();
 
         // Lắng nghe combobox lọc trạng thái
@@ -53,7 +59,6 @@ public class BidHistoryController extends MenuController {
             cbFilter.setOnAction(e -> applyFilter());
         }
 
-        loadData();
         startAutoRefresh();
     }
 
@@ -62,18 +67,13 @@ public class BidHistoryController extends MenuController {
             autoRefreshTimeline.stop();
         }
 
-        // Cấu hình sự kiện lặp lại sau mỗi 5 giây
         autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-            // Sử dụng Thread riêng biệt để tránh nghẽn giao diện chính khi kết nối cơ sở dữ liệu
             Thread refreshThread = new Thread(() -> {
-                // 1. Quét và chốt trạng thái phiên nếu có sản phẩm vừa hết giờ
                 DataStorage.autoCloseAndSaveExpiredProducts();
 
-                // 2. Tải danh sách lịch sử mới từ DB
                 String me = DataStorage.currentAccount.getUsername();
                 List<BidHistory> list = DataStorage.getBidHistory(me);
 
-                // 3. Đưa dữ liệu trở lại luồng hiển thị chính
                 Platform.runLater(() -> {
                     allHistory.setAll(list);
                     updateSummary();
@@ -94,10 +94,21 @@ public class BidHistoryController extends MenuController {
             autoRefreshTimeline = null;
         }
     }
+
     private void loadData() {
         String me = DataStorage.currentAccount.getUsername();
         List<BidHistory> list = DataStorage.getBidHistory(me);
-        allHistory.setAll(list);
+
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+
+        // CHỈ LẤY PHIÊN ĐÃ KẾT THÚC THỰC SỰ
+        List<BidHistory> finishedList = list.stream()
+                .filter(h -> {
+                    return h.getEndTime() != null && h.getEndTime().isBefore(now);
+                })
+                .collect(Collectors.toList());
+
+        allHistory.setAll(finishedList);
         updateSummary();
         applyFilter();
     }
@@ -114,22 +125,28 @@ public class BidHistoryController extends MenuController {
                 ? cbFilter.getValue() : "All";
 
         List<BidHistory> filtered = allHistory.stream()
+                .filter(h -> "WIN".equalsIgnoreCase(h.getResult()) || "LOSE".equalsIgnoreCase(h.getResult()))
+
+                // Lọc theo từ khóa tìm kiếm tên sản phẩm
                 .filter(h -> keyword.isEmpty() ||
                         h.getProductName().toLowerCase().contains(keyword))
+
+                // Lọc theo ComboBox lựa chọn
                 .filter(h -> switch (filter) {
                     case "Thắng" -> "WIN".equals(h.getResult());
-                    case "Thua"  -> "LOSE".equals(h.getResult());
-                    default      -> true;
+                    case "Thua" -> "LOSE".equals(h.getResult());
+                    default -> true;
                 })
                 .collect(Collectors.toList());
 
         renderRows(filtered);
     }
+
     private void renderRows(List<BidHistory> list) {
         historyContainer.getChildren().clear();
 
         if (list.isEmpty()) {
-            Label empty = new Label("Không có lịch sử đấu giá nào");
+            Label empty = new Label("Không có lịch sử đấu giá nào đã kết thúc");
             empty.setStyle("-fx-font-size: 14; -fx-text-fill: #999;");
             empty.setPrefHeight(200);
             empty.setPrefWidth(839);
@@ -146,50 +163,63 @@ public class BidHistoryController extends MenuController {
                 Node row = loader.load();
                 BidderHistoryRowController ctrl = loader.getController();
                 ctrl.setData(h, updatedHistory -> {
-                    // Chạy trong luồng giao diện
                     javafx.application.Platform.runLater(() -> {
                         loadData();
-                    });});
+                    });
+                });
                 historyContainer.getChildren().add(row);
-            } catch (IOException e) { e.printStackTrace(); }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void updateSummary() {
-        int total  = allHistory.size();
-        long win   = allHistory.stream()
+        // Chỉ tính toán số liệu thống kê trên các phiên thực sự đã kết thúc
+        List<BidHistory> finishedRecords = allHistory.stream()
+                .filter(h -> "WIN".equalsIgnoreCase(h.getResult()) || "LOSE".equalsIgnoreCase(h.getResult()))
+                .collect(Collectors.toList());
+
+        int total = finishedRecords.size();
+        long win = finishedRecords.stream()
                 .filter(h -> "WIN".equals(h.getResult()))
                 .count();
         double rate = total > 0 ? ((double) win / total) * 100 : 0;
 
-        if (lblTotal   != null) lblTotal.setText(String.valueOf(total));
-        if (lblWin     != null) lblWin.setText(String.valueOf(win));
+        if (lblTotal != null) lblTotal.setText(String.valueOf(total));
+        if (lblWin != null) lblWin.setText(String.valueOf(win));
         if (lblWinRate != null) lblWinRate.setText(String.format("%.1f%%", rate));
     }
 
 
-    @FXML @Override
+    @FXML
+    @Override
     public void onMyProducts(ActionEvent event) {
         stopAutoRefresh();
         switchScene(event, SceneConfig.BIDDER_PRODUCT);
     }
 
-    @FXML @Override
-    public void onHistory(ActionEvent event) { }
+    @FXML
+    @Override
+    public void onHistory(ActionEvent event) {
+    }
 
-    @FXML @Override
+    @FXML
+    @Override
     public void onManage(ActionEvent event) {
         stopAutoRefresh();
         switchScene(event, SceneConfig.BIDDER_MANAGER);
     }
 
-    @FXML @Override
+    @FXML
+    @Override
     public void onAccount(ActionEvent event) {
         stopAutoRefresh();
         switchScene(event, SceneConfig.BIDDER_HOME);
     }
 
-    @FXML @Override
+    @FXML
+    @Override
     public void onLogout(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Xác nhận");
