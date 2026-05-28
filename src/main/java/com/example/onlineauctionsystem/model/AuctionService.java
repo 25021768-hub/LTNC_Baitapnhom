@@ -105,7 +105,7 @@ public class AuctionService {
 
         //Nếu tồn tại, kiểm tra xem hết hạn chưa
         if (p.getEndTime().isBefore(LocalDateTime.now())) {
-            DataStorage.closeExpiredAuctions();
+            DataStorage.autoCloseAndSaveExpiredProducts();
             return new AuctionMessage(AuctionMessage.Action.ERROR, "Phiên đấu giá này đã kết thúc!");
         }
 

@@ -14,6 +14,8 @@ public class BidHistoryController extends MenuController {
 
     @FXML private VBox historyContainer;
 
+    private void stopAutoRefresh(){}
+
     @FXML
     @Override
     public void onMyProducts(ActionEvent event) {

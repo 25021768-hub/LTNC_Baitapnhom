@@ -1,5 +1,6 @@
 package com.example.onlineauctionsystem.controller.bidder;
 import com.example.onlineauctionsystem.controller.BaseController;
+import com.example.onlineauctionsystem.model.BidHistory;
 import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.ProductImage;
@@ -180,13 +181,15 @@ public class BidDetailController extends BaseController {
         }
 
         // Cập nhật lại UI nếu phát hiện có người thay đổi giá trước đó một bước
-        if (latest.getCurrentPrice() != product.getCurrentPrice()) {
+        double priceDifference = Math.abs(latest.getCurrentPrice() - product.getCurrentPrice());
+
+        if (priceDifference > 0.001) {
             this.product = latest;
             updateDynamicInfo();
             showAlert("Thông báo",
-                    "Giá vừa được cập nhật!\n" +
+                    "Giá vừa được người khác cập nhật!\n" +
                             "Giá hiện tại: " + formatPrice(product.getCurrentPrice()) + "\n" +
-                            "Vui lòng nhập lại!");
+                            "Vui lòng nhập lại mức giá mới!");
             txtBidAmount.clear();
             return;
         }
@@ -207,6 +210,8 @@ public class BidDetailController extends BaseController {
         boolean ok = DataStorage.updateBid(product.getId(), bidAmount, bidder);
 
         if (ok) {
+            BidHistory bidHistory = new BidHistory(product.getId(), product.getName(), bidder, bidAmount, bidAmount , product.getEndTime(),"WIN", false);
+            DataStorage.saveBidHistory(bidHistory);
             showAlert("Thành công", "Đặt giá thành công: " + formatPrice(bidAmount));
             txtBidAmount.clear();
             Product freshSuccess = DataStorage.findProductById(product.getId());

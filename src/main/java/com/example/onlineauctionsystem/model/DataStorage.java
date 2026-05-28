@@ -313,23 +313,39 @@ public class DataStorage {
     }
 
     // Ghi lịch sử khi phiên đấu giá kết thúc
-    public static boolean saveBidHistory(String bidderName, String productId,
-                                         String productName, double myBid, double finalPrice,
-                                         LocalDateTime endTime, String result, boolean isPaid) {
-        String sql = "INSERT INTO bid_history (bidder_name, product_id, product_name, " +
-                "my_bid_price, final_price, end_time, result, is_paid) VALUES (?,?,?,?,?,?,?,?)";
+    public static boolean saveBidHistory(BidHistory bidH) {
+        String sql = """
+    INSERT INTO bid_history 
+        (bidder_name, product_id, product_name, my_bid_price, final_price, end_time, result, is_paid)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+        my_bid_price = GREATEST(my_bid_price, VALUES(my_bid_price)),
+        final_price  = VALUES(final_price),
+        end_time     = VALUES(end_time),
+        result       = VALUES(result)
+    """;
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, bidderName);
-            stmt.setString(2, productId);
-            stmt.setString(3, productName);
-            stmt.setDouble(4, myBid);
-            stmt.setDouble(5, finalPrice);
-            stmt.setTimestamp(6, Timestamp.valueOf(endTime));
-            stmt.setString(7, result);
-            stmt.setBoolean(8,isPaid);
+            stmt.setString(1, bidH.getBidderName());
+            stmt.setString(2, bidH.getProductId());
+            stmt.setString(3, bidH.getProductName());
+            stmt.setDouble(4, bidH.getMyBidPrice());
+            stmt.setDouble(5, bidH.getFinalPrice());
+
+            if (bidH.getEndTime() != null) {
+                stmt.setTimestamp(6, java.sql.Timestamp.valueOf(bidH.getEndTime()));
+            } else {
+                stmt.setNull(6, java.sql.Types.TIMESTAMP);
+            }
+
+            stmt.setString(7, bidH.getResult());
+            stmt.setInt(8, bidH.getPaid() ? 1 : 0);
+
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); return false; }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static double getMaxBidByBidderForProduct(String bidderName, String productId, double defaultPrice) {
@@ -444,6 +460,40 @@ public class DataStorage {
         }
     }
 
+    // Lấy tên seller theo productId
+    public static String getSellerByProductId(String productId) {
+        String sql = "SELECT seller_name FROM products WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getString("seller_name");
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
+
+    // Đánh dấu đã thanh toán trong bid_history và products
+    public static boolean markAsPaid(String productId, String bidderName) {
+        String sql1 = "UPDATE bid_history SET is_paid = true " +
+                "WHERE product_id = ? AND bidder_name = ? AND result = 'WIN'";
+        String sql2 = "UPDATE products SET status = 'PAID' WHERE id = ?";
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement s1 = conn.prepareStatement(sql1)) {
+                s1.setString(1, productId);
+                s1.setString(2, bidderName);
+                s1.executeUpdate();
+            }
+            try (PreparedStatement s2 = conn.prepareStatement(sql2)) {
+                s2.setString(1, productId);
+                s2.executeUpdate();
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Lấy số dư hiện tại của tài khoản
     public static double getBalance(String username) {
         String sql = "SELECT balance FROM accounts WHERE username = ?";
@@ -477,16 +527,13 @@ public class DataStorage {
 
 
     public static void autoCloseAndSaveExpiredProducts() {
-        // 1. Lấy danh sách sản phẩm đã hết giờ (end_time <= NOW) nhưng chưa có trong bảng bid_history
         String findExpiredSql = "SELECT id, name, current_price, highest_bidder FROM products " +
                 "WHERE end_time <= NOW() " +
                 "AND id NOT IN (SELECT DISTINCT product_id FROM bid_history)";
 
-        // 2. Câu lệnh lưu vào bảng lịch sử đấu giá
         String insertHistorySql = "INSERT INTO bid_history (bidder_name, product_id, product_name, my_bid_price, final_price, end_time, result, is_paid) " +
                 "VALUES (?, ?, ?, ?, ?, NOW(), ?, 0)";
 
-        // 3. Câu lệnh tìm tất cả những người đã từng ra giá cho sản phẩm này (để lưu trạng thái THUA)
         String findAllBiddersSql = "SELECT DISTINCT bidder_name, MAX(bid_amount) as max_bid FROM bids " +
                 "WHERE product_id = ? AND bidder_name != ? GROUP BY bidder_name";
 
@@ -495,52 +542,47 @@ public class DataStorage {
              ResultSet rs = selectStmt.executeQuery()) {
 
             while (rs.next()) {
-                int productId = rs.getInt("id");
+                String productId = rs.getString("id"); // SỬA THÀNH getString
                 String productName = rs.getString("name");
                 double finalPrice = rs.getDouble("current_price");
                 String winner = rs.getString("highest_bidder");
 
-                // TRƯỜNG HỢP 1: CÓ NGƯỜI THẮNG CUỘC (highest_bidder không thô/null)
-                if (winner != null && !winner.trim().isEmpty()) {
-
-                    // A. Lưu người THẮNG (WIN) vào bảng lịch sử
+                if (winner != null && !winner.trim().isEmpty() && !"None".equalsIgnoreCase(winner)) {
+                    // A. Lưu người THẮNG (WIN)
                     try (PreparedStatement insertStmt = conn.prepareStatement(insertHistorySql)) {
                         insertStmt.setString(1, winner);
-                        insertStmt.setInt(2, productId);
+                        insertStmt.setString(2, productId); // setString chuẩn UUID
                         insertStmt.setString(3, productName);
-                        insertStmt.setDouble(4, finalPrice); // Giá họ trả trúng bằng giá cuối
+                        insertStmt.setDouble(4, finalPrice);
                         insertStmt.setDouble(5, finalPrice);
                         insertStmt.setString(6, "WIN");
                         insertStmt.executeUpdate();
                     }
 
-                    // B. Tìm tất cả những người khác từng đấu giá sản phẩm này nhưng thất bại để lưu THUA (LOSE)
+                    // B. Tìm tất cả những người THUA (LOSE)
                     try (PreparedStatement bidderStmt = conn.prepareStatement(findAllBiddersSql)) {
-                        bidderStmt.setInt(1, productId);
-                        bidderStmt.setString(2, winner); // Loại trừ người thắng ra
+                        bidderStmt.setString(1, productId); // SỬA THÀNH setString
+                        bidderStmt.setString(2, winner);
                         try (ResultSet rsBidders = bidderStmt.executeQuery()) {
                             while (rsBidders.next()) {
                                 String loserName = rsBidders.getString("bidder_name");
                                 double loserMaxBid = rsBidders.getDouble("max_bid");
 
-                                // Lưu người THUA vào lịch sử
                                 try (PreparedStatement insertLooseStmt = conn.prepareStatement(insertHistorySql)) {
                                     insertLooseStmt.setString(1, loserName);
-                                    insertLooseStmt.setInt(2, productId);
+                                    insertLooseStmt.setString(2, productId); // setString chuẩn UUID
                                     insertLooseStmt.setString(3, productName);
-                                    insertLooseStmt.setDouble(4, loserMaxBid); // Mức giá lớn nhất họ từng trả
-                                    insertLooseStmt.setDouble(5, finalPrice);  // Giá cuối cùng của sản phẩm
+                                    insertLooseStmt.setDouble(4, loserMaxBid);
+                                    insertLooseStmt.setDouble(5, finalPrice);
                                     insertLooseStmt.setString(6, "LOSE");
                                     insertLooseStmt.executeUpdate();
                                 }
                             }
                         }
                     }
-                    System.out.println("[HỆ THỐNG] Đã chốt phiên tự động và lưu lịch sử cho sản phẩm ID: " + productId + " (Người thắng: " + winner + ")");
+                    System.out.println("[HỆ THỐNG] Đã chốt phiên tự động và lưu lịch sử cho sản phẩm UUID: " + productId);
                 } else {
-                    // TRƯỜNG HỢP 2: Phiên đấu giá kết thúc nhưng KHÔNG AI THAM GIA ĐẤU
-                    // Có thể bỏ qua hoặc lưu trạng thái sản phẩm bị hủy tùy nhu cầu của bạn.
-                    System.out.println("[HỆ THỐNG] Phiên đấu giá ID: " + productId + " kết thúc nhưng không có người tham gia.");
+                    System.out.println("[HỆ THỐNG] Phiên đấu giá UUID: " + productId + " kết thúc không có người mua.");
                 }
             }
         } catch (SQLException e) {

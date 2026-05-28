@@ -5,13 +5,31 @@ import java.time.LocalDateTime;
 public class BidHistory {
     private String productId;
     private String productName;
+    private String bidderName;
     private double myBidPrice;
     private double finalPrice;
     private LocalDateTime endTime;
     private String result; // "WIN" hoặc "LOSE"
     private boolean isPaid = false;
 
+    public BidHistory(String productId, String productName, String bidderName, double myBidPrice,
+                      double finalPrice, LocalDateTime endTime, String result, boolean isPaid) {
+        this.productId = productId;
+        this.productName = productName;
+        this.bidderName = bidderName;
+        this.myBidPrice = myBidPrice;
+        this.finalPrice = finalPrice;
+        this.endTime = endTime;
+        this.result = result;
+        this.isPaid = isPaid;
+    }
+    public BidHistory(){}
+
     // Getters & Setters
+    public String getBidderName(){return bidderName;}
+
+    public void setBidderName(String BidderName){this.bidderName = BidderName;}
+
     public String getProductId() {
         return productId;
     }

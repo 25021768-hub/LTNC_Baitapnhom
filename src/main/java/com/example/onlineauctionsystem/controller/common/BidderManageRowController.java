@@ -1,6 +1,4 @@
 package com.example.onlineauctionsystem.controller.common;
-
-import com.example.onlineauctionsystem.model.DataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.ProductImage;
 import javafx.event.ActionEvent;
