@@ -212,8 +212,6 @@ public class DataStorage {
 
     public static boolean updateBid(String productId, double newPrice, String bidderName) {
         // Chỉ update nếu newPrice > current_price hiện tại trong DB
-        // Nếu 2 người cùng gửi, người nào vào DB trước thắng
-        // Người sau sẽ bị từ chối vì newPrice <= current_price mới
         String sql = "UPDATE products SET current_price = ?, highest_bidder = ? " +
                 "WHERE id = ? AND status = 'RUNNING' AND current_price < ?";
         try (Connection conn = getConnection();
@@ -223,7 +221,17 @@ public class DataStorage {
             stmt.setString(3, productId);
             stmt.setDouble(4, newPrice); // ← điều kiện: giá hiện tại < giá mới
             int rows = stmt.executeUpdate();
-            return rows > 0; // 0 = bị người khác đặt trước
+
+            if (rows > 0) {
+                // 1. Tìm sản phẩm trong DB để lấy bước giá (bid_increment) chuẩn của nó
+                Product p = findProductById(productId);
+                if (p != null) {
+                    // 2. Kích hoạt chuỗi tự động nâng giá của hệ thống Auto Bid
+                    triggerAutoBidSystem(productId, newPrice, p.getBidIncrement());
+                }
+                return true;
+            }
+            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -640,5 +648,77 @@ public class DataStorage {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // 1. Hàm lưu khi người dùng bấm "Bật Auto Bid"
+    public static boolean setupAutoBid(String username, String productId, double maxPrice) {
+        String sql = "INSERT INTO auto_bids (username, product_id, max_price) VALUES (?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE max_price = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            stmt.setString(2, productId);
+            stmt.setDouble(3, maxPrice);
+            stmt.setDouble(4, maxPrice);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 2. Hàm kích hoạt tự động nâng giá khi có người khác đặt giá cao hơn
+    public static void triggerAutoBidSystem(String productId, double currentPrice, double bidIncrement) {
+        // 1. Tìm người có cấu hình Auto Bid cao nhất phù hợp với bước giá
+        String sql = "SELECT * FROM auto_bids WHERE product_id = ? AND max_price >= (? + ?) ORDER BY max_price DESC LIMIT 1";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productId);
+            stmt.setDouble(2, currentPrice);
+            stmt.setDouble(3, bidIncrement);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String autoUser = rs.getString("username");
+                    double maxPrice = rs.getDouble("max_price");
+                    double newPrice = currentPrice + bidIncrement;
+
+                    // 2. Kiểm tra số dư tài khoản thực tế của người dùng này
+                    double userBalance = getBalance(autoUser); // Hàm getBalance đã có sẵn trong DataStorage của bạn!
+
+                    if (userBalance >= newPrice) {
+                        // CẬP NHẬT GIÁ MỚI (Đủ tiền + Đủ điều kiện)
+                        String updateSql = "UPDATE products SET current_price = ?, highest_bidder = ? WHERE id = ?";
+                        try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                            updateStmt.setDouble(1, newPrice);
+                            updateStmt.setString(2, autoUser);
+                            updateStmt.setString(3, productId);
+                            updateStmt.executeUpdate();
+                        }
+
+                        System.out.println("[AutoBid] Hệ thống tự động nâng giá cho " + autoUser + " lên " + newPrice);
+
+                        // Tiếp tục đệ quy quét người tiếp theo
+                        triggerAutoBidSystem(productId, newPrice, bidIncrement);
+                    } else {
+                        System.out.println("[AutoBid] Người dùng " + autoUser + " không đủ tiền. Tự động hủy cấu hình AutoBid.");
+
+                        // Hủy cấu hình Auto Bid của người này để giải phóng Database
+                        String deleteSql = "DELETE FROM auto_bids WHERE username = ? AND product_id = ?";
+                        try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
+                            deleteStmt.setString(1, autoUser);
+                            deleteStmt.setString(2, productId);
+                            deleteStmt.executeUpdate();
+                        }
+
+                        //Gọi lại đệ quy ngay lập tức với mức giá giữ nguyên để xét người cao nhất tiếp theo!
+                        triggerAutoBidSystem(productId, currentPrice, bidIncrement);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
