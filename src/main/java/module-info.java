@@ -4,6 +4,7 @@ module com.example.onlineauctionsystem {
     requires java.sql;
     requires java.desktop;
 
+
     exports com.example.onlineauctionsystem.model;
     opens com.example.onlineauctionsystem.model to javafx.fxml, javafx.base;
 
