@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.chart.XYChart;
+
 public class DataStorage {
     private static final String URL = "jdbc:mysql://localhost:3306/online_auction";
     private static final String USER = "root";
@@ -223,6 +225,15 @@ public class DataStorage {
             int rows = stmt.executeUpdate();
 
             if (rows > 0) {
+                // 0. Ghi log thời gian thực hiện để phục vụ vẽ biểu đồ
+                String logSql = "INSERT INTO product_price_log (product_id, bidder_name, price_milestone) VALUES (?, ?, ?)";
+                try (PreparedStatement logStmt = conn.prepareStatement(logSql)) {
+                    logStmt.setString(1, productId);
+                    logStmt.setString(2, bidderName);
+                    logStmt.setDouble(3, newPrice);
+                    logStmt.executeUpdate();
+                }
+
                 // 1. Tìm sản phẩm trong DB để lấy bước giá (bid_increment) chuẩn của nó
                 Product p = findProductById(productId);
                 if (p != null) {
@@ -699,6 +710,15 @@ public class DataStorage {
 
                         System.out.println("[AutoBid] Hệ thống tự động nâng giá cho " + autoUser + " lên " + newPrice);
 
+                        //Biểu đồ ghi nhập cả đặt giá tự động
+                        String logSql = "INSERT INTO product_price_log (product_id, bidder_name, price_milestone) VALUES (?, ?, ?)";
+                        try (PreparedStatement logStmt = conn.prepareStatement(logSql)) {
+                            logStmt.setString(1, productId);
+                            logStmt.setString(2, autoUser);
+                            logStmt.setDouble(3, newPrice);
+                            logStmt.executeUpdate();
+                        }
+
                         // Tiếp tục đệ quy quét người tiếp theo
                         triggerAutoBidSystem(productId, newPrice, bidIncrement);
                     } else {
@@ -720,5 +740,30 @@ public class DataStorage {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static XYChart.Series<String, Number> getProductChartData(String productId, String productName) {
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(productName); // Tên sản phẩm hiển thị ở chú thích biểu đồ
+
+        // Lấy Giờ:Phút:Giây và Mức giá tăng dần theo thời gian
+        String sql = "SELECT DATE_FORMAT(recorded_at, '%H:%i:%s') as bid_time, price_milestone " +
+                "FROM product_price_log WHERE product_id = ? ORDER BY recorded_at ASC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String time = rs.getString("bid_time");         // Trục X (Thời gian)
+                    double price = rs.getDouble("price_milestone"); // Trục Y (Giá tiền)
+
+                    series.getData().add(new XYChart.Data<>(time, price));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return series;
     }
 }
