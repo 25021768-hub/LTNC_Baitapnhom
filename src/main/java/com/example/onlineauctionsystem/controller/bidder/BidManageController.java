@@ -181,15 +181,15 @@ public class BidManageController extends MenuController {
 
         stopAutoRefresh();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneConfig.BID_PRODUCT.getPath()));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneConfig.BIDDER_WINDOW.getPath()));
             Parent root = loader.load();
 
-            BidDetailController ctrl = loader.getController();
+            AuctionController ctrl = loader.getController();
             ctrl.setProduct(p);
 
             Stage stage = (Stage) rowsContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle(SceneConfig.BID_PRODUCT.getTitle());
+            stage.setTitle(SceneConfig.BIDDER_WINDOW.getTitle());
         } catch (IOException e) {
             e.printStackTrace();
         }

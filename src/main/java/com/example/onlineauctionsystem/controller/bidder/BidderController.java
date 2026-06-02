@@ -139,17 +139,17 @@ public class BidderController extends MenuController {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(SceneConfig.BID_PRODUCT.getPath())
+                    getClass().getResource(SceneConfig.BIDDER_WINDOW.getPath())
             );
             Parent root = loader.load();
 
             // Truyền product sang trang đấu giá
-            BidDetailController ctrl = loader.getController();
+            AuctionController ctrl = loader.getController();
             ctrl.setProduct(p);
 
             Stage stage = (Stage) productContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle(SceneConfig.BID_PRODUCT.getTitle());
+            stage.setTitle(SceneConfig.BIDDER_WINDOW.getTitle());
 
         } catch (IOException e) {
             e.printStackTrace();
