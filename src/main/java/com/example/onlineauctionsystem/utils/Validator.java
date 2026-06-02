@@ -3,8 +3,12 @@ package com.example.onlineauctionsystem.utils;
 public class Validator {
     // 1. Kiểm tra định dạng Email
     public static boolean isValidEmail(String email) {
-        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        return email != null && email.matches(regex);
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+        // Regex chỉ chấp nhận đuôi @gmail.com
+        String gmailPattern = "^[a-zA-Z0-9.]+@gmail\\.com$";
+        return email.matches(gmailPattern);
     }
 
     // 2. Kiểm tra CCCD đúng 12 số
