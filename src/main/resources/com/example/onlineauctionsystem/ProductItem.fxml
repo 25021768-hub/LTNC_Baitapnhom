@@ -11,23 +11,22 @@
 <GridPane xmlns="http://javafx.com/javafx/23.0.6"
           xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.example.onlineauctionsystem.controller.common.ProductItemController"
-          prefWidth="777.0"
+          maxWidth="1.7976931348623157E308"
           style="-fx-background-color: white;">
 
     <columnConstraints>
-        <ColumnConstraints minWidth="140.0" maxWidth="140.0" prefWidth="140.0" />
-        <ColumnConstraints minWidth="130.0" maxWidth="130.0" prefWidth="130.0" />
-        <ColumnConstraints minWidth="115.0" maxWidth="115.0" prefWidth="115.0" />
-        <ColumnConstraints minWidth="115.0" maxWidth="115.0" prefWidth="115.0" />
-        <ColumnConstraints minWidth="110.0" maxWidth="110.0" prefWidth="110.0" />
-        <ColumnConstraints minWidth="110.0" maxWidth="110.0" prefWidth="110.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="140.0" prefWidth="140.0" maxWidth="140.0" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" prefWidth="130.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="115.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="115.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="110.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="110.0" />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints minHeight="130.0" maxHeight="130.0" prefHeight="130.0" />
     </rowConstraints>
 
     <children>
-        <!-- Cột 0: Hình ảnh -->
         <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;">
             <GridPane.margin>
                 <Insets top="5.0" bottom="5.0" left="5.0" right="5.0" />
@@ -50,41 +49,36 @@
             </children>
         </StackPane>
 
-        <!-- Cột 1: Tên sản phẩm -->
         <Label fx:id="lblName" text="---"
-               prefHeight="130.0" prefWidth="100.0"
-               wrapText="true" GridPane.columnIndex="1">
+               prefHeight="130.0" maxWidth="1.7976931348623157E308"
+               wrapText="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
             <font><Font size="14.0" /></font>
-            <GridPane.margin><Insets left="5.0" /></GridPane.margin>
+            <GridPane.margin><Insets left="5.0" right="5.0" /></GridPane.margin>
         </Label>
 
-        <!-- Cột 2: Giá hiện tại -->
         <Label fx:id="lblCurrentPrice" text="---"
-               prefHeight="130.0" prefWidth="115.0"
+               prefHeight="130.0" maxWidth="1.7976931348623157E308"
                wrapText="true" GridPane.columnIndex="2">
             <font><Font size="14.0" /></font>
             <padding><Insets left="5.0" /></padding>
         </Label>
 
-        <!-- Cột 3: Giá khởi điểm -->
         <Label fx:id="lblStartPrice" text="---"
-               prefHeight="130.0" prefWidth="115.0"
+               prefHeight="130.0" maxWidth="1.7976931348623157E308"
                wrapText="true" GridPane.columnIndex="3">
             <font><Font size="14.0" /></font>
             <padding><Insets left="5.0" /></padding>
         </Label>
 
-        <!-- Cột 4: Bước giá -->
         <Label fx:id="lblStep" text="---"
-               prefHeight="130.0" prefWidth="110.0"
+               prefHeight="130.0" maxWidth="1.7976931348623157E308"
                wrapText="true" GridPane.columnIndex="4">
             <font><Font size="14.0" /></font>
             <padding><Insets left="5.0" /></padding>
         </Label>
 
-        <!-- Cột 5: Thời gian còn lại -->
         <Label fx:id="lblTime" text="--:--:--"
-               prefHeight="130.0" prefWidth="110.0"
+               prefHeight="130.0" maxWidth="1.7976931348623157E308"
                wrapText="true" GridPane.columnIndex="5">
             <font><Font size="14.0" /></font>
             <padding><Insets left="5.0" /></padding>

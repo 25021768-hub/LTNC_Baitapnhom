@@ -5,23 +5,32 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane fx:id="rowContainer" alignment="CENTER_LEFT" minWidth="839.0" prefHeight="40.0" style="-fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0; -fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.common.BidderHistoryRowController">
+<GridPane fx:id="rowContainer" alignment="CENTER_LEFT"
+          prefHeight="40.0"
+          style="-fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0; -fx-background-color: white;"
+          xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.example.onlineauctionsystem.controller.common.BidderHistoryRowController">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <!-- Tên sản phẩm: ưu tiên chiếm không gian -->
+        <ColumnConstraints hgrow="ALWAYS" minWidth="150.0" prefWidth="200.0" />
+        <!-- Các cột còn lại: chia đều -->
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="75.0" prefWidth="100.0" />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Label fx:id="lblProductName" text="Tên sản phẩm" GridPane.columnIndex="0">
-            <padding><Insets left="5.0" /></padding></Label>
+        <Label fx:id="lblProductName" text="Tên sản phẩm"
+               maxWidth="1.7976931348623157E308" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS">
+            <padding><Insets left="5.0" /></padding>
+        </Label>
         <Label fx:id="lblMyBidPrice" text="0đ" GridPane.columnIndex="1" />
         <Label fx:id="lblFinalPrice" text="0đ" GridPane.columnIndex="2" />
         <Label fx:id="lblEndTime" text="Ngày kết thúc" GridPane.columnIndex="3" />
-        <Label fx:id="lblStatusBadge" alignment="CENTER" prefWidth="75.0" text="TRẠNG THÁI" GridPane.columnIndex="4" />
+        <Label fx:id="lblStatusBadge" alignment="CENTER" prefWidth="75.0"
+               text="TRẠNG THÁI" GridPane.columnIndex="4" />
     </children>
 </GridPane>
