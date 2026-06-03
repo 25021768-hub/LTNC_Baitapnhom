@@ -306,6 +306,8 @@ public class AuctionController extends BaseController {
                 boolean isSaved = DataStorage.setupAutoBid(username, product.getId(), maxPriceLimit);
 
                 if (isSaved) {
+                    autoStepField.setDisable(true);
+                    autoMaxField.setDisable(true);
                     // Đồng bộ giao diện sang chế độ KÍCH HOẠT (ACTIVE) theo FXML style
                     autoToggle.setText("Bật");
                     autoToggle.setStyle("-fx-background-color: #3cc41e; -fx-background-radius: 12; -fx-text-fill: white;");
