@@ -41,6 +41,8 @@ public class SellerController extends MenuController {
             renderProductList();
             updateFooter();
         } );
+        renderProductList();
+        updateFooter();
         startAutoRefresh();
     }
     private List<Product> fetchMyProducts(){

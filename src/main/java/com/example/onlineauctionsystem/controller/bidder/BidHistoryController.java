@@ -107,7 +107,16 @@ public class BidHistoryController extends MenuController {
                     return h.getEndTime() != null && h.getEndTime().isBefore(now);
                 })
                 .collect(Collectors.toList());
-
+        if (finishedList.isEmpty()) {
+            historyContainer.getChildren().clear();
+            Label empty = new Label("Bạn chưa có lịch sử đấu giá nào");
+            empty.setStyle("-fx-font-size: 16; -fx-text-fill: #999999;");
+            empty.setPrefWidth(839);
+            empty.setPrefHeight(380);
+            empty.setAlignment(javafx.geometry.Pos.CENTER);
+            historyContainer.getChildren().add(empty);
+            return;
+        }
         allHistory.setAll(finishedList);
         updateSummary();
         applyFilter();
