@@ -56,6 +56,7 @@ public class BidderHistoryRowController {
             }
         } else {
             // Thua
+            lblStatusBadge.setOnMouseClicked(null);
             lblStatusBadge.setText("THUA");
             lblStatusBadge.setTextFill(Color.web("#ff0101"));
             lblStatusBadge.setStyle("-fx-border-color: #ff0101; -fx-border-radius: 10;");
