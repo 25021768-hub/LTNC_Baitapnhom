@@ -253,8 +253,6 @@ public class AuctionController extends BaseController {
         boolean ok = DataStorage.updateBid(product.getId(), bidAmount, bidder);
 
         if (ok) {
-            BidHistory bidHistory = new BidHistory(product.getId(), product.getName(), bidder, bidAmount, bidAmount , product.getEndTime(),"WIN", false);
-            DataStorage.saveBidHistory(bidHistory);
             showAlert("Thành công", "Đặt giá thành công: " + formatPrice(bidAmount));
             txtBidAmount.clear();
             Product freshSuccess = DataStorage.findProductById(product.getId());
