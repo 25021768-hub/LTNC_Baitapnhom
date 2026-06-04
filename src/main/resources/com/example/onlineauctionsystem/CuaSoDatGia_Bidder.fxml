@@ -29,35 +29,26 @@
                            </graphic>
                            <cursor>
                               <Cursor fx:constant="HAND" />
-                           </cursor></Button>
+                           </cursor>
+                        </Button>
                      </children>
                   </StackPane>
-
-                  <!-- Hàng trên: 2 card -->
                   <HBox spacing="12.0">
                      <children>
-
-                        <!-- Card trái: Thông tin sản phẩm -->
                         <VBox spacing="0.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" HBox.hgrow="ALWAYS">
                            <padding>
                               <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
                            </padding>
                            <children>
-
-                              <!-- Tiêu đề card -->
                               <Label style="-fx-font-weight: bold; -fx-font-size: 13;" text="THÔNG TIN HIỆN TẠI" textFill="#1357b7">
                                  <VBox.margin><Insets bottom="10.0" /></VBox.margin>
                               </Label>
-
-                              <!-- Hình ảnh sản phẩm -->
-                              <AnchorPane maxWidth="1.7976931348623157E308" prefHeight="180.0" style="-fx-background-color: #f5f5f3; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8;">
+                              <Pane fx:id="imgContainer" maxWidth="1.7976931348623157E308" prefHeight="180.0" VBox.vgrow="ALWAYS" style="-fx-background-color: #f5f5f3; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8;">
                                  <VBox.margin><Insets bottom="12.0" /></VBox.margin>
                                  <children>
-                                    <ImageView fx:id="imgProduct" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" />
+                                    <ImageView fx:id="imgProduct" pickOnBounds="true" preserveRatio="true" />
                                  </children>
-                              </AnchorPane>
-
-                              <!-- Dòng: Sản phẩm -->
+                              </Pane>
                               <HBox spacing="8.0" style="-fx-border-color: transparent transparent #e8e8e8 transparent; -fx-border-width: 0 0 0.5 0;">
                                  <padding><Insets bottom="7.0" top="7.0" /></padding>
                                  <children>
@@ -66,8 +57,6 @@
                                     <Label fx:id="lblProductName" style="-fx-font-weight: bold; -fx-font-size: 14;" text="Laptop Dell XPS 15" />
                                  </children>
                               </HBox>
-
-                              <!-- Dòng: Người dẫn đầu -->
                               <HBox spacing="8.0" style="-fx-border-color: transparent transparent #e8e8e8 transparent; -fx-border-width: 0 0 0.5 0;">
                                  <padding><Insets bottom="7.0" top="7.0" /></padding>
                                  <children>
@@ -76,8 +65,6 @@
                                     <Label fx:id="lblHighestBidder" style="-fx-font-weight: bold; -fx-font-size: 14;" text="Nguyễn Văn A" />
                                  </children>
                               </HBox>
-
-                              <!-- Dòng: Giá hiện tại -->
                               <HBox spacing="8.0" style="-fx-border-color: transparent transparent #e8e8e8 transparent; -fx-border-width: 0 0 0.5 0;">
                                  <padding><Insets bottom="7.0" top="7.0" /></padding>
                                  <children>
@@ -86,8 +73,6 @@
                                     <Label fx:id="lblCurrentPrice" style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-fill: #00840f;" text="3,500,000đ" />
                                  </children>
                               </HBox>
-
-                              <!-- Dòng: Bước giá -->
                               <HBox spacing="8.0" style="-fx-border-color: transparent transparent #e8e8e8 transparent; -fx-border-width: 0 0 0.5 0;">
                                  <padding><Insets bottom="7.0" top="7.0" /></padding>
                                  <children>
@@ -96,8 +81,6 @@
                                     <Label fx:id="lblStep" style="-fx-font-weight: bold; -fx-font-size: 14;" text="100,000đ" />
                                  </children>
                               </HBox>
-
-                              <!-- Dòng: Thời gian còn lại -->
                               <HBox spacing="8.0">
                                  <padding><Insets bottom="7.0" top="7.0" /></padding>
                                  <children>
@@ -106,48 +89,31 @@
                                     <Label fx:id="lblTime" style="-fx-font-weight: bold; -fx-font-size: 14;" text="09:47" />
                                  </children>
                               </HBox>
-
                            </children>
                         </VBox>
-
-                        <!-- Card phải: Đặt giá -->
                         <VBox spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" HBox.hgrow="ALWAYS">
                            <padding>
                               <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
                            </padding>
                            <children>
-
-                              <!-- Tiêu đề -->
                               <Label style="-fx-font-weight: bold; -fx-font-size: 13;" text="ĐẶT GIÁ THỦ CÔNG" textFill="#1357b7" />
-
-                              <!-- Số dư -->
                               <HBox alignment="CENTER_LEFT" spacing="6.0">
                                  <children>
                                     <Label style="-fx-font-size: 13; -fx-text-fill: #888780;" text="Số dư khả dụng:" />
                                     <Label fx:id="lblBalance" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #00840f;" text="5,000,000đ" />
                                  </children>
                               </HBox>
-
-                              <!-- Input nhập giá -->
                               <TextField fx:id="txtBidAmount" maxWidth="1.7976931348623157E308" promptText="Nhập số tiền.." style="-fx-background-color: white; -fx-border-color: #1357b7; -fx-border-radius: 5;" />
-
-                              <!-- Nút đặt giá -->
                               <Button fx:id="placeBidBtn" maxWidth="1.7976931348623157E308" onAction="#onPlaceBid" style="-fx-background-color: #3cc41e; -fx-background-radius: 10; -fx-text-fill: white;" text="+ Đặt giá thầu">
                                  <font><Font name="System Bold" size="13.0" /></font>
                               </Button>
-
-                              <!-- Lưu ý giá tối thiểu -->
                               <HBox alignment="CENTER_LEFT" spacing="4.0">
                                  <children>
                                     <Label style="-fx-font-size: 12; -fx-text-fill: #888780;" text="Lưu ý: Giá nhỏ nhất là" />
                                     <Label fx:id="lblMinBid" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #00840f;" text="3,600,000đ" />
                                  </children>
                               </HBox>
-
-                              <!-- Separator -->
                               <Pane maxWidth="1.7976931348623157E308" prefHeight="1.0" style="-fx-background-color: #e8e8e8;" />
-
-                              <!-- Auto Bid toggle -->
                               <HBox alignment="CENTER_LEFT" spacing="12.0">
                                  <children>
                                     <Label style="-fx-font-weight: bold; -fx-font-size: 14;" text="Auto Bid" textFill="#1357b7" />
@@ -155,8 +121,6 @@
                                     <Label fx:id="autoStatusBadge" style="-fx-background-color: #E6F1FB; -fx-text-fill: #185FA5; -fx-font-size: 11; -fx-background-radius: 10; -fx-padding: 2 8 2 8;" text="" visible="false" />
                                  </children>
                               </HBox>
-
-                              <!-- Grid: bước giá + giới hạn -->
                               <GridPane hgap="8.0" vgap="4.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
@@ -173,22 +137,16 @@
                                     <TextField fx:id="autoMaxField" disable="false" maxWidth="1.7976931348623157E308" promptText="VD: 4,500,000" style="-fx-background-color: white; -fx-border-color: #1357b7; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                  </children>
                               </GridPane>
-
-                              <!-- Status auto bid -->
                               <HBox alignment="CENTER_LEFT" spacing="8.0" style="-fx-background-color: #f5f5f3; -fx-background-radius: 8; -fx-padding: 8 10 8 10;">
                                  <children>
                                     <Label fx:id="autoDot" style="-fx-text-fill: #888780; -fx-font-size: 10;" text="●" />
                                     <Label fx:id="autoStatusText" style="-fx-font-size: 12; -fx-text-fill: #888780;" text="Auto bid chưa kích hoạt" />
                                  </children>
                               </HBox>
-
                            </children>
                         </VBox>
-
                      </children>
                   </HBox>
-
-                  <!-- Card biểu đồ -->
                   <VBox spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);" VBox.vgrow="ALWAYS">
                      <padding>
                         <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
@@ -205,7 +163,6 @@
                         </LineChart>
                      </children>
                   </VBox>
-
                </children>
             </VBox>
          </content>
