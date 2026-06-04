@@ -33,13 +33,13 @@
                 </StackPane.margin>
             </ImageView>
         </children>
-      <effect>
-         <DropShadow>
-            <color>
-               <Color red="0.5372549295425415" green="0.5372549295425415" blue="0.5372549295425415" />
-            </color>
-         </DropShadow>
-      </effect>
+        <effect>
+            <DropShadow>
+                <color>
+                    <Color red="0.5372549295425415" green="0.5372549295425415" blue="0.5372549295425415" />
+                </color>
+            </DropShadow>
+        </effect>
     </StackPane>
 
     <GridPane vgap="4.0" GridPane.columnIndex="1">
@@ -52,7 +52,7 @@
             <RowConstraints maxHeight="24.0" minHeight="24.0" prefHeight="24.0" vgrow="NEVER" />
         </rowConstraints>
         <children>
-            <Label fx:id="lblName" alignment="TOP_LEFT" text="Tên sản phẩm..." wrapText="true" GridPane.rowIndex="0">
+            <Label fx:id="lblName" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" text="Tên sản phẩm..." wrapText="true" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS">
                 <font>
                     <Font name="System Bold" size="14.5" />
                 </font>

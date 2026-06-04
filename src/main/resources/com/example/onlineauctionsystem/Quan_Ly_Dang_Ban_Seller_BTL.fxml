@@ -9,114 +9,90 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox fx:controller="com.example.onlineauctionsystem.controller.seller.SellerManageController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:controller="com.example.onlineauctionsystem.controller.seller.SellerManageController"
+      maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+      minHeight="700.0" minWidth="900.0"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox minHeight="78.0" prefHeight="78.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
+      <HBox minHeight="78.0" prefHeight="78.0" spacing="10.0"
+            style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
          <children>
-            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="286.0">
+            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="286.0" HBox.hgrow="NEVER">
                <children>
                   <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
+                     <HBox.margin><Insets /></HBox.margin>
                      <image>
                         <Image url="@../../../Kho_anh/vnu-uet-removebg-preview.png" />
                      </image>
                   </ImageView>
                   <Label text="ĐẤU GIÁ UET" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="3.0" />
-                     </HBox.margin>
+                     <font><Font name="System Bold" size="20.0" /></font>
+                     <HBox.margin><Insets left="3.0" /></HBox.margin>
                   </Label>
                </children>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="74.0" prefWidth="702.0" spacing="10.0">
+            <HBox alignment="CENTER" prefHeight="74.0" spacing="10.0" HBox.hgrow="ALWAYS">
                <children>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onMyProducts" prefHeight="75.0" prefWidth="161.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Sản phẩm của tôi">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/TuiSachKinhDoanh.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/TuiSachKinhDoanh.png" /></image>
                               </ImageView>
                            </graphic>
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="92.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử hàng đã bán">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/LichSuDaBan.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/LichSuDaBan.png" /></image>
                               </ImageView>
                            </graphic>
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" layoutX="237.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onManage" prefHeight="106.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Quản lý đăng bán">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/QuanLyDangBan.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/QuanLyDangBan.png" /></image>
                               </ImageView>
                            </graphic>
                            <effect>
                               <DropShadow>
-                                 <color>
-                                    <Color red="1.0" green="1.0" blue="1.0" />
-                                 </color>
+                                 <color><Color red="1.0" green="1.0" blue="1.0" /></color>
                               </DropShadow>
                            </effect>
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" layoutX="276.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onAccount" prefHeight="105.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/user.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/user.png" /></image>
                               </ImageView>
                            </graphic>
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" layoutX="293.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onLogout" prefHeight="100.0" prefWidth="141.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/logout.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/logout.png" /></image>
                               </ImageView>
                            </graphic>
                         </Button>
@@ -124,15 +100,16 @@
                   </VBox>
                </children>
             </HBox>
-         </children></HBox>
-      <ScrollPane prefHeight="628.0" prefWidth="900.0">
+         </children>
+      </HBox>
+
+      <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
          <content>
-            <VBox alignment="TOP_LEFT" prefWidth="900.0" spacing="25.0">
+            <VBox alignment="TOP_LEFT" spacing="25.0">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
                <children>
-                  <!-- Nút đăng bán -->
                   <Button fx:id="btnAddProduct"
                           mnemonicParsing="false"
                           onAction="#onAddProduct"
@@ -143,16 +120,13 @@
                      <cursor><Cursor fx:constant="HAND" /></cursor>
                   </Button>
 
-                  <!-- Tiêu đề -->
                   <Label text="SẢN PHẨM ĐANG CHỜ PHÊ DUYỆT">
                      <font><Font name="System Bold" size="20.0" /></font>
                   </Label>
 
-                  <!-- Container card — Controller tự add vào đây -->
                   <FlowPane fx:id="pendingContainer"
                             hgap="20.0" vgap="20.0"
-                            prefWidth="860.0" />
-
+                            maxWidth="1.7976931348623157E308" />
                </children>
             </VBox>
          </content>

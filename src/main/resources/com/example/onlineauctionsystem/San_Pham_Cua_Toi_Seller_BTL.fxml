@@ -8,114 +8,90 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox fx:controller="com.example.onlineauctionsystem.controller.seller.SellerController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:controller="com.example.onlineauctionsystem.controller.seller.SellerController"
+      maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+      minHeight="700.0" minWidth="900.0"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox prefHeight="78.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
+      <HBox minHeight="78.0" prefHeight="78.0" spacing="10.0"
+            style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
          <children>
-            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="286.0">
+            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="286.0" HBox.hgrow="NEVER">
                <children>
                   <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
+                     <HBox.margin><Insets /></HBox.margin>
                      <image>
                         <Image url="@../../../Kho_anh/vnu-uet-removebg-preview.png" />
                      </image>
                   </ImageView>
                   <Label text="ĐẤU GIÁ UET" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="3.0" />
-                     </HBox.margin>
+                     <font><Font name="System Bold" size="20.0" /></font>
+                     <HBox.margin><Insets left="3.0" /></HBox.margin>
                   </Label>
                </children>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="74.0" prefWidth="702.0" spacing="10.0">
+            <HBox alignment="CENTER" prefHeight="74.0" spacing="10.0" HBox.hgrow="ALWAYS">
                <children>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onMyProducts" prefHeight="75.0" prefWidth="161.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Sản phẩm của tôi">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/TuiSachKinhDoanh.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/TuiSachKinhDoanh.png" /></image>
                               </ImageView>
                            </graphic>
                            <effect>
                               <DropShadow>
-                                 <color>
-                                    <Color red="1.0" green="1.0" blue="1.0" />
-                                 </color>
+                                 <color><Color red="1.0" green="1.0" blue="1.0" /></color>
                               </DropShadow>
                            </effect>
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="92.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử hàng đã bán">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/LichSuDaBan.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/LichSuDaBan.png" /></image>
                               </ImageView>
                            </graphic>
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" layoutX="237.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onManage" prefHeight="106.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Quản lý đăng bán">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/QuanLyDangBan.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/QuanLyDangBan.png" /></image>
                               </ImageView>
                            </graphic>
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" layoutX="276.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onAccount" prefHeight="105.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/user.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/user.png" /></image>
                               </ImageView>
                            </graphic>
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" layoutX="293.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
+                  <VBox alignment="CENTER" prefWidth="117.0">
                      <children>
                         <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onLogout" prefHeight="100.0" prefWidth="141.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
+                           <font><Font size="10.0" /></font>
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/logout.png" />
-                                 </image>
+                                 <image><Image url="@../../../Kho_anh/logout.png" /></image>
                               </ImageView>
                            </graphic>
                         </Button>
@@ -123,93 +99,72 @@
                   </VBox>
                </children>
             </HBox>
-         </children></HBox>
-      <AnchorPane prefHeight="622.0" prefWidth="900.0">
+         </children>
+      </HBox>
+
+      <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+         <padding><Insets bottom="30.0" left="60.0" right="60.0" top="20.0" /></padding>
          <children>
-            <Label layoutX="318.0" layoutY="53.0" text="CÁC SẢN PHẨM ĐANG BÁN">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
+            <Label text="CÁC SẢN PHẨM ĐANG BÁN">
+               <font><Font name="System Bold" size="20.0" /></font>
             </Label>
-            <VBox alignment="TOP_CENTER" layoutX="66.0" layoutY="104.0" prefHeight="458.0" prefWidth="786.0" style="-fx-background-radius: 10; -fx-background-color: white; -fx-border-radius: 10;" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="100.0">
-               <effect>
-                  <DropShadow />
-               </effect>
+
+            <VBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS"
+                  style="-fx-background-radius: 10; -fx-background-color: white; -fx-border-radius: 10;">
+               <effect><DropShadow /></effect>
                <children>
-                  <GridPane prefHeight="35.0" prefWidth="780.0" style="-fx-background-color: #c4c4c4; -fx-border-radius: 10 10 0 0; -fx-background-radius: 10 10 0 0;">
+                  <GridPane minHeight="50.0" prefHeight="50.0"
+                            style="-fx-background-color: #c4c4c4; -fx-border-radius: 10 10 0 0; -fx-background-radius: 10 10 0 0;">
                      <columnConstraints>
-                        <ColumnConstraints minWidth="140.0" maxWidth="140.0" prefWidth="140.0" />
-                        <ColumnConstraints minWidth="130.0" maxWidth="130.0" prefWidth="130.0" />
-                        <ColumnConstraints minWidth="115.0" maxWidth="115.0" prefWidth="115.0" />
-                        <ColumnConstraints minWidth="115.0" maxWidth="115.0" prefWidth="115.0" />
-                        <ColumnConstraints minWidth="110.0" maxWidth="110.0" prefWidth="110.0" />
-                        <ColumnConstraints minWidth="110.0" maxWidth="110.0" prefWidth="110.0" />
+                        <ColumnConstraints hgrow="NEVER" minWidth="140.0" prefWidth="140.0" maxWidth="140.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" prefWidth="130.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="115.0" maxWidth="115.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="115.0" maxWidth="115.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="110.0" maxWidth="110.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" prefWidth="110.0" maxWidth="110.0" />
                      </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="50.0" prefHeight="50.0" maxHeight="50.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
                      <children>
-                        <Label prefHeight="18.0" prefWidth="90.0" text="Hình ảnh">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <GridPane.margin>
-                              <Insets left="5.0" />
-                           </GridPane.margin>
+                        <Label prefHeight="18.0" text="Hình ảnh">
+                           <font><Font name="System Bold" size="14.0" /></font>
+                           <GridPane.margin><Insets left="5.0" /></GridPane.margin>
                         </Label>
-                        <Label layoutX="10.0" layoutY="25.0" prefHeight="20.0" prefWidth="124.0" text="Tên sản phẩm" GridPane.columnIndex="1">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
+                        <Label prefHeight="20.0" text="Tên sản phẩm" GridPane.columnIndex="1">
+                           <font><Font name="System Bold" size="14.0" /></font>
+                           <padding><Insets left="5.0" /></padding>
                         </Label>
-                        <Label layoutX="100.0" layoutY="25.0" prefHeight="18.0" prefWidth="90.0" text="Giá hiện tại" GridPane.columnIndex="2">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
+                        <Label prefHeight="18.0" text="Giá hiện tại" GridPane.columnIndex="2">
+                           <font><Font name="System Bold" size="14.0" /></font>
+                           <padding><Insets left="5.0" /></padding>
                         </Label>
-                        <Label layoutX="299.0" layoutY="25.0" prefHeight="50.0" prefWidth="104.0" text="Giá khởi điểm" wrapText="true" GridPane.columnIndex="3">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
+                        <Label prefHeight="50.0" text="Giá khởi điểm" wrapText="true" GridPane.columnIndex="3">
+                           <font><Font name="System Bold" size="14.0" /></font>
+                           <padding><Insets left="5.0" /></padding>
                         </Label>
-                        <Label layoutX="397.0" layoutY="25.0" prefHeight="20.0" prefWidth="97.0" text="Bước giá" GridPane.columnIndex="4">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
+                        <Label prefHeight="20.0" text="Bước giá" GridPane.columnIndex="4">
+                           <font><Font name="System Bold" size="14.0" /></font>
+                           <padding><Insets left="5.0" /></padding>
                         </Label>
-                        <Label layoutX="496.0" layoutY="25.0" prefHeight="18.0" prefWidth="90.0" text="Thời gian" GridPane.columnIndex="5">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
+                        <Label prefHeight="18.0" text="Thời gian" GridPane.columnIndex="5">
+                           <font><Font name="System Bold" size="14.0" /></font>
+                           <padding><Insets left="5.0" /></padding>
                         </Label>
                      </children>
                   </GridPane>
-                  <ScrollPane hbarPolicy="NEVER" prefHeight="387.0" prefWidth="780.0">
+
+                  <ScrollPane hbarPolicy="NEVER" fitToWidth="true" VBox.vgrow="ALWAYS">
                      <content>
-                        <VBox fx:id="productListContainer" prefWidth="777.0" spacing="5.0">
-                           <padding>
-                              <Insets top="5.0" />
-                           </padding>
-                           <!-- KHÔNG có gì ở đây, để Controller tự add -->
+                        <VBox fx:id="productListContainer" spacing="5.0">
+                           <padding><Insets top="5.0" /></padding>
                         </VBox>
                      </content>
                   </ScrollPane>
-                  <HBox alignment="CENTER" maxHeight="60.0" minHeight="60.0" prefHeight="60.0" prefWidth="200.0" spacing="20.0" style="-fx-background-radius: 0 0 10 10; -fx-border-radius: 0 0 10 10; -fx-background-color: #c4c4c4;">
+
+                  <HBox alignment="CENTER" maxHeight="60.0" minHeight="60.0" prefHeight="60.0"
+                        spacing="20.0"
+                        style="-fx-background-radius: 0 0 10 10; -fx-border-radius: 0 0 10 10; -fx-background-color: #c4c4c4;">
                      <children>
                         <Label contentDisplay="RIGHT" text="Tổng số sản phẩm đang bán:">
                            <graphic>
@@ -218,7 +173,6 @@
                               </Label>
                            </graphic>
                         </Label>
-
                         <Label contentDisplay="RIGHT" text="Tổng doanh thu dự kiến:">
                            <graphic>
                               <Label fx:id="lblTotalRevenue" text="0đ">
@@ -226,10 +180,11 @@
                               </Label>
                            </graphic>
                         </Label>
-                     </children></HBox>
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>
-      </AnchorPane>
+      </VBox>
    </children>
 </VBox>
