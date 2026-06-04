@@ -615,7 +615,12 @@
                         }
                         System.out.println("[HỆ THỐNG] Đã chốt phiên tự động và lưu lịch sử cho sản phẩm UUID: " + productId);
                     } else {
-                        System.out.println("[HỆ THỐNG] Phiên đấu giá UUID: " + productId + " kết thúc không có người mua.");
+                        System.out.println("[HỆ THỐNG] Phiên đấu giá: " + productId + " kết thúc không có người mua.");
+                    }
+                    String updateStatusSql = "UPDATE products SET status = 'FINISHED' WHERE id = ?";
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateStatusSql)) {
+                        updateStmt.setString(1, productId);
+                        updateStmt.executeUpdate();
                     }
                 }
             } catch (SQLException e) {
@@ -625,40 +630,67 @@
         }
         //BỔ SUNG HÀM THANH TOÁN GỘP TRANSACTION
         public static boolean executeManualPayment(String username, String productId, double amount) {
-            String updateBalanceSql = "UPDATE accounts SET balance = balance - ? WHERE username = ?";
-            String updateHistorySql = "UPDATE bid_history SET is_paid = 1 WHERE bidder_name = ? AND product_id = ?";
-            String updateProductSql = "UPDATE products SET status = 'PAID' WHERE id = ?";
-    
+            // Thêm tham số sellerName, hoặc query seller bên trong
+            String getSellerSql = "SELECT seller_name FROM products WHERE id = ?";
+            String updateBuyerSql  = "UPDATE accounts SET balance = balance - ? WHERE username = ? AND balance >= ?";
+            String updateSellerSql = "UPDATE accounts SET balance = balance + ? WHERE username = ?";
+            String updateHistorySql = "UPDATE bid_history SET is_paid = 1 WHERE bidder_name = ? AND product_id = ? AND result = 'WIN'";
+            String updateProductSql = "UPDATE products SET status = 'PAID' WHERE id = ? AND status = 'FINISHED'"; // Thêm điều kiện AND status = 'FINISHED' để idempotent
+
             try (Connection conn = getConnection()) {
-                conn.setAutoCommit(false); // Bật chế độ giao dịch an toàn
-                try (PreparedStatement ps1 = conn.prepareStatement(updateBalanceSql);
-                     PreparedStatement ps2 = conn.prepareStatement(updateHistorySql);
-                     PreparedStatement ps3 = conn.prepareStatement(updateProductSql)) {
-    
-                    // 1. Trừ tiền người mua
-                    ps1.setDouble(1, amount);
-                    ps1.setString(2, username);
-                    ps1.executeUpdate();
-    
-                    // 2. Đánh dấu đã thanh toán lịch sử
-                    ps2.setString(1, username);
-                    ps2.setString(2, productId);
-                    ps2.executeUpdate();
-    
-                    // 3. Đổi trạng thái sản phẩm
-                    ps3.setString(1, productId);
-                    ps3.executeUpdate();
-    
+                conn.setAutoCommit(false);
+                try {
+                    // 0. Lấy tên seller
+                    String sellerName = null;
+                    try (PreparedStatement ps0 = conn.prepareStatement(getSellerSql)) {
+                        ps0.setString(1, productId);
+                        ResultSet rs = ps0.executeQuery();
+                        if (rs.next()) sellerName = rs.getString("seller_name");
+                    }
+
+                    // 1. Trừ tiền buyer (có kiểm tra đủ tiền tại DB — AND balance >= ?)
+                    int rows;
+                    try (PreparedStatement ps1 = conn.prepareStatement(updateBuyerSql)) {
+                        ps1.setDouble(1, amount);
+                        ps1.setString(2, username);
+                        ps1.setDouble(3, amount); // điều kiện: balance >= amount
+                        rows = ps1.executeUpdate();
+                    }
+                    if (rows == 0) throw new SQLException("Số dư không đủ hoặc đã thanh toán.");
+
+                    // 2. Cộng tiền seller
+                    if (sellerName != null && !sellerName.trim().isEmpty()) {
+                        try (PreparedStatement ps2 = conn.prepareStatement(updateSellerSql)) {
+                            ps2.setDouble(1, amount);
+                            ps2.setString(2, sellerName);
+                            ps2.executeUpdate();
+                        }
+                    }
+
+                    // 3. Đánh dấu is_paid
+                    try (PreparedStatement ps3 = conn.prepareStatement(updateHistorySql)) {
+                        ps3.setString(1, username);
+                        ps3.setString(2, productId);
+                        ps3.executeUpdate();
+                    }
+
+                    // 4. Đổi status sản phẩm
+                    try (PreparedStatement ps4 = conn.prepareStatement(updateProductSql)) {
+                        ps4.setString(1, productId);
+                        ps4.executeUpdate();
+                    }
+
                     conn.commit();
                     return true;
                 } catch (SQLException e) {
-                    conn.rollback(); // Lỗi bất kỳ bước nào thì hủy toàn bộ, không lo mất tiền oan
+                    conn.rollback();
                     e.printStackTrace();
+                    return false;
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                return false;
             }
-            return false;
         }
     
         // 1. Hàm lưu khi người dùng bấm "Bật Auto Bid"

@@ -63,6 +63,9 @@ public class BidderHistoryRowController {
     }
 
     private void onPayClicked() {
+        // Vô hiệu hoá ngay để chống double-click
+        lblStatusBadge.setOnMouseClicked(null);
+        lblStatusBadge.setStyle(lblStatusBadge.getStyle() + "; -fx-opacity: 0.5;");
         double balance = DataStorage.getBalance(
                 DataStorage.currentAccount.getUsername()
         );
@@ -120,7 +123,18 @@ public class BidderHistoryRowController {
                     error.setTitle("Lỗi");
                     error.setContentText("Thanh toán thất bại! Số dư tài khoản không đủ hoặc hệ thống bận.");
                     error.showAndWait();
+                    lblStatusBadge.setStyle( "-fx-border-color: orange; -fx-border-radius: 10; " +
+                            "-fx-cursor: hand; -fx-background-color: #fff8e1; " +
+                            "-fx-background-radius: 10;"); // style cũ
+                    lblStatusBadge.setOnMouseClicked(e -> onPayClicked());
                 }
+            }
+            else {
+                // Người dùng bấm Cancel → khôi phục
+                lblStatusBadge.setOnMouseClicked(e -> onPayClicked());
+                lblStatusBadge.setStyle( "-fx-border-color: orange; -fx-border-radius: 10; " +
+                        "-fx-cursor: hand; -fx-background-color: #fff8e1; " +
+                        "-fx-background-radius: 10;");
             }
         });
     }
