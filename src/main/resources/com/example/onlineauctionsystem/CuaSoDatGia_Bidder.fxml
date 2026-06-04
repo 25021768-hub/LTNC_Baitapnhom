@@ -133,7 +133,7 @@
                                  <children>
                                     <Label style="-fx-font-size: 12; -fx-text-fill: #888780;" text="Bước giá auto (đ)" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                     <Label style="-fx-font-size: 12; -fx-text-fill: #888780;" text="Giới hạn tối đa (đ)" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                    <TextField fx:id="autoStepField" disable="false" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-border-color: #1357b7; -fx-border-radius: 5;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                    <TextField fx:id="autoStepField" disable="true" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-border-color: #1357b7; -fx-border-radius: 5;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                     <TextField fx:id="autoMaxField" disable="false" maxWidth="1.7976931348623157E308" promptText="VD: 4,500,000" style="-fx-background-color: white; -fx-border-color: #1357b7; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                  </children>
                               </GridPane>
