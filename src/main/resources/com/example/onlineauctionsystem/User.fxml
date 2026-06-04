@@ -5,22 +5,30 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.image.ImageView?>
+
 <GridPane fx:controller="com.example.onlineauctionsystem.controller.common.UserController"
-          prefWidth="860.0"
           style="-fx-border-color: #e0e0e0;"
           xmlns="http://javafx.com/javafx/17.0.12"
           xmlns:fx="http://javafx.com/fxml/1">
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" minWidth="90.0" maxWidth="90.0" prefWidth="90.0" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="80.0" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="100.0" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="90.0" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="90.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="80.0" prefWidth="110.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="90.0" prefWidth="90.0" />
+    </columnConstraints>
 
     <rowConstraints>
         <RowConstraints minHeight="90.0" maxHeight="90.0" prefHeight="90.0" />
     </rowConstraints>
 
     <children>
-        <!-- Avatar -->
         <StackPane maxHeight="85.0" maxWidth="85.0" minHeight="85.0" minWidth="85.0"
                    style="-fx-background-radius: 100; -fx-border-radius: 100;
                           -fx-border-color: #004488; -fx-border-width: 3;">
@@ -31,42 +39,36 @@
             </children>
         </StackPane>
 
-        <!-- Họ tên -->
         <Label fx:id="lblFullName" text="---"
-               prefHeight="95.0" prefWidth="134.0"
+               prefHeight="95.0" maxWidth="Infinity"
                wrapText="true" GridPane.columnIndex="1">
             <GridPane.margin><Insets left="5.0" /></GridPane.margin>
         </Label>
 
-        <!-- Email -->
         <Label fx:id="lblEmail" text="---"
-               prefHeight="90.0" prefWidth="151.0"
+               prefHeight="90.0" maxWidth="Infinity"
                wrapText="true" GridPane.columnIndex="2">
             <GridPane.margin><Insets left="5.0" /></GridPane.margin>
         </Label>
 
-        <!-- Điện thoại -->
         <Label fx:id="lblPhone" text="---"
-               prefHeight="90.0" prefWidth="151.0"
+               prefHeight="90.0" maxWidth="Infinity"
                wrapText="true" GridPane.columnIndex="3">
             <GridPane.margin><Insets left="5.0" /></GridPane.margin>
         </Label>
 
-        <!-- CCCD -->
         <Label fx:id="lblIdCard" text="---"
-               prefHeight="90.0" prefWidth="151.0"
+               prefHeight="90.0" maxWidth="Infinity"
                wrapText="true" GridPane.columnIndex="4">
             <GridPane.margin><Insets left="5.0" /></GridPane.margin>
         </Label>
 
-        <!-- Chức năng (role) -->
         <Label fx:id="lblRole" text="---"
-               prefHeight="107.0" prefWidth="110.0"
+               prefHeight="107.0" maxWidth="Infinity"
                GridPane.columnIndex="5">
             <GridPane.margin><Insets left="5.0" /></GridPane.margin>
         </Label>
 
-        <!-- Nút khóa/mở -->
         <Button fx:id="btnToggle"
                 mnemonicParsing="false"
                 onAction="#onToggleLock"

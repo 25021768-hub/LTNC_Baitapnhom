@@ -8,135 +8,178 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.bidder.BidderController">
+<VBox xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.onlineauctionsystem.controller.bidder.BidderController"
+      prefHeight="700.0"
+      prefWidth="900.0"
+      minHeight="500.0"
+      minWidth="600.0">
+
    <children>
-      <HBox prefHeight="78.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);">
-         <children>
-            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="286.0">
-               <children>
-                  <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                     <image>
-                        <Image url="@../../../Kho_anh/vnu-uet-removebg-preview.png" />
-                     </image>
-                  </ImageView>
-                  <Label text="ĐẤU GIÁ UET" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="3.0" />
-                     </HBox.margin>
-                  </Label>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="74.0" prefWidth="702.0" spacing="10.0">
-               <children>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
-                     <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onMyProducts" prefHeight="106.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;" text="Sản phẩm mới">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/gift.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <effect>
-                              <DropShadow>
-                                 <color>
-                                    <Color red="1.0" green="1.0" blue="1.0" />
-                                 </color>
-                              </DropShadow>
-                           </effect>
-                        </Button>
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="117.0">
-                     <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onHistory" prefHeight="102.0" prefWidth="118.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Lịch sử đấu giá">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/history.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" layoutX="237.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
-                     <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onManage" prefHeight="86.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text=" Đấu giá đang thắng">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/trophy.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" layoutX="276.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
-                     <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onAccount" prefHeight="92.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Tài khoản">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/user.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" layoutX="293.0" layoutY="10.0" prefHeight="200.0" prefWidth="117.0">
-                     <children>
-                        <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#onLogout" prefHeight="103.0" prefWidth="134.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" text="Đăng xuất">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../../Kho_anh/logout.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-         </children></HBox>
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="628.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
+      <HBox spacing="10.0"
+            style="-fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 100%);"
+            minHeight="78.0"
+            prefHeight="78.0">
+
+         <HBox alignment="CENTER"
+               prefHeight="78.0"
+               prefWidth="286.0"
+               HBox.hgrow="NEVER">
+            <children>
+               <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+                  <image>
+                     <Image url="@../../../Kho_anh/vnu-uet-removebg-preview.png" />
+                  </image>
+               </ImageView>
+               <Label text="ĐẤU GIÁ UET" textFill="WHITE">
+                  <font>
+                     <Font name="System Bold" size="20.0" />
+                  </font>
+                  <HBox.margin>
+                     <Insets left="3.0" />
+                  </HBox.margin>
+               </Label>
+            </children>
+         </HBox>
+
+         <Region HBox.hgrow="ALWAYS" />
+
+         <HBox alignment="CENTER"
+               prefHeight="74.0"
+               spacing="10.0"
+               HBox.hgrow="NEVER">
+            <padding>
+               <Insets right="10.0" />
+            </padding>
+            <children>
+               <Button contentDisplay="TOP"
+                       mnemonicParsing="false"
+                       onAction="#onMyProducts"
+                       prefHeight="106.0"
+                       prefWidth="114.0"
+                       style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2;"
+                       text="Sản phẩm mới">
+                  <font>
+                     <Font size="10.0" />
+                  </font>
+                  <graphic>
+                     <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../../../Kho_anh/gift.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <effect>
+                     <DropShadow>
+                        <color>
+                           <Color red="1.0" green="1.0" blue="1.0" />
+                        </color>
+                     </DropShadow>
+                  </effect>
+               </Button>
+
+               <Button contentDisplay="TOP"
+                       mnemonicParsing="false"
+                       onAction="#onHistory"
+                       prefHeight="102.0"
+                       prefWidth="118.0"
+                       style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;"
+                       text="Lịch sử đấu giá">
+                  <font>
+                     <Font size="10.0" />
+                  </font>
+                  <graphic>
+                     <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../../../Kho_anh/history.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </Button>
+
+               <Button contentDisplay="TOP"
+                       mnemonicParsing="false"
+                       onAction="#onManage"
+                       prefHeight="86.0"
+                       prefWidth="114.0"
+                       style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;"
+                       text=" Đấu giá đang thắng">
+                  <font>
+                     <Font size="10.0" />
+                  </font>
+                  <graphic>
+                     <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../../../Kho_anh/trophy.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </Button>
+
+               <Button contentDisplay="TOP"
+                       mnemonicParsing="false"
+                       onAction="#onAccount"
+                       prefHeight="92.0"
+                       prefWidth="114.0"
+                       style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;"
+                       text="Tài khoản">
+                  <font>
+                     <Font size="10.0" />
+                  </font>
+                  <graphic>
+                     <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../../../Kho_anh/user.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </Button>
+
+               <Button contentDisplay="TOP"
+                       mnemonicParsing="false"
+                       onAction="#onLogout"
+                       prefHeight="103.0"
+                       prefWidth="134.0"
+                       style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;"
+                       text="Đăng xuất">
+                  <font>
+                     <Font size="10.0" />
+                  </font>
+                  <graphic>
+                     <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../../../Kho_anh/logout.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </Button>
+            </children>
+         </HBox>
+
+      </HBox>
+
+      <ScrollPane fitToWidth="true"
+                  hbarPolicy="NEVER"
+                  vbarPolicy="AS_NEEDED"
+                  VBox.vgrow="ALWAYS">
          <content>
-            <VBox prefWidth="900.0" spacing="25.0" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
+            <VBox spacing="25.0"
+                  style="-fx-background-color: white;"
+                  VBox.vgrow="ALWAYS">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
                <children>
-                  <!-- Thanh tìm kiếm -->
-                  <StackPane prefHeight="42.0" prefWidth="860.0">
+                  <StackPane>
                      <children>
                         <TextField fx:id="txtSearch"
                                    promptText="Tìm kiếm sản phẩm..."
                                    onKeyReleased="#onSearch"
+                                   maxWidth="Infinity"
                                    style="-fx-background-radius: 20; -fx-text-fill: white;
                                           -fx-prompt-text-fill: #cccccc; -fx-padding: 5 15 5 35;
                                           -fx-background-color: linear-gradient(to bottom left, #0099cc 0%, #004488 40%, #001a33 80%);" />
@@ -150,11 +193,10 @@
                   </StackPane>
 
                   <GridPane fx:id="productContainer"
-                            hgap="20.0" vgap="20.0"
-                            prefWidth="860.0">
+                            hgap="20.0" vgap="20.0">
                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="50.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="50.0" />
                      </columnConstraints>
                   </GridPane>
                </children>
