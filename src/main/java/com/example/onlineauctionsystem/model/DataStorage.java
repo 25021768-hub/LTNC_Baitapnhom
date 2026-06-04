@@ -305,6 +305,7 @@
                     Timestamp ts = rs.getTimestamp("end_time");
                     if (ts != null) h.setEndTime(ts.toLocalDateTime());
                     h.setResult(rs.getString("result"));
+                    h.setPaid(rs.getBoolean("is_paid"));
                     list.add(h);
                 }
             } catch (SQLException e) { e.printStackTrace(); }
@@ -557,53 +558,51 @@
                 return false;
             }
         }
-    
-    
+
+
         public static void autoCloseAndSaveExpiredProducts() {
+            // Query 1: Chỉ lấy sản phẩm chưa có history để lưu
             String findExpiredSql = "SELECT id, name, current_price, highest_bidder FROM products " +
-                    "WHERE end_time <= NOW() " +
+                    "WHERE end_time <= NOW() AND status = 'RUNNING' " +
                     "AND id NOT IN (SELECT DISTINCT product_id FROM bid_history)";
-    
+
             String insertHistorySql = "INSERT INTO bid_history (bidder_name, product_id, product_name, my_bid_price, final_price, end_time, result, is_paid) " +
                     "VALUES (?, ?, ?, ?, ?, NOW(), ?, 0)";
-    
+
             String findAllBiddersSql = "SELECT DISTINCT bidder_name, MAX(bid_amount) as max_bid FROM bids " +
                     "WHERE product_id = ? AND bidder_name != ? GROUP BY bidder_name";
-    
+
             try (Connection conn = getConnection();
                  PreparedStatement selectStmt = conn.prepareStatement(findExpiredSql);
                  ResultSet rs = selectStmt.executeQuery()) {
-    
+
                 while (rs.next()) {
-                    String productId = rs.getString("id"); // SỬA THÀNH getString
+                    String productId = rs.getString("id");
                     String productName = rs.getString("name");
                     double finalPrice = rs.getDouble("current_price");
                     String winner = rs.getString("highest_bidder");
-    
+
                     if (winner != null && !winner.trim().isEmpty() && !"None".equalsIgnoreCase(winner)) {
-                        // A. Lưu người THẮNG (WIN)
                         try (PreparedStatement insertStmt = conn.prepareStatement(insertHistorySql)) {
                             insertStmt.setString(1, winner);
-                            insertStmt.setString(2, productId); // setString chuẩn UUID
+                            insertStmt.setString(2, productId);
                             insertStmt.setString(3, productName);
                             insertStmt.setDouble(4, finalPrice);
                             insertStmt.setDouble(5, finalPrice);
                             insertStmt.setString(6, "WIN");
                             insertStmt.executeUpdate();
                         }
-    
-                        // B. Tìm tất cả những người THUA (LOSE)
+
                         try (PreparedStatement bidderStmt = conn.prepareStatement(findAllBiddersSql)) {
-                            bidderStmt.setString(1, productId); // SỬA THÀNH setString
+                            bidderStmt.setString(1, productId);
                             bidderStmt.setString(2, winner);
                             try (ResultSet rsBidders = bidderStmt.executeQuery()) {
                                 while (rsBidders.next()) {
                                     String loserName = rsBidders.getString("bidder_name");
                                     double loserMaxBid = rsBidders.getDouble("max_bid");
-    
                                     try (PreparedStatement insertLooseStmt = conn.prepareStatement(insertHistorySql)) {
                                         insertLooseStmt.setString(1, loserName);
-                                        insertLooseStmt.setString(2, productId); // setString chuẩn UUID
+                                        insertLooseStmt.setString(2, productId);
                                         insertLooseStmt.setString(3, productName);
                                         insertLooseStmt.setDouble(4, loserMaxBid);
                                         insertLooseStmt.setDouble(5, finalPrice);
@@ -613,18 +612,28 @@
                                 }
                             }
                         }
-                        System.out.println("[HỆ THỐNG] Đã chốt phiên tự động và lưu lịch sử cho sản phẩm UUID: " + productId);
+                        System.out.println("[HỆ THỐNG] Đã chốt phiên: " + productId);
                     } else {
-                        System.out.println("[HỆ THỐNG] Phiên đấu giá: " + productId + " kết thúc không có người mua.");
-                    }
-                    String updateStatusSql = "UPDATE products SET status = 'FINISHED' WHERE id = ?";
-                    try (PreparedStatement updateStmt = conn.prepareStatement(updateStatusSql)) {
-                        updateStmt.setString(1, productId);
-                        updateStmt.executeUpdate();
+                        System.out.println("[HỆ THỐNG] Phiên không có người mua: " + productId);
                     }
                 }
+
             } catch (SQLException e) {
-                System.err.println("Lỗi tự động chốt phiên và lưu lịch sử: " + e.getMessage());
+                System.err.println("Lỗi lưu lịch sử: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            // ✅ BƯỚC 2: Đổi FINISHED riêng — bắt hết mọi sản phẩm hết hạn còn RUNNING
+            // Tách ra dùng connection mới để tránh xung đột với ResultSet đang mở ở trên
+            String updateFinishedSql = "UPDATE products SET status = 'FINISHED' " +
+                    "WHERE end_time <= NOW() AND status = 'RUNNING'";
+
+            try (Connection conn = getConnection();
+                 PreparedStatement updateStmt = conn.prepareStatement(updateFinishedSql)) {
+                int rows = updateStmt.executeUpdate();
+                System.out.println("[HỆ THỐNG] Đã đổi " + rows + " sản phẩm sang FINISHED");
+            } catch (SQLException e) {
+                System.err.println("Lỗi đổi trạng thái FINISHED: " + e.getMessage());
                 e.printStackTrace();
             }
         }
