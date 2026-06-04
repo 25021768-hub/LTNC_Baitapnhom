@@ -159,9 +159,10 @@ public class SellerHistoryController extends MenuController {
         alert.setTitle("Xác nhận");
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
+            stopAutoRefresh();
             DataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
-            stopAutoRefresh();
+
         }
     }
 }

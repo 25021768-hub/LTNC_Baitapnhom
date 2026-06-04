@@ -96,16 +96,11 @@ public class BidderHistoryRowController {
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 String currentBuyer = DataStorage.currentAccount.getUsername();
-                String sellerName = DataStorage.getSellerByProductId(history.getProductId());
 
                 // 1. Sử dụng hàm Transaction đồng bộ gộp (Trừ tiền buyer + Cộng tiền seller + Đổi trạng thái PAID)
                 boolean transactionOk = DataStorage.executeManualPayment(currentBuyer, history.getProductId(), history.getFinalPrice());
 
                 if (transactionOk) {
-
-                    if (sellerName != null && !sellerName.trim().isEmpty()) {
-                        DataStorage.updateBalance(sellerName, history.getFinalPrice());
-                    }
 
                     history.setPaid(true);
                     setStatus("WIN", true);
