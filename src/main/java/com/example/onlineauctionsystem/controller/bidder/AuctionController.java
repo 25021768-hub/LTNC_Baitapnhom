@@ -21,26 +21,29 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class AuctionController extends BaseController {
-    @FXML private Pane imgContainer;
-    @FXML private ImageView imgProduct;
+    // ── Thẻ SP bên trái ───────────────────────────────────────────
+    @FXML
+    private ImageView imgProduct;
     @FXML private Label lblProductName;
     @FXML private Label lblStep;
     @FXML private Label lblTime;
 
+    // ── Thông tin hiện tại ────────────────────────────────────────
     @FXML private Label lblHighestBidder;
     @FXML private Label lblCurrentPrice;
 
+    // ── Đặt giá ───────────────────────────────────────────────────
     @FXML private Label lblBalance;
     @FXML private TextField txtBidAmount;
     @FXML private Label lblMinBid;
 
+    // ──Điều khiển cấu hình Auto Bid theo FXML ──────────
     @FXML private ToggleButton autoToggle;
     @FXML private Label autoStatusBadge;
     @FXML private TextField autoStepField;
@@ -48,6 +51,7 @@ public class AuctionController extends BaseController {
     @FXML private Label autoDot;
     @FXML private Label autoStatusText;
 
+    // ── Khai báo thành phần biểu đồ LineChart theo FXML ──
     @FXML private LineChart<String, Number> bidChart;
     @FXML private CategoryAxis xAxis;
     @FXML private NumberAxis yAxis;
@@ -66,6 +70,7 @@ public class AuctionController extends BaseController {
 
     @Override
     public void initialize() {
+        //Chỉ cho nhập số
         txtBidAmount.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 txtBidAmount.setText(newValue.replaceAll("[^\\d]", ""));
@@ -77,17 +82,11 @@ public class AuctionController extends BaseController {
                 autoMaxField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
-
-        imgContainer.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
-            imgProduct.setFitWidth(newVal.getWidth());
-            imgProduct.setFitHeight(newVal.getHeight());
-        });
-
         setUpCharConfig();
     }
 
     private void loadStaticProductInfo() {
-        lblProductName.setText(product.getName());
+        lblProductName.setText(product.getName());;
         lblStep.setText(formatPrice(product.getBidIncrement()));
         autoStepField.setText(String.format("%.0f", product.getBidIncrement()));
 
@@ -100,6 +99,7 @@ public class AuctionController extends BaseController {
         if (product.getEndTime() == null && product.getStartTime() != null) {
             product.setEndTime(product.getStartTime().plusHours(product.getDurationHours()));
         }
+        // Luôn luôn tính toán lại trạng thái dựa trên thời gian thực
         product.updateStatus();
 
         lblHighestBidder.setText(Objects.requireNonNullElse(product.getHighestBidder(), "Chưa có"));
@@ -112,7 +112,6 @@ public class AuctionController extends BaseController {
         double minBid = product.getCurrentPrice() + product.getBidIncrement();
         lblMinBid.setText(formatPrice(minBid));
     }
-
     private void refreshChartData() {
         if (product == null) return;
         Platform.runLater(() -> {
@@ -138,7 +137,7 @@ public class AuctionController extends BaseController {
                     if (fresh != null) {
                         Platform.runLater(() -> {
                             this.product = fresh;
-                            this.product.updateStatus();
+                            this.product.updateStatus(); // Đồng bộ trạng thái mới
                             updateDynamicInfo();
                             refreshChartData();
                         });
@@ -147,6 +146,7 @@ public class AuctionController extends BaseController {
                 dbThread.setDaemon(true);
                 dbThread.start();
             } else {
+                // Các giây lẻ chỉ làm nhiệm vụ trừ thời gian đếm ngược cục bộ
                 updateDynamicInfo();
             }
 
@@ -167,12 +167,13 @@ public class AuctionController extends BaseController {
         }
     }
 
-    private void setUpCharConfig() {
+    private void setUpCharConfig(){
         xAxis.setLabel("Thời gian đấu giá");
         yAxis.setLabel("Giá tiền(VND)");
+        // Tắt hiệu ứng mặc định của JavaFX khi cập nhật để đường đồ thị nhảy Realtime không bị giật, lag
         bidChart.setAnimated(false);
         yAxis.setAutoRanging(true);
-        yAxis.setForceZeroInRange(false);
+        yAxis.setForceZeroInRange(false); // Không ép trục Y phải bắt đầu từ số 0
     }
 
     @FXML
@@ -205,6 +206,7 @@ public class AuctionController extends BaseController {
             return;
         }
 
+        // Fetch giá mới nhất từ DB ngay trước khi nhấn nút ghi nhận
         Product latest = DataStorage.findProductById(product.getId());
         if (latest == null) {
             showAlert("Lỗi", "Sản phẩm không tồn tại!");
@@ -221,6 +223,7 @@ public class AuctionController extends BaseController {
             return;
         }
 
+        // Cập nhật lại UI nếu phát hiện có người thay đổi giá trước đó một bước
         double priceDifference = Math.abs(latest.getCurrentPrice() - product.getCurrentPrice());
 
         if (priceDifference > 0.001) {
@@ -250,7 +253,7 @@ public class AuctionController extends BaseController {
         boolean ok = DataStorage.updateBid(product.getId(), bidAmount, bidder);
 
         if (ok) {
-            BidHistory bidHistory = new BidHistory(product.getId(), product.getName(), bidder, bidAmount, bidAmount, product.getEndTime(), "WIN", false);
+            BidHistory bidHistory = new BidHistory(product.getId(), product.getName(), bidder, bidAmount, bidAmount , product.getEndTime(),"WIN", false);
             DataStorage.saveBidHistory(bidHistory);
             showAlert("Thành công", "Đặt giá thành công: " + formatPrice(bidAmount));
             txtBidAmount.clear();
@@ -261,6 +264,7 @@ public class AuctionController extends BaseController {
                 refreshChartData();
             }
         } else {
+            // Bị người khác chèn lệnh đặt trước trong khoảnh khắc tích tắc đó
             Product freshFail = DataStorage.findProductById(product.getId());
             if (freshFail != null) {
                 this.product = freshFail;
@@ -276,20 +280,20 @@ public class AuctionController extends BaseController {
     }
 
     @FXML
-    private void handleAutoToggle() {
+    private void handleAutoToggle(){
         if (product == null) {
             autoToggle.setSelected(false);
             return;
         }
 
-        if (autoToggle.isSelected()) {
+        if(autoToggle.isSelected()){
             String maxRaw = autoMaxField.getText().trim();
-            if (maxRaw.isEmpty()) {
+            if(maxRaw.isEmpty()){
                 showAlert("Thông báo", "Vui lòng điền mức giới hạn tối đa trước khi kích hoạt Auto Bid!");
                 autoToggle.setSelected(false);
                 return;
             }
-            try {
+            try{
                 double maxPriceLimit = Double.parseDouble(maxRaw);
                 double minBidRequired = product.getCurrentPrice() + product.getBidIncrement();
 
@@ -302,6 +306,9 @@ public class AuctionController extends BaseController {
                 boolean isSaved = DataStorage.setupAutoBid(username, product.getId(), maxPriceLimit);
 
                 if (isSaved) {
+                    autoStepField.setDisable(true);
+                    autoMaxField.setDisable(true);
+                    // Đồng bộ giao diện sang chế độ KÍCH HOẠT (ACTIVE) theo FXML style
                     autoToggle.setText("Bật");
                     autoToggle.setStyle("-fx-background-color: #3cc41e; -fx-background-radius: 12; -fx-text-fill: white;");
 
@@ -312,8 +319,10 @@ public class AuctionController extends BaseController {
 
                     autoMaxField.setDisable(true);
 
+                    // Kích hoạt ngay chuỗi đệ quy xử lý nâng giá tự động trong DB
                     DataStorage.triggerAutoBidSystem(product.getId(), product.getCurrentPrice(), product.getBidIncrement());
 
+                    // Đồng bộ làm mới lập tức thông tin hiển thị và biểu đồ sau luồng AutoBid
                     Product fresh = DataStorage.findProductById(product.getId());
                     if (fresh != null) {
                         this.product = fresh;
@@ -324,11 +333,14 @@ public class AuctionController extends BaseController {
                     autoToggle.setSelected(false);
                     showAlert("Lỗi", "Không thể ghi nhận thiết lập cấu hình tự động đấu giá.");
                 }
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e) {
                 autoToggle.setSelected(false);
                 showAlert("Lỗi", "Số tiền giới hạn nhập vào không hợp lệ!");
             }
-        } else {
+        }
+        else {
+            // Trường hợp: Người dùng nhấn tắt hệ thống AutoBid
             autoToggle.setText("Tắt");
             autoToggle.setStyle("-fx-background-color: #888780; -fx-background-radius: 12; -fx-text-fill: white;");
 
