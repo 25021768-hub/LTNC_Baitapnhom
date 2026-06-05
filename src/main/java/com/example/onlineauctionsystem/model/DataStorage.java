@@ -725,68 +725,97 @@
     
         // 2. Hàm kích hoạt tự động nâng giá khi có người khác đặt giá cao hơn
         public static void triggerAutoBidSystem(String productId, double currentPrice, double bidIncrement) {
-            String sql = "SELECT * FROM auto_bids WHERE product_id = ? AND max_price >= ? ORDER BY max_price DESC LIMIT 1";
+            try (Connection conn = getConnection()) {
 
-            try (Connection conn = getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, productId);
-                stmt.setDouble(2, currentPrice + bidIncrement); // chỉ tìm người có thể bid bước tiếp theo
+                while (true) {
+                    // Tìm người AUTO BID cao nhất CÒN ĐỦ ĐIỀU KIỆN
+                    String sql = """
+                SELECT ab.username, ab.max_price 
+                FROM auto_bids ab
+                WHERE ab.product_id = ? 
+                  AND ab.max_price >= ?
+                  AND ab.username != (SELECT highest_bidder FROM products WHERE id = ?)
+                ORDER BY ab.max_price DESC 
+                LIMIT 1
+            """;
 
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        String autoUser = rs.getString("username");
-                        double newPrice = currentPrice + bidIncrement;
-                        double userBalance = getBalance(autoUser);
+                    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                        stmt.setString(1, productId);
+                        stmt.setDouble(2, currentPrice + bidIncrement);
+                        stmt.setString(3, productId);
 
-                        // Kiểm tra số dư
-                        if (userBalance < newPrice) {
-                            // Xóa auto bid nếu không đủ tiền
-                            String deleteSql = "DELETE FROM auto_bids WHERE username = ? AND product_id = ?";
-                            try (PreparedStatement del = conn.prepareStatement(deleteSql)) {
-                                del.setString(1, autoUser);
-                                del.setString(2, productId);
-                                del.executeUpdate();
+                        try (ResultSet rs = stmt.executeQuery()) {
+                            if (!rs.next()) {
+                                // Không còn ai có thể vượt giá → DỪNG
+                                break;
                             }
-                            return; // ← DỪNG
-                        }
 
-                        // Lấy highest_bidder cũ để hoàn tiền
-                        Product p = findProductById(productId);
-                        String oldBidder = p != null ? p.getHighestBidder() : null;
-                        double oldPrice = p != null ? p.getCurrentPrice() : 0;
+                            String autoUser = rs.getString("username");
+                            double maxPrice = rs.getDouble("max_price");
+                            double newPrice = currentPrice + bidIncrement;
 
-                        // Cập nhật giá sản phẩm
-                        String updateSql = "UPDATE products SET current_price = ?, highest_bidder = ? WHERE id = ? AND status = 'RUNNING'";
-                        try (PreparedStatement upd = conn.prepareStatement(updateSql)) {
-                            upd.setDouble(1, newPrice);
-                            upd.setString(2, autoUser);
-                            upd.setString(3, productId);
-                            int rows = upd.executeUpdate();
-
-                            if (rows > 0) {
-                                // Trừ tiền người auto bid
-                                updateBalance(autoUser, -newPrice);
-
-                                // Hoàn tiền người bị vượt giá
-                                if (oldBidder != null && !oldBidder.equals("None") && !oldBidder.equals(autoUser)) {
-                                    updateBalance(oldBidder, oldPrice);
+                            // Kiểm tra số dư
+                            double balance = getBalance(autoUser);
+                            if (balance < newPrice) {
+                                // Xóa AutoBid, thử người tiếp theo
+                                String del = "DELETE FROM auto_bids WHERE username = ? AND product_id = ?";
+                                try (PreparedStatement delStmt = conn.prepareStatement(del)) {
+                                    delStmt.setString(1, autoUser);
+                                    delStmt.setString(2, productId);
+                                    delStmt.executeUpdate();
                                 }
+                                continue; // Thử lại vòng lặp với người khác
+                            }
 
-                                // Ghi log biểu đồ
-                                String logSql = "INSERT INTO product_price_log (product_id, bidder_name, price_milestone) VALUES (?, ?, ?)";
-                                try (PreparedStatement log = conn.prepareStatement(logSql)) {
-                                    log.setString(1, productId);
-                                    log.setString(2, autoUser);
-                                    log.setDouble(3, newPrice);
-                                    log.executeUpdate();
+                            // Lấy người giữ giá cũ để hoàn tiền
+                            Product p = findProductById(productId);
+                            String oldBidder = p != null ? p.getHighestBidder() : null;
+                            double oldPrice  = p != null ? p.getCurrentPrice()  : 0;
+
+                            // Cập nhật giá
+                            String upd = "UPDATE products SET current_price = ?, highest_bidder = ? WHERE id = ? AND status = 'RUNNING'";
+                            try (PreparedStatement updStmt = conn.prepareStatement(upd)) {
+                                updStmt.setDouble(1, newPrice);
+                                updStmt.setString(2, autoUser);
+                                updStmt.setString(3, productId);
+                                if (updStmt.executeUpdate() == 0) break; // Phiên đã đóng → dừng
+                            }
+
+                            // Trừ tiền người vừa thắng
+                            updateBalance(autoUser, -newPrice);
+
+                            // Hoàn tiền người bị vượt
+                            if (oldBidder != null && !oldBidder.equals("None") && !oldBidder.equals(autoUser)) {
+                                updateBalance(oldBidder, oldPrice);
+                            }
+
+                            // Ghi log biểu đồ
+                            String log = "INSERT INTO product_price_log (product_id, bidder_name, price_milestone) VALUES (?, ?, ?)";
+                            try (PreparedStatement logStmt = conn.prepareStatement(log)) {
+                                logStmt.setString(1, productId);
+                                logStmt.setString(2, autoUser);
+                                logStmt.setDouble(3, newPrice);
+                                logStmt.executeUpdate();
+                            }
+
+                            System.out.println("[AutoBid] " + autoUser + " → " + newPrice);
+
+                            // Cập nhật giá để vòng lặp tiếp tục đúng
+                            currentPrice = newPrice;
+
+                            // Nếu đã đạt max_price của người này → xóa AutoBid của họ
+                            if (newPrice >= maxPrice) {
+                                String del = "DELETE FROM auto_bids WHERE username = ? AND product_id = ?";
+                                try (PreparedStatement delStmt = conn.prepareStatement(del)) {
+                                    delStmt.setString(1, autoUser);
+                                    delStmt.setString(2, productId);
+                                    delStmt.executeUpdate();
                                 }
-
-                                System.out.println("[AutoBid] Tự động nâng giá cho " + autoUser + " lên " + newPrice);
-                                // ← KHÔNG đệ quy nữa. Chờ người khác bid trước.
                             }
                         }
                     }
                 }
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
