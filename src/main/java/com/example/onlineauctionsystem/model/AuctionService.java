@@ -315,11 +315,9 @@ public class AuctionService {
     }
 
     private static AuctionMessage handleGetChartData(AuctionMessage req) {
-        // data: Object[] {String productId, String productName}
-        Object[] data    = (Object[]) req.getData();
-        String pid       = (String) data[0];
-        String pName     = (String) data[1];
-        return success(DataStorage.getProductChartData(pid, pName));
+        // XYChart.Series không Serializable – không thể gửi qua socket
+        // Client tự gọi DataStorage.getProductChartData() local
+        return error("Chart data phải được lấy local, không qua network.");
     }
 
     // ──────────────────────────────────────────────────────────────

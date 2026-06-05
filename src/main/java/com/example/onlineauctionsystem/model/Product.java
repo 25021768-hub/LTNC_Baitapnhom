@@ -48,13 +48,6 @@ public class Product implements Serializable {
         if (newAmount >= minimumRequiredPrice) {
             this.currentPrice = newAmount;
             this.highestBidder = bidderName;
-            this.bidIncrement++;
-
-            // Nếu còn < 5 phút thì kéo dài thêm 5 phút
-            long secondsLeft = java.time.temporal.ChronoUnit.SECONDS.between(now, endTime);
-            if (secondsLeft < 300) {
-                this.endTime = endTime.plusMinutes(5);
-            }
             return true;
         }
         return false;
@@ -71,7 +64,7 @@ public class Product implements Serializable {
 
         if (startTime == null || end == null) {
             if (!"RUNNING".equals(status) && !"FINISHED".equals(status)
-                     && !"PAID".equals(status) && !"CANCELED".equals(status)) {
+                    && !"PAID".equals(status) && !"CANCELED".equals(status)) {
                 status = "PENDING";
             }
             return;
@@ -89,7 +82,7 @@ public class Product implements Serializable {
                     status = "FINISHED";
                 } else {
                     // TRƯỜNG HỢP 2: Không ai đặt giá -> Kết thúc thất bại luôn
-                    status = "Cancel";
+                    status = "CANCELED";
                 }
             }
         }
