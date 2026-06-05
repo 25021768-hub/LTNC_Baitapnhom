@@ -213,13 +213,8 @@ public class RemoteDataStorage {
     }
 
     public static XYChart.Series<String, Number> getProductChartData(String productId, String productName) {
-        AuctionMessage res = AuctionClient.send(new AuctionMessage(
-                AuctionMessage.Action.GET_CHART_DATA, new Object[]{productId, productName}
-        ));
-        if (res.getAction() == AuctionMessage.Action.SUCCESS) {
-            return (XYChart.Series<String, Number>) res.getData();
-        }
-        return new XYChart.Series<>();
+        // XYChart.Series không Serializable → gọi DataStorage local, không qua network
+        return DataStorage.getProductChartData(productId, productName);
     }
 
     // ──────────────────────────────────────────────────────────────

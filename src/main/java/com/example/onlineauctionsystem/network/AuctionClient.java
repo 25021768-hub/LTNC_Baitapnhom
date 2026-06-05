@@ -1,10 +1,8 @@
 package com.example.onlineauctionsystem.network;
 
-import com.example.onlineauctionsystem.HelloApplication;
 import com.example.onlineauctionsystem.model.Account;
 import com.example.onlineauctionsystem.model.BidHistory;
 import com.example.onlineauctionsystem.model.Product;
-import javafx.application.Application;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -245,7 +243,6 @@ public final class AuctionClient {
 
         scanner.close();
         System.out.println("Đã thoát AuctionClient Test.");
-        Application.launch(HelloApplication.class, args);
     }
 
     // ──────────────────────────────────────────────────────────────

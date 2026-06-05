@@ -111,8 +111,8 @@ public final class AuctionServer {
         String clientAddr = socket.getInetAddress().getHostAddress();
         try (
                 socket; // try-with-resources: tự đóng socket khi xong
-                ObjectInputStream  in  = new ObjectInputStream(socket.getInputStream());
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream  in  = new ObjectInputStream(socket.getInputStream())
         ) {
             // Đọc yêu cầu từ client
             Object requestObject = in.readObject();

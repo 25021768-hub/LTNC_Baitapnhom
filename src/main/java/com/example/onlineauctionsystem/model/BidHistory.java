@@ -1,8 +1,11 @@
 package com.example.onlineauctionsystem.model;
 
+import java.io.Serializable;
+
 import java.time.LocalDateTime;
 
-public class BidHistory {
+public class BidHistory implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String productId;
     private String productName;
     private String bidderName;
