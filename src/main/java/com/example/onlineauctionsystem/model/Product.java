@@ -49,6 +49,12 @@ public class Product implements Serializable {
             this.currentPrice = newAmount;
             this.highestBidder = bidderName;
             this.bidIncrement++;
+
+            // Nếu còn < 5 phút thì kéo dài thêm 5 phút
+            long secondsLeft = java.time.temporal.ChronoUnit.SECONDS.between(now, endTime);
+            if (secondsLeft < 300) {
+                this.endTime = endTime.plusMinutes(5);
+            }
             return true;
         }
         return false;

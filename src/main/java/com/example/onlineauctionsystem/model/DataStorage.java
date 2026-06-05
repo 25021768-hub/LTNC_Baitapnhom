@@ -225,6 +225,10 @@
                 int rows = stmt.executeUpdate();
     
                 if (rows > 0) {
+
+                    //  Kéo dài thời gian nếu còn < 5 phút
+                    extendIfLastMinutes(conn, productId);
+
                     // 0. Ghi log thời gian thực hiện để phục vụ vẽ biểu đồ
                     String logSql = "INSERT INTO product_price_log (product_id, bidder_name, price_milestone) VALUES (?, ?, ?)";
                     try (PreparedStatement logStmt = conn.prepareStatement(logSql)) {
@@ -743,7 +747,7 @@
                                 del.setString(2, productId);
                                 del.executeUpdate();
                             }
-                            return; // ← DỪNG, không đệ quy
+                            return; // ← DỪNG
                         }
 
                         // Lấy highest_bidder cũ để hoàn tiền
@@ -811,5 +815,34 @@
                 e.printStackTrace();
             }
             return series;
+        }
+
+        private static void extendIfLastMinutes(Connection conn, String productId) {
+            String checkSql = "SELECT end_time FROM products WHERE id = ? AND status = 'RUNNING'";
+            try (PreparedStatement check = conn.prepareStatement(checkSql)) {
+                check.setString(1, productId);
+                try (ResultSet rs = check.executeQuery()) {
+                    if (rs.next()) {
+                        Timestamp endTs = rs.getTimestamp("end_time");
+                        if (endTs == null) return;
+
+                        LocalDateTime endTime = endTs.toLocalDateTime();
+                        LocalDateTime now = LocalDateTime.now();
+                        long secondsLeft = java.time.temporal.ChronoUnit.SECONDS.between(now, endTime);
+
+                        // Chỉ kéo dài nếu còn dưới 5 phút (300 giây)
+                        if (secondsLeft > 0 && secondsLeft < 300) {
+                            String extendSql = "UPDATE products SET end_time = DATE_ADD(end_time, INTERVAL 5 MINUTE) WHERE id = ?";
+                            try (PreparedStatement extend = conn.prepareStatement(extendSql)) {
+                                extend.setString(1, productId);
+                                extend.executeUpdate();
+                                System.out.println("[Anti-Snipe] Kéo dài thêm 5 phút cho SP: " + productId);
+                            }
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
