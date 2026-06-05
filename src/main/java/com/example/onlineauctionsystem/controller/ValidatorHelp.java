@@ -1,6 +1,6 @@
 package com.example.onlineauctionsystem.controller;
 
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -9,10 +9,10 @@ import java.util.function.Predicate;
 
 public class ValidatorHelp{
     public static void setupValidation(TextField field, Label label,
-                                   String originalValue, // Truyền null nếu là Đăng ký
-                                   Predicate<String> formatChecker,
-                                   String errorFormat, String successMsg,
-                                   Runnable updateStatus) {
+                                       String originalValue, // Truyền null nếu là Đăng ký
+                                       Predicate<String> formatChecker,
+                                       String errorFormat, String successMsg,
+                                       Runnable updateStatus) {
         field.textProperty().addListener((obs, oldVal, newVal) -> {
             if (originalValue != null && newVal.equals(originalValue)) {
                 setUpLabel(label);
@@ -25,7 +25,7 @@ public class ValidatorHelp{
                     updateLabel(label, errorFormat, "red");
                 } else {
                     if (originalValue == null || !newVal.equals(originalValue)) {
-                        if (DataStorage.isAccountExists(newVal)) {
+                        if (RemoteDataStorage.isAccountExists(newVal)) {
                             updateLabel(label, "Đã tồn tại trên hệ thống!", "red");
                         } else {
                             updateLabel(label, successMsg, "green");
@@ -41,9 +41,9 @@ public class ValidatorHelp{
 
 
     public static void setupPasswordValidation(PasswordField txtPass, PasswordField txtRePass,
-                                           Label lblMsg1, Label lblMsg2,
-                                           Predicate<String> strengthChecker,
-                                           Runnable updateStatus) {
+                                               Label lblMsg1, Label lblMsg2,
+                                               Predicate<String> strengthChecker,
+                                               Runnable updateStatus) {
 
         javafx.beans.value.ChangeListener<String> passListener = (obs, old, newVal) -> {
             String p1 = txtPass.getText();

@@ -3,11 +3,9 @@ package com.example.onlineauctionsystem.controller.auth;
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.controller.ValidatorHelp;
 import com.example.onlineauctionsystem.model.Account;
-import com.example.onlineauctionsystem.model.AuctionMessage;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
-import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -80,7 +78,7 @@ public class RegisterController extends BaseController {
                 txtEmail.getText().trim(),
                 txtPhone.getText().trim()
         );
-        if (DataStorage.register(acc)) {
+        if (RemoteDataStorage.register(acc)) {
             showAlert("Đăng kí", "Đăng kí tài khoản thành công!");
             switchScene(event, SceneConfig.LOGIN);
         } else {

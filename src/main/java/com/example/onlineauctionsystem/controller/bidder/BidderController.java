@@ -2,7 +2,7 @@ package com.example.onlineauctionsystem.controller.bidder;
 
 import com.example.onlineauctionsystem.controller.MenuController;
 import com.example.onlineauctionsystem.controller.common.BidNewProductCardController;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.application.Platform;
@@ -51,7 +51,7 @@ public class BidderController extends MenuController {
     }
 
     private List<Product> fetchProducts(){
-        return DataStorage.getAllProducts().stream()
+        return RemoteDataStorage.getAllProducts().stream()
                 .filter(p -> "RUNNING".equals(p.getStatus()))
                 .collect(Collectors.toList());
     }
@@ -214,7 +214,7 @@ public class BidderController extends MenuController {
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
             stopAutoRefresh();
-            DataStorage.currentAccount = null;
+            RemoteDataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
         }
     }

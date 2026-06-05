@@ -1,7 +1,7 @@
 package com.example.onlineauctionsystem.controller.common;
 
 import com.example.onlineauctionsystem.model.BidHistory;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -67,8 +67,8 @@ public class BidderHistoryRowController {
         // Vô hiệu hoá ngay để chống double-click
         lblStatusBadge.setOnMouseClicked(null);
         lblStatusBadge.setStyle(lblStatusBadge.getStyle() + "; -fx-opacity: 0.5;");
-        double balance = DataStorage.getBalance(
-                DataStorage.currentAccount.getUsername()
+        double balance = RemoteDataStorage.getBalance(
+                RemoteDataStorage.currentAccount.getUsername()
         );
 
         if (balance < history.getFinalPrice()) {
@@ -96,10 +96,10 @@ public class BidderHistoryRowController {
 
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                String currentBuyer = DataStorage.currentAccount.getUsername();
+                String currentBuyer = RemoteDataStorage.currentAccount.getUsername();
 
                 // 1. Sử dụng hàm Transaction đồng bộ gộp (Trừ tiền buyer + Cộng tiền seller + Đổi trạng thái PAID)
-                boolean transactionOk = DataStorage.executeManualPayment(currentBuyer, history.getProductId(), history.getFinalPrice());
+                boolean transactionOk = RemoteDataStorage.executeManualPayment(currentBuyer, history.getProductId(), history.getFinalPrice());
 
                 if (transactionOk) {
 

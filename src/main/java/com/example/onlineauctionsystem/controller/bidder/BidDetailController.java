@@ -1,7 +1,7 @@
 package com.example.onlineauctionsystem.controller.bidder;
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.model.BidHistory;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.ProductImage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
@@ -83,7 +83,7 @@ public class BidDetailController extends BaseController {
         lblCurrentPrice.setText(formatPrice(product.getCurrentPrice()));
         lblTime.setText(product.getRemainingTime());
 
-        double balance = DataStorage.getBalance(DataStorage.currentAccount.getUsername());
+        double balance = RemoteDataStorage.getBalance(RemoteDataStorage.currentAccount.getUsername());
         lblBalance.setText(formatPrice(balance));
 
         double minBid = product.getCurrentPrice() + product.getBidIncrement();
@@ -102,7 +102,7 @@ public class BidDetailController extends BaseController {
                 secondsCounter = 0;
 
                 Thread dbThread = new Thread(() -> {
-                    Product fresh = DataStorage.findProductById(product.getId());
+                    Product fresh = RemoteDataStorage.findProductById(product.getId());
                     if (fresh != null) {
                         Platform.runLater(() -> {
                             this.product = fresh;
@@ -137,7 +137,7 @@ public class BidDetailController extends BaseController {
 
     @FXML
     private void onPlaceBid(ActionEvent event) {
-        if (DataStorage.currentAccount.isLocked()) {
+        if (RemoteDataStorage.currentAccount.isLocked()) {
             showAlert("Lỗi", "Tài khoản của bạn đã bị khóa! Không thể thực hiện chức năng này.");
             stopTimeline();
             forceLogout(event);
@@ -166,7 +166,7 @@ public class BidDetailController extends BaseController {
         }
 
         // Fetch giá mới nhất từ DB ngay trước khi nhấn nút ghi nhận
-        Product latest = DataStorage.findProductById(product.getId());
+        Product latest = RemoteDataStorage.findProductById(product.getId());
         if (latest == null) {
             showAlert("Lỗi", "Sản phẩm không tồn tại!");
             return;
@@ -202,28 +202,28 @@ public class BidDetailController extends BaseController {
             return;
         }
 
-        double balance = DataStorage.getBalance(DataStorage.currentAccount.getUsername());
+        double balance = RemoteDataStorage.getBalance(RemoteDataStorage.currentAccount.getUsername());
         if (bidAmount > balance) {
             showAlert("Lỗi", "Số dư không đủ!");
             return;
         }
 
-        String bidder = DataStorage.currentAccount.getUsername();
-        boolean ok = DataStorage.updateBid(product.getId(), bidAmount, bidder);
+        String bidder = RemoteDataStorage.currentAccount.getUsername();
+        boolean ok = RemoteDataStorage.updateBid(product.getId(), bidAmount, bidder);
 
         if (ok) {
             BidHistory bidHistory = new BidHistory(product.getId(), product.getName(), bidder, bidAmount, bidAmount , product.getEndTime(),"WIN", false);
-            DataStorage.saveBidHistory(bidHistory);
+            RemoteDataStorage.saveBidHistory(bidHistory);
             showAlert("Thành công", "Đặt giá thành công: " + formatPrice(bidAmount));
             txtBidAmount.clear();
-            Product freshSuccess = DataStorage.findProductById(product.getId());
+            Product freshSuccess = RemoteDataStorage.findProductById(product.getId());
             if (freshSuccess != null) {
                 this.product = freshSuccess;
                 updateDynamicInfo();
             }
         } else {
             // Bị người khác chèn lệnh đặt trước trong khoảnh khắc tích tắc đó
-            Product freshFail = DataStorage.findProductById(product.getId());
+            Product freshFail = RemoteDataStorage.findProductById(product.getId());
             if (freshFail != null) {
                 this.product = freshFail;
                 updateDynamicInfo();

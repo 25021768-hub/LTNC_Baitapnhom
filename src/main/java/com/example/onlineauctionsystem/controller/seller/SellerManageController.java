@@ -1,7 +1,7 @@
 package com.example.onlineauctionsystem.controller.seller;
 import com.example.onlineauctionsystem.controller.MenuController;
 import com.example.onlineauctionsystem.controller.common.ProductCardController;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.ProductImage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
@@ -38,8 +38,8 @@ public class SellerManageController extends MenuController {
     }
 
     private List<Product> fetchMyPendingProducts() {
-        String me = DataStorage.currentAccount.getUsername();
-        return DataStorage.getAllProducts().stream()
+        String me = RemoteDataStorage.currentAccount.getUsername();
+        return RemoteDataStorage.getAllProducts().stream()
                 .filter(p -> me.equals(p.getSellerName()))
                 .filter(p -> "PENDING".equals(p.getStatus()))
                 .collect(Collectors.toList());
@@ -82,7 +82,7 @@ public class SellerManageController extends MenuController {
 
     @FXML
     private void onAddProduct(ActionEvent event) {
-        if (DataStorage.currentAccount.isLocked()) {
+        if (RemoteDataStorage.currentAccount.isLocked()) {
             showAlert("Lỗi", "Tài khoản của bạn đã bị khóa! Không thể thực hiện chức năng này.");
             stopAutoRefresh();
             // Ép đăng xuất ngay lập tức
@@ -135,9 +135,9 @@ public class SellerManageController extends MenuController {
     }
 
     private void onDeleteProduct(Product p) {
-        boolean ok = DataStorage.deleteMyProduct(
+        boolean ok = RemoteDataStorage.deleteMyProduct(
                 p.getId(),
-                DataStorage.currentAccount.getUsername()
+                RemoteDataStorage.currentAccount.getUsername()
         );
         if (ok) {
             ProductImage.delete(p.getImagePath()); // xóa file ảnh luôn
@@ -184,7 +184,7 @@ public class SellerManageController extends MenuController {
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
             stopAutoRefresh();
-            DataStorage.currentAccount = null;
+            RemoteDataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
         }
     }

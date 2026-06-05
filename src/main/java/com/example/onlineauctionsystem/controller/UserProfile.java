@@ -1,7 +1,7 @@
 package com.example.onlineauctionsystem.controller;
 
 import com.example.onlineauctionsystem.model.Account;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
 import javafx.event.ActionEvent;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class UserProfile extends MenuController{
     @FXML private Label lblFullNameMessage, lblEmailMessage, lblPhoneMessage, lblIDCardMessage, lblName;
-    private Account acc = DataStorage.currentAccount;
+    private Account acc = RemoteDataStorage.currentAccount;
     @FXML private Label lblBalance;
     @FXML private TextField txtFullName, txtEmail, txtPhoneNumber, txtIDCard;
     @FXML private Button btnSave;
@@ -20,12 +20,12 @@ public class UserProfile extends MenuController{
     @Override
     public void initialize() {
         btnSave.setDisable(true);
-        txtFullName.setText(DataStorage.currentAccount.getFullName());
-        txtEmail.setText(DataStorage.currentAccount.getEmail());
-        txtIDCard.setText(DataStorage.currentAccount.getIdCard());
-        txtPhoneNumber.setText(DataStorage.currentAccount.getPhoneNumber());
-        lblBalance.setText(formatPrice(DataStorage.currentAccount.getBalance()));
-        lblName.setText(DataStorage.currentAccount.getFullName());
+        txtFullName.setText(RemoteDataStorage.currentAccount.getFullName());
+        txtEmail.setText(RemoteDataStorage.currentAccount.getEmail());
+        txtIDCard.setText(RemoteDataStorage.currentAccount.getIdCard());
+        txtPhoneNumber.setText(RemoteDataStorage.currentAccount.getPhoneNumber());
+        lblBalance.setText(formatPrice(RemoteDataStorage.currentAccount.getBalance()));
+        lblName.setText(RemoteDataStorage.currentAccount.getFullName());
 
         ValidatorHelp.setupValidation(txtPhoneNumber, lblPhoneMessage, acc.getPhoneNumber(), Validator::isValidPhone, "Số điện thoại không hợp lệ.", "Số điện thoại hợp lệ.", this::checkSave);
 
@@ -46,26 +46,26 @@ public class UserProfile extends MenuController{
         dialog.setContentText("Nhập số tiền muốn nạp:");
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(amountStr -> {
-            try{
-                double amount = Double.parseDouble(amountStr);
-                if(amount < 10000){
-                    showAlert("Lỗi", "Số tiền nạp phải lớn hơn 10000.");
-                    return;
+                    try{
+                        double amount = Double.parseDouble(amountStr);
+                        if(amount < 10000){
+                            showAlert("Lỗi", "Số tiền nạp phải lớn hơn 10000.");
+                            return;
+                        }
+                        if(RemoteDataStorage.updateBalance(acc.getUsername(), amount)){
+                            double newBalance = acc.getBalance() + amount;
+                            showAlert("Nạp thành công", "Nạp thành công " + amountStr + " vào tài khoản");
+                            RemoteDataStorage.currentAccount.setBalance(newBalance);
+                            lblBalance.setText(formatPrice(newBalance));
+                        }
+                        else{
+                            showAlert("Lỗi", "Lỗi hệ thống.");
+                        }
+                    }
+                    catch (NumberFormatException e){
+                        showAlert("Lỗi", "Số tiền không hợp lệ.");
+                    }
                 }
-                if(DataStorage.updateBalance(acc.getUsername(), amount)){
-                    double newBalance = acc.getBalance() + amount;
-                    showAlert("Nạp thành công", "Nạp thành công " + amountStr + " vào tài khoản");
-                    DataStorage.currentAccount.setBalance(newBalance);
-                    lblBalance.setText(formatPrice(newBalance));
-                }
-                else{
-                    showAlert("Lỗi", "Lỗi hệ thống.");
-                }
-            }
-            catch (NumberFormatException e){
-                showAlert("Lỗi", "Số tiền không hợp lệ.");
-            }
-            }
         );
     }
 
@@ -84,7 +84,7 @@ public class UserProfile extends MenuController{
             acc.setEmail(txtEmail.getText().trim());
             acc.setPhoneNumber(txtPhoneNumber.getText().trim());
             acc.setIdCard(txtIDCard.getText().trim());
-            if (DataStorage.updateAccount(acc)) {
+            if (RemoteDataStorage.updateAccount(acc)) {
                 showAlert("Đổi thông tin", "Đổi thành công.");
 
                 lblName.setText(acc.getFullName());
@@ -107,7 +107,7 @@ public class UserProfile extends MenuController{
 
     @FXML
     private void onCancel(ActionEvent event) {
-        Account current = DataStorage.currentAccount;
+        Account current = RemoteDataStorage.currentAccount;
 
         // Gán lại dữ liệu cũ vào các ô text
         txtFullName.setText(current.getFullName());
@@ -125,16 +125,16 @@ public class UserProfile extends MenuController{
     }
 
     private void checkSave(){
-         boolean isUpdate = false;
-         if (lblPhoneMessage.getStyle().contains("green") && !(txtPhoneNumber.getText().trim().equals(acc.getPhoneNumber())) ){
-             isUpdate = true;
-         }
-         if (lblEmailMessage.getStyle().contains("green") && !(txtEmail.getText().trim().equals(acc.getEmail())) ){
-             isUpdate = true;;
-         }
-         if (lblIDCardMessage.getStyle().contains("green") && !(txtIDCard.getText().trim().equals(acc.getIdCard())) ){
-             isUpdate = true;
-         }
+        boolean isUpdate = false;
+        if (lblPhoneMessage.getStyle().contains("green") && !(txtPhoneNumber.getText().trim().equals(acc.getPhoneNumber())) ){
+            isUpdate = true;
+        }
+        if (lblEmailMessage.getStyle().contains("green") && !(txtEmail.getText().trim().equals(acc.getEmail())) ){
+            isUpdate = true;;
+        }
+        if (lblIDCardMessage.getStyle().contains("green") && !(txtIDCard.getText().trim().equals(acc.getIdCard())) ){
+            isUpdate = true;
+        }
         if (lblFullNameMessage.getStyle().contains("green") && !(txtFullName.getText().trim().equals(acc.getFullName())) ){
             isUpdate = true;
         }
@@ -145,7 +145,7 @@ public class UserProfile extends MenuController{
                 break;
             }
         }
-         btnSave.setDisable(!isUpdate);
+        btnSave.setDisable(!isUpdate);
     }
 
     @FXML

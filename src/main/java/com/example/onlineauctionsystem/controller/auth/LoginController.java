@@ -2,7 +2,7 @@ package com.example.onlineauctionsystem.controller.auth;
 
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.controller.ValidatorHelp;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -36,22 +36,22 @@ public class LoginController extends BaseController {
         String user = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
 
-        DataStorage.currentAccount = DataStorage.checkLogin(user, password);
-        if (DataStorage.currentAccount != null) {
+        RemoteDataStorage.currentAccount = RemoteDataStorage.checkLogin(user, password);
+        if (RemoteDataStorage.currentAccount != null) {
             Stage stage = (Stage) btnLogin.getScene().getWindow();
 
             // THÊM BỘ KIỂM TRA TRẠNG THÁI KHÓA TÀI KHOẢN TẠI ĐÂY
-            if (DataStorage.currentAccount.isLocked()) {
+            if (RemoteDataStorage.currentAccount.isLocked()) {
                 showAlert("Đăng nhập thất bại", "Tài khoản của bạn đã bị khóa bởi Quản trị viên!");
-                DataStorage.currentAccount = null; // Reset lại phiên đăng nhập để đảm bảo an toàn
+                RemoteDataStorage.currentAccount = null; // Reset lại phiên đăng nhập để đảm bảo an toàn
                 return; // Dừng hàm luôn, không cho chạy tiếp xuống phần phân quyền
             }
 
             // Nếu vượt qua bộ lọc khóa ở trên thì mới báo thành công và phân quyền
             showAlert("Đăng nhập", "Đăng nhập thành công.");
 
-            String role = DataStorage.currentAccount.getRole() != null
-                    ? DataStorage.currentAccount.getRole().toUpperCase().trim()
+            String role = RemoteDataStorage.currentAccount.getRole() != null
+                    ? RemoteDataStorage.currentAccount.getRole().toUpperCase().trim()
                     : "GUEST";
 
             switch (role) {
