@@ -2,7 +2,7 @@ package com.example.onlineauctionsystem.controller.auth;
 
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.controller.ValidatorHelp;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
 import javafx.beans.value.ChangeListener;
@@ -31,7 +31,7 @@ public class ForgotPasswordController extends BaseController{
     @FXML
     private void onFindAccount(ActionEvent event) {
         String identifier = txtFind.getText().trim();
-        if (DataStorage.isAccountExists(identifier)) {
+        if (RemoteDataStorage.isAccountExists(identifier)) {
             identify = identifier;
             showAlert("Quên mật khẩu", "Tìm thấy tài khoản! Vui lòng đặt mật khẩu mới.");
             switchScene(event, "/com/example/onlineauctionsystem/Dat_Lai_Mat_Khau_BTL.fxml", "Đổi mật khẩu");
@@ -74,7 +74,7 @@ public class ForgotPasswordController extends BaseController{
 
     @FXML
     private void onChangeForgotPassword(ActionEvent event){
-        if(DataStorage.changeForgotPassword(identify, txtNewPassword.getText())) {
+        if(RemoteDataStorage.changeForgotPassword(identify, txtNewPassword.getText())) {
             showAlert("Quên mật khẩu", "Đổi mật khẩu thành công!");
             switchScene(event, SceneConfig.LOGIN);
         }

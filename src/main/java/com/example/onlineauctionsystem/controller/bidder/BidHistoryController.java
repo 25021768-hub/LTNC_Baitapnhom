@@ -3,7 +3,7 @@ package com.example.onlineauctionsystem.controller.bidder;
 import com.example.onlineauctionsystem.controller.MenuController;
 import com.example.onlineauctionsystem.controller.common.BidderHistoryRowController;
 import com.example.onlineauctionsystem.model.BidHistory;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -49,7 +49,7 @@ public class BidHistoryController extends MenuController {
     @Override
     public void initialize() {
         // Khởi chạy đồng bộ và nạp dữ liệu lần đầu tiên
-        DataStorage.autoCloseAndSaveExpiredProducts();
+        RemoteDataStorage.autoCloseAndSaveExpiredProducts();
 
         // Đã xóa bớt 1 hàm loadData() thừa bạn viết trùng ở đây
         loadData();
@@ -69,10 +69,10 @@ public class BidHistoryController extends MenuController {
 
         autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
             Thread refreshThread = new Thread(() -> {
-                DataStorage.autoCloseAndSaveExpiredProducts();
+                RemoteDataStorage.autoCloseAndSaveExpiredProducts();
 
-                String me = DataStorage.currentAccount.getUsername();
-                List<BidHistory> list = DataStorage.getBidHistory(me);
+                String me = RemoteDataStorage.currentAccount.getUsername();
+                List<BidHistory> list = RemoteDataStorage.getBidHistory(me);
 
                 Platform.runLater(() -> {
                     allHistory.setAll(list);
@@ -96,8 +96,8 @@ public class BidHistoryController extends MenuController {
     }
 
     private void loadData() {
-        String me = DataStorage.currentAccount.getUsername();
-        List<BidHistory> list = DataStorage.getBidHistory(me);
+        String me = RemoteDataStorage.currentAccount.getUsername();
+        List<BidHistory> list = RemoteDataStorage.getBidHistory(me);
 
         java.time.LocalDateTime now = java.time.LocalDateTime.now();
 
@@ -235,7 +235,7 @@ public class BidHistoryController extends MenuController {
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
             stopAutoRefresh();
-            DataStorage.currentAccount = null;
+            RemoteDataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
         }
     }

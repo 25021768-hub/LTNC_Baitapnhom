@@ -2,7 +2,7 @@ package com.example.onlineauctionsystem.controller.seller;
 
 import com.example.onlineauctionsystem.controller.MenuController;
 import com.example.onlineauctionsystem.controller.common.ProductItemController;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.application.Platform;
@@ -46,8 +46,8 @@ public class SellerController extends MenuController {
         startAutoRefresh();
     }
     private List<Product> fetchMyProducts(){
-        String seller_username = DataStorage.currentAccount.getUsername();
-        return DataStorage.getAllProducts().stream()
+        String seller_username = RemoteDataStorage.currentAccount.getUsername();
+        return RemoteDataStorage.getAllProducts().stream()
                 .filter(p -> seller_username.equals(p.getSellerName()))
                 .filter(p -> "OPEN".equals(p.getStatus())
                         || "RUNNING".equals(p.getStatus()))
@@ -166,7 +166,7 @@ public class SellerController extends MenuController {
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
             stopAutoRefresh();
-            DataStorage.currentAccount = null;
+            RemoteDataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
 
         }

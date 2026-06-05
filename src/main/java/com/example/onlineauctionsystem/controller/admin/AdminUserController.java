@@ -4,7 +4,7 @@ import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.controller.common.ProductItemController;
 import com.example.onlineauctionsystem.controller.common.UserController;
 import com.example.onlineauctionsystem.model.Account;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.application.Platform;
@@ -45,7 +45,7 @@ public class AdminUserController extends BaseController {
     }
 
     private List<Account> fetchMyAccount() {
-        return DataStorage.getAllAccounts().stream()
+        return RemoteDataStorage.getAllAccounts().stream()
                 .filter(a -> !"ADMIN".equals(a.getRole()))
                 .collect(Collectors.toList());
     }
@@ -84,7 +84,7 @@ public class AdminUserController extends BaseController {
 
     private void onToggleLock(Account acc) {
         boolean newLocked = !acc.isLocked();
-        boolean ok = DataStorage.setAccountLocked(acc.getUsername(), newLocked);
+        boolean ok = RemoteDataStorage.setAccountLocked(acc.getUsername(), newLocked);
         if (ok) {
             acc.setLocked(newLocked);
             List<Account> fresh = fetchMyAccount();
@@ -137,7 +137,7 @@ public class AdminUserController extends BaseController {
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
             stopAutoRefresh();
-            DataStorage.currentAccount = null;
+            RemoteDataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
 
         }

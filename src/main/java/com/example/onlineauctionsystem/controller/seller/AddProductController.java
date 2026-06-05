@@ -1,7 +1,7 @@
 package com.example.onlineauctionsystem.controller.seller;
 
 import com.example.onlineauctionsystem.controller.BaseController;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.ProductImage;
 import javafx.fxml.FXML;
@@ -116,12 +116,12 @@ public class AddProductController extends BaseController {
         Product p = new Product(
                 UUID.randomUUID().toString(), name,
                 initialPrice, bidIncrement, duration,
-                DataStorage.currentAccount.getUsername(),
+                RemoteDataStorage.currentAccount.getUsername(),
                 selectedImagePath
         );
         p.setStatus("PENDING");
 
-        if (DataStorage.addProduct(p)) {
+        if (RemoteDataStorage.addProduct(p)) {
             if (onSuccessCallback != null) onSuccessCallback.run();
             ((Stage) txtName.getScene().getWindow()).close();
         } else {

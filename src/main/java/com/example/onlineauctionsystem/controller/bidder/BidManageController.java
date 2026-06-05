@@ -2,7 +2,7 @@ package com.example.onlineauctionsystem.controller.bidder;
 
 import com.example.onlineauctionsystem.controller.MenuController;
 import com.example.onlineauctionsystem.controller.common.BidderManageRowController;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.application.Platform;
@@ -59,8 +59,8 @@ public class BidManageController extends MenuController {
     }
 
     private List<Product> fetchRunningBids() {
-        if (DataStorage.currentAccount == null) return new ArrayList<>();
-        return DataStorage.getRunningBidsByBidder(DataStorage.currentAccount.getUsername());
+        if (RemoteDataStorage.currentAccount == null) return new ArrayList<>();
+        return RemoteDataStorage.getRunningBidsByBidder(RemoteDataStorage.currentAccount.getUsername());
     }
 
     private void startAutoRefresh() {
@@ -100,7 +100,7 @@ public class BidManageController extends MenuController {
     private void applyFilterAndRender() {
         String keyword = (txtSearch != null) ? txtSearch.getText().trim().toLowerCase() : "";
         String statusFilter = (comboStatus != null && comboStatus.getValue() != null) ? comboStatus.getValue() : "All";
-        String currentUsername = DataStorage.currentAccount.getUsername();
+        String currentUsername = RemoteDataStorage.currentAccount.getUsername();
 
         // 1. Thực hiện lọc danh sách dữ liệu
         List<Product> filteredList = runningBidList.stream()
@@ -133,7 +133,7 @@ public class BidManageController extends MenuController {
 
                     // Tính toán thông tin trạng thái cho từng hàng con
                     boolean isWinning = currentUsername.equalsIgnoreCase(p.getHighestBidder());
-                    double myMaxBid = DataStorage.getMaxBidByBidderForProduct(currentUsername, p.getId(), p.getCurrentPrice());
+                    double myMaxBid = RemoteDataStorage.getMaxBidByBidderForProduct(currentUsername, p.getId(), p.getCurrentPrice());
 
                     // Đổ dữ liệu vào hàng con, callback điều hướng sang trang chi tiết khi bấm nút tái đấu
                     rowCtrl.setData(p, myMaxBid, isWinning, this::navigateToBidDetail);
@@ -151,7 +151,7 @@ public class BidManageController extends MenuController {
     }
 
     private void calculateSummary() {
-        String currentUsername = DataStorage.currentAccount.getUsername();
+        String currentUsername = RemoteDataStorage.currentAccount.getUsername();
         int totalBidding = runningBidList.size();
 
         long totalWinning = runningBidList.stream()
@@ -159,7 +159,7 @@ public class BidManageController extends MenuController {
                 .count();
 
         double totalValue = runningBidList.stream()
-                .mapToDouble(p -> DataStorage.getMaxBidByBidderForProduct(currentUsername, p.getId(), p.getCurrentPrice()))
+                .mapToDouble(p -> RemoteDataStorage.getMaxBidByBidderForProduct(currentUsername, p.getId(), p.getCurrentPrice()))
                 .sum();
 
         // Định nghĩa 2 phút cuối = còn dưới 120 giây
@@ -241,7 +241,7 @@ public class BidManageController extends MenuController {
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
             stopAutoRefresh();
-            DataStorage.currentAccount = null;
+            RemoteDataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
         }
     }

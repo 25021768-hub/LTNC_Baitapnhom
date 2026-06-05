@@ -2,7 +2,7 @@ package com.example.onlineauctionsystem.controller.auth;
 
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.controller.ValidatorHelp;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
 import javafx.event.ActionEvent;
@@ -21,7 +21,7 @@ public class ChangePassword extends BaseController {
     public void initialize() {
         btnConfirm.setDisable(true);
         txtCurrentPassword.textProperty().addListener((observable, oldValue, newValue) -> {
-            String oldPassword = DataStorage.currentAccount.getPassword();
+            String oldPassword = RemoteDataStorage.currentAccount.getPassword();
             if (newValue.trim().equals(oldPassword)) {
                 ValidatorHelp.updateLabel(lblCurrentMessage, "Khớp với mật khẩu hiện tại.", "green");
             } else {
@@ -39,8 +39,8 @@ public class ChangePassword extends BaseController {
     }
     @FXML
     private void onReturnProfile(ActionEvent event) {
-        String username = DataStorage.currentAccount.getUsername();
-        if(DataStorage.changePassword(username, txtCurrentPassword.getText(), txtNewPassword.getText())){
+        String username = RemoteDataStorage.currentAccount.getUsername();
+        if(RemoteDataStorage.changePassword(username, txtCurrentPassword.getText(), txtNewPassword.getText())){
             switchScene(event, SceneConfig.BIDDER_HOME);
             showAlert("Đổi mật khẩu", "Đổi mật khẩu thành công.");
         }

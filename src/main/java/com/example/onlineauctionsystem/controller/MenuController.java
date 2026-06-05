@@ -1,6 +1,6 @@
 package com.example.onlineauctionsystem.controller;
 
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,10 +39,10 @@ public class MenuController extends BaseController {
 
     // Hàm bổ trợ lấy và chuẩn hóa Role, bọc lót an toàn tránh lỗi NullPointerException
     private String getCurrentRole() {
-        if (DataStorage.currentAccount == null || DataStorage.currentAccount.getRole() == null) {
+        if (RemoteDataStorage.currentAccount == null || RemoteDataStorage.currentAccount.getRole() == null) {
             return "GUEST";
         }
-        return DataStorage.currentAccount.getRole().toUpperCase().trim();
+        return RemoteDataStorage.currentAccount.getRole().toUpperCase().trim();
     }
 
     // Hàm điều hướng dùng chung dựa trên bảng tra cứu Map
@@ -84,7 +84,7 @@ public class MenuController extends BaseController {
         alert.setTitle("Xác nhận");
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
-            DataStorage.currentAccount = null;
+            RemoteDataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
         }
     }

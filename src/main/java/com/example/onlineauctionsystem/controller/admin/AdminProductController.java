@@ -2,7 +2,7 @@ package com.example.onlineauctionsystem.controller.admin;
 
 import com.example.onlineauctionsystem.controller.BaseController;
 import com.example.onlineauctionsystem.controller.common.ProductPendingController;
-import com.example.onlineauctionsystem.model.DataStorage;
+import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.application.Platform;
@@ -45,7 +45,7 @@ public class AdminProductController extends BaseController {
     }
 
     private List<Product> fetchAllProduct() {
-        return DataStorage.getAllProducts().stream()
+        return RemoteDataStorage.getAllProducts().stream()
                 .filter(p -> "PENDING".equals(p.getStatus()))
                 .collect(Collectors.toList());
     }
@@ -88,7 +88,7 @@ public class AdminProductController extends BaseController {
 
     private void handleProductApproval(Product product, Boolean isApproved) {
         String targetStatus = isApproved ? "RUNNING" : "CANCELED";
-        boolean dbUpdated = DataStorage.updateProductStatus(product.getId(), targetStatus);
+        boolean dbUpdated = RemoteDataStorage.updateProductStatus(product.getId(), targetStatus);
 
         if (dbUpdated) {
             // Cập nhật trạng thái của đối tượng trên RAM cho đồng bộ
@@ -153,7 +153,7 @@ public class AdminProductController extends BaseController {
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
             stopAutoRefresh();
-            DataStorage.currentAccount = null;
+            RemoteDataStorage.currentAccount = null;
             switchScene(event, SceneConfig.LOGIN);
         }
     }

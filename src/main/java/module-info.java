@@ -28,4 +28,6 @@ module com.example.onlineauctionsystem {
 
     opens com.example.onlineauctionsystem.controller.bidder to javafx.fxml;
     exports com.example.onlineauctionsystem.controller.bidder;
+    exports com.example.onlineauctionsystem.network;
+    opens com.example.onlineauctionsystem.network to javafx.base, javafx.fxml;
 }
