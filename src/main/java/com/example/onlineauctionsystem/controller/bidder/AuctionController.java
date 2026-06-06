@@ -1,6 +1,7 @@
 package com.example.onlineauctionsystem.controller.bidder;
 
 import com.example.onlineauctionsystem.controller.BaseController;
+import com.example.onlineauctionsystem.model.Account;
 import com.example.onlineauctionsystem.model.BidHistory;
 import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
@@ -178,7 +179,9 @@ public class AuctionController extends BaseController {
 
     @FXML
     private void onPlaceBid(ActionEvent event) {
-        if (RemoteDataStorage.currentAccount.isLocked()) {
+        Account freshAccount = RemoteDataStorage.findAccountByUsername(
+                RemoteDataStorage.currentAccount.getUsername());
+        if (freshAccount == null || freshAccount.isLocked()) {
             showAlert("Lỗi", "Tài khoản của bạn đã bị khóa! Không thể thực hiện chức năng này.");
             stopTimeline();
             forceLogout(event);

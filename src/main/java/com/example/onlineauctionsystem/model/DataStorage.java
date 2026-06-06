@@ -44,6 +44,30 @@ public class DataStorage {
         return null;
     }
 
+    public static Account findAccountByUsername(String username) {
+        String sql = "SELECT * FROM accounts WHERE username = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Account acc = new Account();
+                acc.setUsername(rs.getString("username"));
+                acc.setPassword(rs.getString("password"));
+                acc.setRole(rs.getString("role"));
+                acc.setFullName(rs.getString("fullname"));
+                acc.setIdCard(rs.getString("id_card"));
+                acc.setEmail(rs.getString("email"));
+                acc.setPhoneNumber(rs.getString("phone_number"));
+                acc.setLocked(rs.getBoolean("is_locked"));
+                return acc;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //Check tài khoản tồn tài chưa
     public static boolean isAccountExists(String identifier){
         if(identifier == null || identifier.trim().isEmpty()){

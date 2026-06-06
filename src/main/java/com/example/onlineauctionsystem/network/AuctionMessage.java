@@ -42,6 +42,7 @@ public class AuctionMessage implements Serializable {
         GET_ALL_ACCOUNTS,
         SET_ACCOUNT_LOCKED,
         IS_ACCOUNT_EXISTS,
+        GET_ACCOUNT,
 
         // ── Kết quả ──
         SUCCESS,

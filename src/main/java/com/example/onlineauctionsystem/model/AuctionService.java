@@ -70,6 +70,7 @@ public class AuctionService {
                 case GET_ALL_ACCOUNTS   -> handleGetAllAccounts();
                 case SET_ACCOUNT_LOCKED -> handleSetAccountLocked(request);
                 case IS_ACCOUNT_EXISTS  -> handleIsAccountExists(request);
+                case GET_ACCOUNT        -> handleGetAccount(request);
 
                 default -> error("Hành động không được hỗ trợ: " + request.getAction());
             };
@@ -357,6 +358,11 @@ public class AuctionService {
 
     private static AuctionMessage handleGetAllAccounts() {
         return success(DataStorage.getAllAccounts());
+    }
+    private AuctionMessage handleGetAccount(AuctionMessage request) {
+        String username = (String) request.getData();
+        Account acc = DataStorage.findAccountByUsername(username);
+        return acc != null ? success(acc) : error("Không tìm thấy tài khoản.");
     }
 
     private static AuctionMessage handleSetAccountLocked(AuctionMessage req) {

@@ -74,4 +74,5 @@ public class Account implements Serializable {
     }
     public void setBalance(double balance) {this.balance = balance;}
     public void setLocked(boolean locked) { this.isLocked = locked; }
+
 }

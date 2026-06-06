@@ -270,4 +270,12 @@ public class RemoteDataStorage {
         // Server đã tự chạy autoClose mỗi 30 giây qua ScheduledExecutorService.
         // Client KHÔNG cần gọi gì thêm – không spam network.
     }
+
+    public static Account findAccountByUsername(String username) {
+        AuctionMessage res = AuctionClient.send(new AuctionMessage(
+                AuctionMessage.Action.GET_ACCOUNT, username
+        ));
+        return res.getAction() == AuctionMessage.Action.SUCCESS
+                ? (Account) res.getData() : null;
+    }
 }
