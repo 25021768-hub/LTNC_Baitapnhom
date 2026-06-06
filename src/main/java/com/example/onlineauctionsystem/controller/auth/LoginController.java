@@ -43,7 +43,8 @@ public class LoginController extends BaseController {
             // THÊM BỘ KIỂM TRA TRẠNG THÁI KHÓA TÀI KHOẢN TẠI ĐÂY
             if (RemoteDataStorage.currentAccount.isLocked()) {
                 showAlert("Đăng nhập thất bại", "Tài khoản của bạn đã bị khóa bởi Quản trị viên!");
-                RemoteDataStorage.currentAccount = null; // Reset lại phiên đăng nhập để đảm bảo an toàn
+                RemoteDataStorage.currentAccount = null;
+                RemoteDataStorage.currentToken = null;
                 return; // Dừng hàm luôn, không cho chạy tiếp xuống phần phân quyền
             }
 

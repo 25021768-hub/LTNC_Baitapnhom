@@ -41,6 +41,8 @@ public class AuctionService {
                 case CHANGE_PASSWORD    -> handleChangePassword(request);
                 case FORGOT_PASSWORD    -> handleForgotPassword(request);
                 case UPDATE_ACCOUNT     -> handleUpdateAccount(request);
+                case VALIDATE_SESSION   -> handleValidateSession(request);
+                case LOGOUT             -> handleLogout(request);
 
                 // Sản phẩm
                 case GET_ALL_PRODUCTS   -> handleGetAllProducts();
@@ -65,6 +67,7 @@ public class AuctionService {
                 case GET_MAX_BID        -> handleGetMaxBid(request);
                 case GET_CHART_DATA     -> handleGetChartData(request);
                 case GET_IMAGE          -> handleGetImage(request);
+                case UPLOAD_IMAGE   -> handleUploadImage(request);
 
                 // Admin
                 case GET_ALL_ACCOUNTS   -> handleGetAllAccounts();
@@ -88,7 +91,10 @@ public class AuctionService {
     private static AuctionMessage handleLogin(AuctionMessage req) {
         String[] info = (String[]) req.getData(); // [username, password]
         Account acc = DataStorage.checkLogin(info[0], info[1]);
-        if (acc != null) return success(acc);
+        if (acc != null) {
+            String token = DataStorage.createSession(acc.getUsername());
+            return success(new Object[]{acc, token}); // trả về cả 2
+        }
         return error("Sai tên đăng nhập hoặc mật khẩu!");
     }
 
@@ -199,7 +205,9 @@ public class AuctionService {
         // Kiểm tra tài khoản tồn tại
         if (!DataStorage.isAccountExists(bidder))
             return error("Tài khoản không tồn tại!");
-
+        Account bidderAcc = DataStorage.findAccountByUsername(bidder);
+        if (bidderAcc == null || bidderAcc.isLocked())
+            return error("Tài khoản của bạn đã bị khóa! Không thể đặt giá.");
         // Kiểm tra số dư
         double currentBalance = DataStorage.getBalance(bidder);
         if (!Validator.hasEnoughMoney(currentBalance, amount))
@@ -351,6 +359,21 @@ public class AuctionService {
             return error("Lỗi đọc ảnh: " + e.getMessage());
         }
     }
+    private static AuctionMessage handleUploadImage(AuctionMessage req) {
+        Object[] data     = (Object[]) req.getData();
+        String fileName   = (String) data[0];
+        byte[] imageBytes = (byte[]) data[1];
+        try {
+            String folderPath = System.getProperty("user.dir")
+                    + "/src/main/resources/Product_Image/";
+            File folder = new File(folderPath);
+            if (!folder.exists()) folder.mkdirs();
+            Files.write(new File(folder, fileName).toPath(), imageBytes);
+            return success("Upload ảnh thành công.");
+        } catch (Exception e) {
+            return error("Lỗi lưu ảnh: " + e.getMessage());
+        }
+    }
 
     // ──────────────────────────────────────────────────────────────
     //  ADMIN
@@ -391,5 +414,18 @@ public class AuctionService {
 
     private static AuctionMessage error(String message) {
         return new AuctionMessage(AuctionMessage.Action.ERROR, message);
+    }
+    private static AuctionMessage handleValidateSession(AuctionMessage req) {
+        Object[] data   = (Object[]) req.getData();
+        String username = (String) data[0];
+        String token    = (String) data[1];
+        return DataStorage.isSessionValid(username, token)
+                ? success(true) : error("Session không hợp lệ.");
+    }
+
+    private static AuctionMessage handleLogout(AuctionMessage req) {
+        String username = (String) req.getData();
+        DataStorage.removeSession(username);
+        return success("Đã đăng xuất.");
     }
 }

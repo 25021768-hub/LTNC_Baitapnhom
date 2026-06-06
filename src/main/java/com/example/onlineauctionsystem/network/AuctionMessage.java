@@ -13,6 +13,8 @@ public class AuctionMessage implements Serializable {
         CHANGE_PASSWORD,
         FORGOT_PASSWORD,
         UPDATE_ACCOUNT,
+        VALIDATE_SESSION,
+        LOGOUT,
 
         // ── Sản phẩm ──
         GET_ALL_PRODUCTS,
@@ -35,8 +37,9 @@ public class AuctionMessage implements Serializable {
         UPDATE_BALANCE,
         EXECUTE_PAYMENT,
         GET_MAX_BID,
-        GET_CHART_DATA,   // data: Object[]{productId, productName} → trả về List<double[]>{time,price}
-        GET_IMAGE,        // data: String imagePath → trả về byte[] ảnh
+        GET_CHART_DATA,
+        GET_IMAGE,
+        UPLOAD_IMAGE,
 
         // ── Admin ──
         GET_ALL_ACCOUNTS,

@@ -119,6 +119,8 @@ public class SellerManageController extends MenuController {
         if (freshAccount == null || freshAccount.isLocked()) {
             showAlert("Lỗi", "Tài khoản của bạn đã bị khóa! Không thể thực hiện chức năng này.");
             stopAutoRefresh();
+            RemoteDataStorage.currentToken = null;
+            RemoteDataStorage.currentAccount = null;
             Stage stage = (Stage) pendingContainer.getScene().getWindow();
             switchScene(stage, SceneConfig.LOGIN);
             return;

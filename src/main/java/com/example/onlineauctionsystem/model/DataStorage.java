@@ -7,6 +7,9 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javafx.scene.chart.XYChart;
 
@@ -17,6 +20,22 @@ public class DataStorage {
     public static Account currentAccount;
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
+    }
+
+    private static final Map<String, String> activeSessions = new ConcurrentHashMap<>();
+
+    public static String createSession(String username) {
+        String token = UUID.randomUUID().toString();
+        activeSessions.put(username, token);
+        return token;
+    }
+
+    public static boolean isSessionValid(String username, String token) {
+        return token != null && token.equals(activeSessions.get(username));
+    }
+
+    public static void removeSession(String username) {
+        activeSessions.remove(username);
     }
 
     // --- QUẢN LÝ TÀI KHOẢN ---

@@ -2,6 +2,8 @@ package com.example.onlineauctionsystem.controller;
 
 import com.example.onlineauctionsystem.controller.auth.RegisterController;
 import com.example.onlineauctionsystem.model.RemoteDataStorage;
+import com.example.onlineauctionsystem.network.AuctionClient;
+import com.example.onlineauctionsystem.network.AuctionMessage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import com.example.onlineauctionsystem.utils.Validator;
 import javafx.beans.value.ChangeListener;
@@ -61,10 +63,11 @@ public abstract class BaseController{
 
     public void forceLogout(ActionEvent event) {
         showAlert("Tài khoản bị khóa", "Tài khoản của bạn đã bị Quản trị viên khóa! Hệ thống sẽ tự động đăng xuất.");
+        String username = RemoteDataStorage.currentAccount.getUsername();
         RemoteDataStorage.currentAccount = null;
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        switchScene(stage, SceneConfig.LOGIN);
+        RemoteDataStorage.currentToken = null;
+        AuctionClient.send(new AuctionMessage(AuctionMessage.Action.LOGOUT, username));
+        switchScene(event, SceneConfig.LOGIN);
     }
     // Hàm initialize abstract để các con bắt buộc phải triển khai
     @FXML

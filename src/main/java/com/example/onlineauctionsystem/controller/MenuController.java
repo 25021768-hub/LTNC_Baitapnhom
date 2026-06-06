@@ -1,6 +1,8 @@
 package com.example.onlineauctionsystem.controller;
 
 import com.example.onlineauctionsystem.model.RemoteDataStorage;
+import com.example.onlineauctionsystem.network.AuctionClient;
+import com.example.onlineauctionsystem.network.AuctionMessage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -84,7 +86,10 @@ public class MenuController extends BaseController {
         alert.setTitle("Xác nhận");
         alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
         if (alert.showAndWait().get() == ButtonType.OK) {
+            String username = RemoteDataStorage.currentAccount.getUsername();
             RemoteDataStorage.currentAccount = null;
+            RemoteDataStorage.currentToken = null;
+            AuctionClient.send(new AuctionMessage(AuctionMessage.Action.LOGOUT, username));
             switchScene(event, SceneConfig.LOGIN);
         }
     }

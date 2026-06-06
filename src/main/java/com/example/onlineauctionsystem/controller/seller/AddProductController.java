@@ -1,6 +1,7 @@
 package com.example.onlineauctionsystem.controller.seller;
 
 import com.example.onlineauctionsystem.controller.BaseController;
+import com.example.onlineauctionsystem.model.Account;
 import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.ProductImage;
@@ -15,6 +16,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.UUID;
 
 public class AddProductController extends BaseController {
@@ -79,6 +82,13 @@ public class AddProductController extends BaseController {
             return;
         }
         selectedImagePath = savedPath;
+        try {
+            byte[] imageBytes = Files.readAllBytes(file.toPath());
+            String fileName = savedPath.replace("Product_Image/", "");
+            RemoteDataStorage.uploadImage(fileName, imageBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         lblImageName.setText(file.getName());
         imgPreview.setImage(ProductImage.load(savedPath, 135, 135));
         lblError.setText("");
@@ -86,6 +96,12 @@ public class AddProductController extends BaseController {
 
     @FXML
     private void onSubmit() {
+        Account freshAccount = RemoteDataStorage.findAccountByUsername(
+                RemoteDataStorage.currentAccount.getUsername());
+        if (freshAccount == null || freshAccount.isLocked()) {
+            lblError.setText("Tài khoản đã bị khóa! Không thể thực hiện.");
+            return;
+        }
         lblError.setText("");
         String name     = txtName.getText().trim();
         String priceStr = txtInitialPrice.getText().trim().replace(".", "");
