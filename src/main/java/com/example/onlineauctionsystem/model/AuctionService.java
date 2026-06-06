@@ -359,11 +359,7 @@ public class AuctionService {
     private static AuctionMessage handleGetAllAccounts() {
         return success(DataStorage.getAllAccounts());
     }
-    private AuctionMessage handleGetAccount(AuctionMessage request) {
-        String username = (String) request.getData();
-        Account acc = DataStorage.findAccountByUsername(username);
-        return acc != null ? success(acc) : error("Không tìm thấy tài khoản.");
-    }
+
 
     private static AuctionMessage handleSetAccountLocked(AuctionMessage req) {
         // data: Object[] {String username, boolean locked}
@@ -378,6 +374,12 @@ public class AuctionService {
     private static AuctionMessage handleIsAccountExists(AuctionMessage req) {
         String identifier = (String) req.getData();
         return success(DataStorage.isAccountExists(identifier));
+    }
+
+    private static AuctionMessage handleGetAccount(AuctionMessage request) {
+        String username = (String) request.getData();
+        Account acc = DataStorage.findAccountByUsername(username);
+        return acc != null ? success(acc) : error("Không tìm thấy tài khoản.");
     }
 
     // ──────────────────────────────────────────────────────────────
