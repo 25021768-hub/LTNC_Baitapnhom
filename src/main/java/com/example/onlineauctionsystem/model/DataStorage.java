@@ -861,12 +861,21 @@
 
                         // Chỉ kéo dài nếu còn dưới 5 phút (300 giây)
                         if (secondsLeft > 0 && secondsLeft < 300) {
+                            // Cập nhật bảng products (đã có sẵn)
                             String extendSql = "UPDATE products SET end_time = DATE_ADD(end_time, INTERVAL 5 MINUTE) WHERE id = ?";
                             try (PreparedStatement extend = conn.prepareStatement(extendSql)) {
                                 extend.setString(1, productId);
                                 extend.executeUpdate();
-                                System.out.println("[Anti-Snipe] Kéo dài thêm 5 phút cho SP: " + productId);
                             }
+
+                            //Cập nhật bảng bid_history
+                            String extendHistorySql = "UPDATE bid_history SET end_time = DATE_ADD(end_time, INTERVAL 5 MINUTE) WHERE product_id = ?";
+                            try (PreparedStatement extendHistory = conn.prepareStatement(extendHistorySql)) {
+                                extendHistory.setString(1, productId);
+                                extendHistory.executeUpdate();
+                            }
+
+                            System.out.println("[Anti-Snipe] Kéo dài thêm 5 phút cho SP: " + productId);
                         }
                     }
                 }
