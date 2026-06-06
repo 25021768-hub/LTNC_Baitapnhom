@@ -247,8 +247,7 @@ public class RemoteDataStorage {
      * Không cần làm gì thêm ở client.
      */
     public static void autoCloseAndSaveExpiredProducts() {
-        // Server tự dọn dẹp định kỳ.
-        // Nếu muốn force sync ngay, chỉ cần getAllProducts() – server sẽ trả về list đã được cập nhật.
-        getAllProducts(); // Trigger server sync, bỏ kết quả (optional)
+        // Server đã tự chạy autoClose mỗi 30 giây qua ScheduledExecutorService.
+        // Client KHÔNG cần gọi gì thêm – không spam network.
     }
 }

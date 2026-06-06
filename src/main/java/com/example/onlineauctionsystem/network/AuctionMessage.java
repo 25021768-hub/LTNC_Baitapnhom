@@ -47,6 +47,9 @@ public class AuctionMessage implements Serializable {
         EXECUTE_PAYMENT,        // data: Object[] {String username, String productId, double amount}
         GET_MAX_BID,            // data: Object[] {String bidderName, String productId, double defaultPrice}
         GET_CHART_DATA,         // data: Object[] {String productId, String productName}
+        SAVE_PRODUCT_IMAGE,     // data: Object[] {String originalFileName, byte[] imageBytes}
+        GET_PRODUCT_IMAGE,      // data: String imagePath → trả về byte[]
+        DELETE_PRODUCT_IMAGE,   // data: String imagePath → trả về Boolean
 
         // ── Admin ──
         GET_ALL_ACCOUNTS,       // data: null → trả về List<Account>

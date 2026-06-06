@@ -1,6 +1,7 @@
 module com.example.onlineauctionsystem {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.base;
     requires java.sql;
     requires java.desktop;
 
@@ -30,4 +31,6 @@ module com.example.onlineauctionsystem {
     exports com.example.onlineauctionsystem.controller.bidder;
     exports com.example.onlineauctionsystem.network;
     opens com.example.onlineauctionsystem.network to javafx.base, javafx.fxml;
+    opens com.example.onlineauctionsystem.utils to javafx.fxml;
+    exports com.example.onlineauctionsystem.utils;
 }
