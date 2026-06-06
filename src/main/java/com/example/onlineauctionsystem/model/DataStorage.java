@@ -846,7 +846,7 @@
             return series;
         }
 
-        private static void extendIfLastMinutes(Connection conn, String productId) {
+        public static void extendIfLastMinutes(Connection conn, String productId) {
             String checkSql = "SELECT end_time FROM products WHERE id = ? AND status = 'RUNNING'";
             try (PreparedStatement check = conn.prepareStatement(checkSql)) {
                 check.setString(1, productId);
@@ -870,6 +870,15 @@
                         }
                     }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        public static void extendProductIfLastMinutes(String productId) {
+            try (Connection conn = getConnection()) {
+                extendIfLastMinutes(conn, productId);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

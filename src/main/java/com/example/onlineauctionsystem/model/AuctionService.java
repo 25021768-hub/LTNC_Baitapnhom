@@ -226,6 +226,7 @@ public class AuctionService {
 
                 // Kích hoạt auto-bid của người khác
                 DataStorage.triggerAutoBidSystem(pid, amount, p.getBidIncrement());
+                DataStorage.extendProductIfLastMinutes(pid);
 
                 // Cập nhật object và trả về
                 p.setCurrentPrice(amount);
