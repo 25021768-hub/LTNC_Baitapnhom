@@ -3,6 +3,9 @@ package com.example.onlineauctionsystem.model;
 import com.example.onlineauctionsystem.network.AuctionMessage;
 import com.example.onlineauctionsystem.utils.Validator;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -61,6 +64,7 @@ public class AuctionService {
                 case EXECUTE_PAYMENT    -> handleExecutePayment(request);
                 case GET_MAX_BID        -> handleGetMaxBid(request);
                 case GET_CHART_DATA     -> handleGetChartData(request);
+                case GET_IMAGE          -> handleGetImage(request);
 
                 // Admin
                 case GET_ALL_ACCOUNTS   -> handleGetAllAccounts();
@@ -226,7 +230,6 @@ public class AuctionService {
 
                 // Kích hoạt auto-bid của người khác
                 DataStorage.triggerAutoBidSystem(pid, amount, p.getBidIncrement());
-                DataStorage.extendProductIfLastMinutes(pid);
 
                 // Cập nhật object và trả về
                 p.setCurrentPrice(amount);
@@ -315,10 +318,37 @@ public class AuctionService {
         return success(DataStorage.getMaxBidByBidderForProduct(bidder, pid, defPrice));
     }
 
+    // Trả về List<String[]>{[time, price]} – Serializable, Client tự vẽ chart
     private static AuctionMessage handleGetChartData(AuctionMessage req) {
-        // XYChart.Series không Serializable – không thể gửi qua socket
-        // Client tự gọi DataStorage.getProductChartData() local
-        return error("Chart data phải được lấy local, không qua network.");
+        Object[] data = (Object[]) req.getData();
+        String productId   = (String) data[0];
+        String productName = (String) data[1];
+        java.util.List<String[]> points = DataStorage.getRawChartData(productId);
+        return success(new Object[]{productName, (java.io.Serializable) new ArrayList<>(points)});
+    }
+
+    // Đọc file ảnh từ disk, gửi về dưới dạng byte[]
+    private static AuctionMessage handleGetImage(AuctionMessage req) {
+        String imagePath = (String) req.getData();
+        if (imagePath == null || imagePath.isEmpty()) return error("Đường dẫn ảnh rỗng.");
+        try {
+            // Thử tìm file ảnh ở nhiều vị trí
+            String[] candidates = {
+                    System.getProperty("user.dir") + "/src/main/resources/" + imagePath,
+                    System.getProperty("user.dir") + "/src/main/resources/Product_Image/" + imagePath.replace("Product_Image/",""),
+                    System.getProperty("user.home") + "/Product_Image/" + imagePath.replace("Product_Image/","")
+            };
+            for (String candidate : candidates) {
+                File f = new File(candidate);
+                if (f.exists()) {
+                    byte[] bytes = Files.readAllBytes(f.toPath());
+                    return success(bytes);
+                }
+            }
+            return error("Không tìm thấy file ảnh: " + imagePath);
+        } catch (Exception e) {
+            return error("Lỗi đọc ảnh: " + e.getMessage());
+        }
     }
 
     // ──────────────────────────────────────────────────────────────

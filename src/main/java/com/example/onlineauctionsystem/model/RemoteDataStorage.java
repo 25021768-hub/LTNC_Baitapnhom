@@ -4,6 +4,7 @@ import com.example.onlineauctionsystem.network.AuctionClient;
 import com.example.onlineauctionsystem.network.AuctionMessage;
 import javafx.scene.chart.XYChart;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,8 +14,7 @@ import java.util.List;
  *
  *  Cách dùng:
  *    Mỗi Controller hiện đang import DataStorage. Chỉ cần đổi:
- *      import com.example.onlineauctionsystem.model.DataStorage;
- *    thành:
+ *       *    thành:
  *      import com.example.onlineauctionsystem.model.RemoteDataStorage as DataStorage;
  *    (hoặc đổi tên file này thành DataStorage.java và thay file cũ)
  *
@@ -212,9 +212,29 @@ public class RemoteDataStorage {
         return defaultPrice;
     }
 
+    @SuppressWarnings("unchecked")
     public static XYChart.Series<String, Number> getProductChartData(String productId, String productName) {
-        // XYChart.Series không Serializable → gọi DataStorage local, không qua network
-        return DataStorage.getProductChartData(productId, productName);
+        // Gửi request lên Server – nhận về List<String[]>{[time, price]}
+        // Không gửi XYChart.Series qua socket vì nó không Serializable
+        AuctionMessage res = AuctionClient.send(new AuctionMessage(
+                AuctionMessage.Action.GET_CHART_DATA, new Object[]{productId, productName}
+        ));
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(productName);
+
+        if (res.getAction() == AuctionMessage.Action.SUCCESS && res.getData() instanceof Object[] payload) {
+            // payload[0] = productName (String), payload[1] = List<String[]>
+            java.util.List<String[]> points = (java.util.List<String[]>) payload[1];
+            for (String[] point : points) {
+                try {
+                    String time  = point[0];
+                    double price = Double.parseDouble(point[1]);
+                    series.getData().add(new XYChart.Data<>(time, price));
+                } catch (Exception ignored) {}
+            }
+        }
+        return series;
     }
 
     // ──────────────────────────────────────────────────────────────

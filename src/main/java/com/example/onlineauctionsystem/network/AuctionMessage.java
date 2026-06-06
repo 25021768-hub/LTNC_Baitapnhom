@@ -2,63 +2,50 @@ package com.example.onlineauctionsystem.network;
 
 import java.io.Serializable;
 
-/**
- * Đối tượng "phong bì" dùng để truyền dữ liệu qua mạng giữa Client ↔ Server.
- * Phải implement Serializable để Java có thể chuyển thành byte stream qua Socket.
- *
- * Mỗi tin nhắn gồm:
- *   - action : cho Server/Client biết đây là yêu cầu/phản hồi loại gì
- *   - data   : dữ liệu đi kèm (có thể là String, Account, Product, List, Object[],...)
- */
 public class AuctionMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // ──────────────────────────────────────────────────────────────
-    //  DANH SÁCH HÀNH ĐỘNG (phải khớp giữa Client và Server)
-    // ──────────────────────────────────────────────────────────────
     public enum Action {
         // ── Auth ──
-        LOGIN,                  // data: String[] {username, password}
-        REGISTER,               // data: Account
-        CHANGE_PASSWORD,        // data: String[] {username, oldPass, newPass}
-        FORGOT_PASSWORD,        // data: String[] {identifier, newPass}
-        UPDATE_ACCOUNT,         // data: Account
+        LOGIN,
+        REGISTER,
+        CHANGE_PASSWORD,
+        FORGOT_PASSWORD,
+        UPDATE_ACCOUNT,
 
         // ── Sản phẩm ──
-        GET_ALL_PRODUCTS,       // data: null  → trả về List<Product>
-        GET_PRODUCT_BY_ID,      // data: String productId
-        ADD_PRODUCT,            // data: Product
-        DELETE_PRODUCT,         // data: Object[] {String productId, Account adminAcc}
-        DELETE_MY_PRODUCT,      // data: Object[] {String productId, String sellerUsername}
-        UPDATE_PRODUCT_STATUS,  // data: Object[] {String productId, String newStatus}
+        GET_ALL_PRODUCTS,
+        GET_PRODUCT_BY_ID,
+        ADD_PRODUCT,
+        DELETE_PRODUCT,
+        DELETE_MY_PRODUCT,
+        UPDATE_PRODUCT_STATUS,
 
         // ── Đấu giá ──
-        BID,                    // data: Object[] {String productId, double amount, String bidderUsername}
-        SETUP_AUTO_BID,         // data: Object[] {String username, String productId, double maxPrice}
-        TRIGGER_AUTO_BID,       // data: Object[] {String productId, double currentPrice, double bidIncrement}
+        BID,
+        SETUP_AUTO_BID,
+        TRIGGER_AUTO_BID,
 
         // ── Lịch sử & Số dư ──
-        GET_BID_HISTORY,        // data: String bidderUsername → trả về List<BidHistory>
-        GET_RUNNING_BIDS,       // data: String bidderUsername → trả về List<Product>
-        SAVE_BID_HISTORY,       // data: BidHistory
-        GET_BALANCE,            // data: String username → trả về Double
-        UPDATE_BALANCE,         // data: Object[] {String username, double amountToChange}
-        EXECUTE_PAYMENT,        // data: Object[] {String username, String productId, double amount}
-        GET_MAX_BID,            // data: Object[] {String bidderName, String productId, double defaultPrice}
-        GET_CHART_DATA,         // data: Object[] {String productId, String productName}
-        SAVE_PRODUCT_IMAGE,     // data: Object[] {String originalFileName, byte[] imageBytes}
-        GET_PRODUCT_IMAGE,      // data: String imagePath → trả về byte[]
-        DELETE_PRODUCT_IMAGE,   // data: String imagePath → trả về Boolean
+        GET_BID_HISTORY,
+        GET_RUNNING_BIDS,
+        SAVE_BID_HISTORY,
+        GET_BALANCE,
+        UPDATE_BALANCE,
+        EXECUTE_PAYMENT,
+        GET_MAX_BID,
+        GET_CHART_DATA,   // data: Object[]{productId, productName} → trả về List<double[]>{time,price}
+        GET_IMAGE,        // data: String imagePath → trả về byte[] ảnh
 
         // ── Admin ──
-        GET_ALL_ACCOUNTS,       // data: null → trả về List<Account>
-        SET_ACCOUNT_LOCKED,     // data: Object[] {String username, boolean locked}
-        IS_ACCOUNT_EXISTS,      // data: String identifier → trả về Boolean
+        GET_ALL_ACCOUNTS,
+        SET_ACCOUNT_LOCKED,
+        IS_ACCOUNT_EXISTS,
 
         // ── Kết quả ──
-        SUCCESS,                // data: kết quả tuỳ action
-        ERROR                   // data: String thông báo lỗi
+        SUCCESS,
+        ERROR
     }
 
     private Action action;
