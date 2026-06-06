@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +73,7 @@ public class BidHistoryController extends MenuController {
                 RemoteDataStorage.autoCloseAndSaveExpiredProducts();
 
                 String me = RemoteDataStorage.currentAccount.getUsername();
-                List<BidHistory> list = RemoteDataStorage.getBidHistory(me);
+                List<BidHistory> list = getFinishedHistory(RemoteDataStorage.getBidHistory(me));
 
                 Platform.runLater(() -> {
                     allHistory.setAll(list);
@@ -96,147 +97,145 @@ public class BidHistoryController extends MenuController {
     }
 
     private void loadData() {
-        String me = RemoteDataStorage.currentAccount.getUsername();
-        List<BidHistory> list = RemoteDataStorage.getBidHistory(me);
+        String me = RemoteDataStorage.currentAccount.getUsername();List<BidHistory> finishedList = getFinishedHistory(RemoteDataStorage.getBidHistory(me));
+        allHistory.setAll(finishedList);
+updateSummary();
 
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
-
-        // CHỈ LẤY PHIÊN ĐÃ KẾT THÚC THỰC SỰ
-        List<BidHistory> finishedList = list.stream()
-                .filter(h -> {
-                    return h.getEndTime() != null && h.getEndTime().isBefore(now);
-                })
-                .collect(Collectors.toList());
         if (finishedList.isEmpty()) {
-            historyContainer.getChildren().clear();
-            Label empty = new Label("Bạn chưa có lịch sử đấu giá nào");
+        historyContainer.getChildren().clear();
+Label empty = new Label("Bạn chưa có lịch sử đấu giá nào");
             empty.setStyle("-fx-font-size: 16; -fx-text-fill: #999999;");
             empty.setPrefWidth(839);
             empty.setPrefHeight(380);
             empty.setAlignment(javafx.geometry.Pos.CENTER);
             historyContainer.getChildren().add(empty);
             return;
-        }
-        allHistory.setAll(finishedList);
-        updateSummary();
-        applyFilter();
+                    }
+applyFilter();
     }
 
-    @FXML
-    private void onSearch(KeyEvent e) {
-        applyFilter();
+private List<BidHistory> getFinishedHistory(List<BidHistory> list) {
+    LocalDateTime now = LocalDateTime.now();
+    return list.stream()
+            .filter(h -> h.getEndTime() != null && h.getEndTime().isBefore(now))
+            .collect(Collectors.toList());
+}
+
+@FXML
+private void onSearch(KeyEvent e) {
+    applyFilter();
+}
+
+private void applyFilter() {
+    String keyword = txtSearch != null
+            ? txtSearch.getText().trim().toLowerCase() : "";
+    String filter = cbFilter != null && cbFilter.getValue() != null
+            ? cbFilter.getValue() : "All";
+
+    List<BidHistory> filtered = allHistory.stream()
+            .filter(h -> "WIN".equalsIgnoreCase(h.getResult()) || "LOSE".equalsIgnoreCase(h.getResult()))
+
+            // Lọc theo từ khóa tìm kiếm tên sản phẩm
+            .filter(h -> keyword.isEmpty() ||
+                    h.getProductName().toLowerCase().contains(keyword))
+
+            // Lọc theo ComboBox lựa chọn
+            .filter(h -> switch (filter) {
+                case "Thắng" -> "WIN".equals(h.getResult());
+                case "Thua" -> "LOSE".equals(h.getResult());
+                default -> true;
+            })
+            .collect(Collectors.toList());
+
+    renderRows(filtered);
+}
+
+private void renderRows(List<BidHistory> list) {
+    historyContainer.getChildren().clear();
+
+    if (list.isEmpty()) {
+        Label empty = new Label("Không có lịch sử đấu giá nào đã kết thúc");
+        empty.setStyle("-fx-font-size: 14; -fx-text-fill: #999;");
+        empty.setPrefHeight(200);
+        empty.setPrefWidth(839);
+        empty.setAlignment(javafx.geometry.Pos.CENTER);
+        historyContainer.getChildren().add(empty);
+        return;
     }
 
-    private void applyFilter() {
-        String keyword = txtSearch != null
-                ? txtSearch.getText().trim().toLowerCase() : "";
-        String filter = cbFilter != null && cbFilter.getValue() != null
-                ? cbFilter.getValue() : "All";
-
-        List<BidHistory> filtered = allHistory.stream()
-                .filter(h -> "WIN".equalsIgnoreCase(h.getResult()) || "LOSE".equalsIgnoreCase(h.getResult()))
-
-                // Lọc theo từ khóa tìm kiếm tên sản phẩm
-                .filter(h -> keyword.isEmpty() ||
-                        h.getProductName().toLowerCase().contains(keyword))
-
-                // Lọc theo ComboBox lựa chọn
-                .filter(h -> switch (filter) {
-                    case "Thắng" -> "WIN".equals(h.getResult());
-                    case "Thua" -> "LOSE".equals(h.getResult());
-                    default -> true;
-                })
-                .collect(Collectors.toList());
-
-        renderRows(filtered);
-    }
-
-    private void renderRows(List<BidHistory> list) {
-        historyContainer.getChildren().clear();
-
-        if (list.isEmpty()) {
-            Label empty = new Label("Không có lịch sử đấu giá nào đã kết thúc");
-            empty.setStyle("-fx-font-size: 14; -fx-text-fill: #999;");
-            empty.setPrefHeight(200);
-            empty.setPrefWidth(839);
-            empty.setAlignment(javafx.geometry.Pos.CENTER);
-            historyContainer.getChildren().add(empty);
-            return;
-        }
-
-        for (BidHistory h : list) {
-            try {
-                FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource(SceneConfig.BID_HISTORY_ROW.getPath())
-                );
-                Node row = loader.load();
-                BidderHistoryRowController ctrl = loader.getController();
-                ctrl.setData(h, updatedHistory -> {
-                    javafx.application.Platform.runLater(() -> {
-                        loadData();
-                    });
+    for (BidHistory h : list) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(SceneConfig.BID_HISTORY_ROW.getPath())
+            );
+            Node row = loader.load();
+            BidderHistoryRowController ctrl = loader.getController();
+            ctrl.setData(h, updatedHistory -> {
+                javafx.application.Platform.runLater(() -> {
+                    loadData();
                 });
-                historyContainer.getChildren().add(row);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            });
+            historyContainer.getChildren().add(row);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+}
 
-    private void updateSummary() {
-        // Chỉ tính toán số liệu thống kê trên các phiên thực sự đã kết thúc
-        List<BidHistory> finishedRecords = allHistory.stream()
-                .filter(h -> "WIN".equalsIgnoreCase(h.getResult()) || "LOSE".equalsIgnoreCase(h.getResult()))
-                .collect(Collectors.toList());
+private void updateSummary() {
+    // Chỉ tính toán số liệu thống kê trên các phiên thực sự đã kết thúc
+    List<BidHistory> finishedRecords = allHistory.stream()
+            .filter(h -> "WIN".equalsIgnoreCase(h.getResult()) || "LOSE".equalsIgnoreCase(h.getResult()))
+            .collect(Collectors.toList());
 
-        int total = finishedRecords.size();
-        long win = finishedRecords.stream()
-                .filter(h -> "WIN".equals(h.getResult()))
-                .count();
-        double rate = total > 0 ? ((double) win / total) * 100 : 0;
+    int total = finishedRecords.size();
+    long win = finishedRecords.stream()
+            .filter(h -> "WIN".equals(h.getResult()))
+            .count();
+    double rate = total > 0 ? ((double) win / total) * 100 : 0;
 
-        if (lblTotal != null) lblTotal.setText(String.valueOf(total));
-        if (lblWin != null) lblWin.setText(String.valueOf(win));
-        if (lblWinRate != null) lblWinRate.setText(String.format("%.1f%%", rate));
-    }
+    if (lblTotal != null) lblTotal.setText(String.valueOf(total));
+    if (lblWin != null) lblWin.setText(String.valueOf(win));
+    if (lblWinRate != null) lblWinRate.setText(String.format("%.1f%%", rate));
+}
 
 
-    @FXML
-    @Override
-    public void onMyProducts(ActionEvent event) {
+@FXML
+@Override
+public void onMyProducts(ActionEvent event) {
+    stopAutoRefresh();
+    switchScene(event, SceneConfig.BIDDER_PRODUCT);
+}
+
+@FXML
+@Override
+public void onHistory(ActionEvent event) {
+}
+
+@FXML
+@Override
+public void onManage(ActionEvent event) {
+    stopAutoRefresh();
+    switchScene(event, SceneConfig.BIDDER_MANAGER);
+}
+
+@FXML
+@Override
+public void onAccount(ActionEvent event) {
+    stopAutoRefresh();
+    switchScene(event, SceneConfig.BIDDER_HOME);
+}
+
+@FXML
+@Override
+public void onLogout(ActionEvent event) {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Xác nhận");
+    alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
+    if (alert.showAndWait().get() == ButtonType.OK) {
         stopAutoRefresh();
-        switchScene(event, SceneConfig.BIDDER_PRODUCT);
+        RemoteDataStorage.currentAccount = null;
+        switchScene(event, SceneConfig.LOGIN);
     }
-
-    @FXML
-    @Override
-    public void onHistory(ActionEvent event) {
-    }
-
-    @FXML
-    @Override
-    public void onManage(ActionEvent event) {
-        stopAutoRefresh();
-        switchScene(event, SceneConfig.BIDDER_MANAGER);
-    }
-
-    @FXML
-    @Override
-    public void onAccount(ActionEvent event) {
-        stopAutoRefresh();
-        switchScene(event, SceneConfig.BIDDER_HOME);
-    }
-
-    @FXML
-    @Override
-    public void onLogout(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Xác nhận");
-        alert.setHeaderText("Bạn có chắc chắn muốn đăng xuất?");
-        if (alert.showAndWait().get() == ButtonType.OK) {
-            stopAutoRefresh();
-            RemoteDataStorage.currentAccount = null;
-            switchScene(event, SceneConfig.LOGIN);
-        }
-    }
+}
 }

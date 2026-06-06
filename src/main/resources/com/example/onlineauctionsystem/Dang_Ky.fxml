@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import java.lang.*?>
 <?import javafx.collections.*?>
 <?import javafx.geometry.*?>
@@ -7,7 +6,6 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E8F1F8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.onlineauctionsystem.controller.auth.RegisterController">
     <children>
         <VBox layoutX="162.4" layoutY="23.2" prefHeight="557.0" prefWidth="478.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="30.0">
@@ -25,11 +23,9 @@
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-
                 <VBox spacing="2.0">
                     <children>
                         <TextField fx:id="txtUsername" promptText="Ví dụ: username123" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
-
                         <Label fx:id="lblUsernameMessage" managed="false" text="" textFill="RED" visible="false" wrapText="true">
                             <font>
                                 <Font size="10.0" />
@@ -52,7 +48,7 @@
                                         <PasswordField fx:id="txtPassword" promptText="Mật khẩu (Password)" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
                                             <StackPane.margin><Insets right="8.0" /></StackPane.margin>
-                                            <image><Image url="@LTNC_Baitapnhom/Kho_anh/mat.png" /></image>
+                                            <image><Image url="@../../../Kho_anh/mat.png" /></image>
                                         </ImageView>
                                     </children>
                                 </StackPane>
@@ -61,7 +57,6 @@
                                 </Label>
                             </children>
                         </VBox>
-
                         <VBox spacing="2.0" GridPane.columnIndex="1">
                             <children>
                                 <StackPane>
@@ -69,7 +64,7 @@
                                         <PasswordField fx:id="txtRePassword" promptText="Nhập lại mật khẩu (Retype Pa...)" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_RIGHT">
                                             <StackPane.margin><Insets right="8.0" /></StackPane.margin>
-                                            <image><Image url="@LTNC_Baitapnhom/Kho_anh/mat.png" /></image>
+                                            <image><Image url="@../../../Kho_anh/mat.png" /></image>
                                         </ImageView>
                                     </children>
                                 </StackPane>
@@ -99,7 +94,6 @@
                                 </Label>
                             </children>
                         </VBox>
-
                         <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <children>
                                 <TextField fx:id="txtIDCard" promptText="CCCD / Hộ chiếu (ID)" style="-fx-background-radius: 8; -fx-border-color: #CCCCCC; -fx-border-radius: 8;" />
@@ -108,7 +102,6 @@
                                 </Label>
                             </children>
                         </VBox>
-
                         <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
                             <children>
                                 <Label text="Địa chỉ Email">
@@ -120,7 +113,6 @@
                                 </Label>
                             </children>
                         </VBox>
-
                         <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <children>
                                 <Label text="Vai trò">
