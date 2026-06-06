@@ -1,6 +1,7 @@
 package com.example.onlineauctionsystem.controller.seller;
 import com.example.onlineauctionsystem.controller.MenuController;
 import com.example.onlineauctionsystem.controller.common.ProductCardController;
+import com.example.onlineauctionsystem.model.Account;
 import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.ProductImage;
@@ -82,10 +83,11 @@ public class SellerManageController extends MenuController {
 
     @FXML
     private void onAddProduct(ActionEvent event) {
-        if (RemoteDataStorage.currentAccount.isLocked()) {
+        Account freshAccount = RemoteDataStorage.findAccountByUsername(
+                RemoteDataStorage.currentAccount.getUsername());
+        if (freshAccount == null || freshAccount.isLocked()) {
             showAlert("Lỗi", "Tài khoản của bạn đã bị khóa! Không thể thực hiện chức năng này.");
             stopAutoRefresh();
-            // Ép đăng xuất ngay lập tức
             forceLogout(event);
             return;
         }
@@ -112,6 +114,15 @@ public class SellerManageController extends MenuController {
     }
 
     private void onEditProduct(Product p) {
+        Account freshAccount = RemoteDataStorage.findAccountByUsername(
+                RemoteDataStorage.currentAccount.getUsername());
+        if (freshAccount == null || freshAccount.isLocked()) {
+            showAlert("Lỗi", "Tài khoản của bạn đã bị khóa! Không thể thực hiện chức năng này.");
+            stopAutoRefresh();
+            Stage stage = (Stage) pendingContainer.getScene().getWindow();
+            switchScene(stage, SceneConfig.LOGIN);
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource(SceneConfig.ADD_PRODUCT.getPath())
@@ -135,6 +146,15 @@ public class SellerManageController extends MenuController {
     }
 
     private void onDeleteProduct(Product p) {
+        Account freshAccount = RemoteDataStorage.findAccountByUsername(
+                RemoteDataStorage.currentAccount.getUsername());
+        if (freshAccount == null || freshAccount.isLocked()) {
+            showAlert("Lỗi", "Tài khoản của bạn đã bị khóa! Không thể thực hiện chức năng này.");
+            stopAutoRefresh();
+            Stage stage = (Stage) pendingContainer.getScene().getWindow();
+            switchScene(stage, SceneConfig.LOGIN);
+            return;
+        }
         boolean ok = RemoteDataStorage.deleteMyProduct(
                 p.getId(),
                 RemoteDataStorage.currentAccount.getUsername()
