@@ -8,8 +8,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-public final class ProductImage {
-    private ProductImage() {}
+public enum ProductImage {
+
+    ;
 
     // ── Đường dẫn folder ──────────────────────────────────────────
     public static final String FOLDER_NAME = "Product_Image";
@@ -17,20 +18,14 @@ public final class ProductImage {
             System.getProperty("user.dir") + "/src/main/resources/" + FOLDER_NAME + "/";
 
     // ── Lưu ảnh vào folder ────────────────────────────────────────
-    // Trả về đường dẫn tương đối để lưu vào DB
-    // VD: "Product_Image/1234567890_laptop.png"
     public static String save(File sourceFile) {
-        if (sourceFile == null || !sourceFile.exists()) return null;
-
         try {
             File destFolder = new File(FOLDER_PATH);
-            // Fallback sang user.home nếu thư mục src không tồn tại (máy client).
             if (!destFolder.exists() && !destFolder.mkdirs()) {
-                destFolder = new File(System.getProperty("user.home") + "/" + FOLDER_NAME + "/");
+                destFolder = new File(System.getProperty("user.home") + "/Product_Image/");
                 destFolder.mkdirs();
             }
 
-            // Đặt tên file = timestamp + tên gốc để tránh trùng
             String newFileName = System.currentTimeMillis() + "_" + sourceFile.getName();
             File destFile = new File(destFolder, newFileName);
 
@@ -50,21 +45,20 @@ public final class ProductImage {
         if (imagePath == null || imagePath.isEmpty()) return null;
 
         try {
-            // Cách 1: Load từ file system khi chạy trong IntelliJ.
-            File file = new File(FOLDER_PATH +
-                    imagePath.replace(FOLDER_NAME + "/", ""));
+            // Cách 1: absolute path từ working dir (khi chạy trong IntelliJ)
+            File file = new File(FOLDER_PATH + imagePath.replace(FOLDER_NAME + "/", ""));
             if (file.exists()) {
                 return new Image(file.toURI().toString(), width, height, true, true);
             }
 
-            // Cách 2: Load từ user.home/Product_Image khi chạy nhiều máy.
-            File homeFile = new File(System.getProperty("user.home") + "/" + FOLDER_NAME + "/" +
-                    imagePath.replace(FOLDER_NAME + "/", ""));
+            // Cách 2: absolute path từ user.home/Product_Image (khi chạy nhiều máy)
+            File homeFile = new File(System.getProperty("user.home")
+                    + "/Product_Image/" + imagePath.replace(FOLDER_NAME + "/", ""));
             if (homeFile.exists()) {
                 return new Image(homeFile.toURI().toString(), width, height, true, true);
             }
 
-            // Cách 3: Load từ classpath resource sau khi đóng gói.
+            // Cách 3: classpath resource (sau khi đóng gói JAR)
             InputStream stream = ProductImage.class.getResourceAsStream("/" + imagePath);
             if (stream != null) {
                 return new Image(stream, width, height, true, true);
@@ -78,19 +72,11 @@ public final class ProductImage {
     }
 
     // ── Xóa ảnh khỏi folder ───────────────────────────────────────
-    // Dùng khi seller xóa sản phẩm
     public static boolean delete(String imagePath) {
         if (imagePath == null || imagePath.isEmpty()) return false;
         try {
-            File file = new File(FOLDER_PATH +
-                    imagePath.replace(FOLDER_NAME + "/", ""));
-            if (file.exists()) {
-                return file.delete();
-            }
-
-            File homeFile = new File(System.getProperty("user.home") + "/" + FOLDER_NAME + "/" +
-                    imagePath.replace(FOLDER_NAME + "/", ""));
-            return homeFile.exists() && homeFile.delete();
+            File file = new File(FOLDER_PATH + imagePath.replace(FOLDER_NAME + "/", ""));
+            return file.exists() && file.delete();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
