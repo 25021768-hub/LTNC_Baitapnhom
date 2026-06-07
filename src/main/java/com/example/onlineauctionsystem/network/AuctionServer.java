@@ -74,6 +74,14 @@ public final class AuctionServer {
                 30,   // lặp lại mỗi 30 giây
                 TimeUnit.SECONDS
         );
+
+        // Kiểm tra hoàn tiền bidder quá hạn thanh toán (mỗi 1 tiếng)
+        maintenance.scheduleAtFixedRate(
+                DataStorage::autoRefundExpiredPayments,
+                60,            // lần đầu sau 60 giây (server vừa khởi động)
+                60 * 60,       // lặp lại mỗi 1 tiếng
+                TimeUnit.SECONDS
+        );
         System.out.println("[Server] Luồng bảo trì khởi động (30s/lần).");
 
         // ── 2. Thread pool xử lý client ──

@@ -789,19 +789,139 @@ public class DataStorage {
             e.printStackTrace();
         }
     }
+    /**
+     * Tự động hoàn tiền bidder thắng nếu quá 24 giờ kể từ khi đấu giá kết thúc
+     * mà bidder vẫn chưa nhấn thanh toán (is_paid = 0).
+     *
+     * Flow:
+     *   1. Tìm tất cả sản phẩm FINISHED có end_time > 24 giờ trước và chưa được thanh toán
+     *   2. Hoàn tiền (current_price) về cho bidder thắng
+     *   3. Reset sản phẩm: status → OPEN, highest_bidder → None, current_price → initial_price
+     *      để seller có thể đăng bán lại
+     *   4. Xóa record WIN trong bid_history (tránh hiển thị nhầm)
+     *
+     * Hàm này được gọi mỗi 30 giây bởi ScheduledExecutorService trong AuctionServer.
+     */
+    public static void autoRefundExpiredPayments() {
+        // Tìm sản phẩm FINISHED, hết hạn thanh toán (end_time < NOW() - 24h), chưa paid
+        // Lấy thêm seller_name để cộng tiền phạt
+        String findSql =
+                "SELECT p.id, p.initial_price, p.current_price, p.highest_bidder, p.seller_name " +
+                        "FROM products p " +
+                        "JOIN bid_history bh ON bh.product_id = p.id " +
+                        "WHERE p.status = 'FINISHED' " +
+                        "  AND p.end_time <= NOW() - INTERVAL 1 DAY " +
+                        "  AND bh.result = 'WIN' " +
+                        "  AND bh.is_paid = 0";
+
+        String refundBidderSql = "UPDATE accounts SET balance = balance + ? WHERE username = ?";
+        String penaltySellerSql = "UPDATE accounts SET balance = balance + ? WHERE username = ?";
+        String deleteSql       = "DELETE FROM bid_history WHERE product_id = ? AND result = 'WIN'";
+        String resetSql        = "UPDATE products SET status = 'OPEN', " +
+                "highest_bidder = 'None', " +
+                "current_price = initial_price, " +
+                "start_time = NULL, end_time = NULL " +
+                "WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement selectStmt = conn.prepareStatement(findSql);
+             ResultSet rs = selectStmt.executeQuery()) {
+
+            while (rs.next()) {
+                String productId  = rs.getString("id");
+                double heldAmt    = rs.getDouble("current_price"); // tiền đang bị giữ
+                String bidderName = rs.getString("highest_bidder");
+                String sellerName = rs.getString("seller_name");
+
+                // Bidder nhận lại 95%, seller nhận 5% tiền phạt
+                double refundAmt  = Math.round(heldAmt * 0.95 * 100.0) / 100.0;
+                double penaltyAmt = Math.round(heldAmt * 0.05 * 100.0) / 100.0;
+
+                conn.setAutoCommit(false);
+                try {
+                    // 1. Hoàn 95% cho bidder
+                    try (PreparedStatement ps1 = conn.prepareStatement(refundBidderSql)) {
+                        ps1.setDouble(1, refundAmt);
+                        ps1.setString(2, bidderName);
+                        ps1.executeUpdate();
+                    }
+
+                    // 2. Cộng 5% phạt vào tài khoản seller
+                    if (sellerName != null && !sellerName.trim().isEmpty()) {
+                        try (PreparedStatement ps2 = conn.prepareStatement(penaltySellerSql)) {
+                            ps2.setDouble(1, penaltyAmt);
+                            ps2.setString(2, sellerName);
+                            ps2.executeUpdate();
+                        }
+                    }
+
+                    // 3. Xóa record WIN khỏi bid_history
+                    try (PreparedStatement ps3 = conn.prepareStatement(deleteSql)) {
+                        ps3.setString(1, productId);
+                        ps3.executeUpdate();
+                    }
+
+                    // 4. Reset sản phẩm về OPEN để seller đăng lại
+                    try (PreparedStatement ps4 = conn.prepareStatement(resetSql)) {
+                        ps4.setString(1, productId);
+                        ps4.executeUpdate();
+                    }
+
+                    conn.commit();
+                    System.out.println("[HỆ THỐNG] Quá hạn thanh toán - sản phẩm: " + productId
+                            + " | bidder: " + bidderName + " hoàn 95% = " + refundAmt
+                            + " | seller: " + sellerName + " nhận phạt 5% = " + penaltyAmt);
+
+                } catch (SQLException e) {
+                    conn.rollback();
+                    System.err.println("[HỆ THỐNG] Lỗi hoàn tiền sản phẩm " + productId + ": " + e.getMessage());
+                } finally {
+                    conn.setAutoCommit(true);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("[HỆ THỐNG] Lỗi autoRefundExpiredPayments: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     //BỔ SUNG HÀM THANH TOÁN GỘP TRANSACTION
+    /**
+     * Luồng B: Tiền bidder đã bị giữ (trừ) ngay khi đặt giá trong updateBid().
+     * Khi thanh toán, chỉ cần chuyển số tiền đó sang seller — KHÔNG trừ bidder thêm lần nữa.
+     *
+     * Flow:
+     *   0. Kiểm tra is_paid để tránh thanh toán 2 lần (idempotent)
+     *   1. Cộng tiền seller
+     *   2. Đánh dấu is_paid = 1
+     *   3. Đổi status sản phẩm → PAID
+     */
     public static boolean executeManualPayment(String username, String productId, double amount) {
-        // Thêm tham số sellerName, hoặc query seller bên trong
-        String getSellerSql = "SELECT seller_name FROM products WHERE id = ?";
-        String updateBuyerSql  = "UPDATE accounts SET balance = balance - ? WHERE username = ? AND balance >= ?";
-        String updateSellerSql = "UPDATE accounts SET balance = balance + ? WHERE username = ?";
-        String updateHistorySql = "UPDATE bid_history SET is_paid = 1 WHERE bidder_name = ? AND product_id = ? AND result = 'WIN'";
-        String updateProductSql = "UPDATE products SET status = 'PAID' WHERE id = ? AND status = 'FINISHED'"; // Thêm điều kiện AND status = 'FINISHED' để idempotent
+        String getSellerSql     = "SELECT seller_name FROM products WHERE id = ?";
+        String checkPaidSql     = "SELECT is_paid FROM bid_history " +
+                "WHERE bidder_name = ? AND product_id = ? AND result = 'WIN'";
+        String updateSellerSql  = "UPDATE accounts SET balance = balance + ? WHERE username = ?";
+        String updateHistorySql = "UPDATE bid_history SET is_paid = 1 " +
+                "WHERE bidder_name = ? AND product_id = ? AND result = 'WIN'";
+        String updateProductSql = "UPDATE products SET status = 'PAID' " +
+                "WHERE id = ? AND status = 'FINISHED'";
 
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
             try {
-                // 0. Lấy tên seller
+                // 0. Chống thanh toán 2 lần
+                try (PreparedStatement psCheck = conn.prepareStatement(checkPaidSql)) {
+                    psCheck.setString(1, username);
+                    psCheck.setString(2, productId);
+                    ResultSet rs = psCheck.executeQuery();
+                    if (rs.next() && rs.getBoolean("is_paid")) {
+                        conn.rollback();
+                        return false; // đã thanh toán rồi
+                    }
+                }
+
+                // 1. Lấy tên seller
                 String sellerName = null;
                 try (PreparedStatement ps0 = conn.prepareStatement(getSellerSql)) {
                     ps0.setString(1, productId);
@@ -809,17 +929,7 @@ public class DataStorage {
                     if (rs.next()) sellerName = rs.getString("seller_name");
                 }
 
-                // 1. Trừ tiền buyer (có kiểm tra đủ tiền tại DB — AND balance >= ?)
-                int rows;
-                try (PreparedStatement ps1 = conn.prepareStatement(updateBuyerSql)) {
-                    ps1.setDouble(1, amount);
-                    ps1.setString(2, username);
-                    ps1.setDouble(3, amount); // điều kiện: balance >= amount
-                    rows = ps1.executeUpdate();
-                }
-                if (rows == 0) throw new SQLException("Số dư không đủ hoặc đã thanh toán.");
-
-                // 2. Cộng tiền seller
+                // 2. Cộng tiền seller (tiền bidder đã bị giữ từ lúc đặt giá — không trừ lại)
                 if (sellerName != null && !sellerName.trim().isEmpty()) {
                     try (PreparedStatement ps2 = conn.prepareStatement(updateSellerSql)) {
                         ps2.setDouble(1, amount);
@@ -835,7 +945,7 @@ public class DataStorage {
                     ps3.executeUpdate();
                 }
 
-                // 4. Đổi status sản phẩm
+                // 4. Đổi status sản phẩm → PAID
                 try (PreparedStatement ps4 = conn.prepareStatement(updateProductSql)) {
                     ps4.setString(1, productId);
                     ps4.executeUpdate();
