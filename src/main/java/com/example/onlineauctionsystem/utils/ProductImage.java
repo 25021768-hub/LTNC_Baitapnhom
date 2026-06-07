@@ -119,6 +119,29 @@ public enum ProductImage {
     public static void loadAsync(String imagePath, double width, double height,
                                  javafx.scene.image.ImageView imageView) {
         if (imagePath == null || imagePath.isEmpty()) return;
+
+        // Bind kích thước ImageView vào parent StackPane để tự co giãn khi resize
+        javafx.application.Platform.runLater(() -> {
+            if (imageView.getParent() instanceof javafx.scene.layout.StackPane pane) {
+                imageView.fitWidthProperty().bind(
+                        javafx.beans.binding.Bindings.createDoubleBinding(
+                                () -> Math.max(10, pane.getWidth() - 10),
+                                pane.widthProperty()
+                        )
+                );
+                imageView.fitHeightProperty().bind(
+                        javafx.beans.binding.Bindings.createDoubleBinding(
+                                () -> Math.max(10, pane.getHeight() - 10),
+                                pane.heightProperty()
+                        )
+                );
+            } else {
+                imageView.setFitWidth(width);
+                imageView.setFitHeight(height);
+            }
+            imageView.setPreserveRatio(true);
+        });
+
         Thread t = new Thread(() -> {
             Image img = load(imagePath, width, height);
             if (img != null) {

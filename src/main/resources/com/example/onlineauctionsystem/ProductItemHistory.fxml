@@ -24,7 +24,7 @@
         <RowConstraints minHeight="100.0" prefHeight="100.0" maxHeight="100.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <StackPane prefHeight="90.0" prefWidth="90.0"
+        <StackPane prefHeight="90.0" prefWidth="90.0" maxWidth="100.0" maxHeight="100.0"
                    style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10;">
             <GridPane.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

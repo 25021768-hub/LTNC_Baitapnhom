@@ -38,8 +38,12 @@
                            style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #898989;"
                            HBox.hgrow="NEVER">
                     <children>
-                        <ImageView fx:id="imgProduct" fitHeight="140.0" fitWidth="140.0"
-                                   pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="imgProduct" fitHeight="130.0" fitWidth="130.0"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <StackPane.margin>
+                                <Insets top="5.0" bottom="5.0" left="5.0" right="5.0" />
+                            </StackPane.margin>
+                        </ImageView>
                     </children>
                 </StackPane>
                 <VBox HBox.hgrow="ALWAYS">
