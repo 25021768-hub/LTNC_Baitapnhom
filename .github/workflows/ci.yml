@@ -23,17 +23,13 @@ jobs:
             javafx_platform: mac
 
     steps:
-      # ── 1. Checkout ───────────────────────────────────────────────
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # ── 2. Cấp quyền thực thi cho mvnw (Linux & macOS) ───────────
-      #    Git không lưu permission trên Windows nên cần bước này
-      - name: Grant execute permission for mvnw
+      - name: Grant execute permission for mvnw (Unix)
         if: runner.os != 'Windows'
         run: chmod +x mvnw
 
-      # ── 3. Cài JDK 21 ────────────────────────────────────────────
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -41,35 +37,20 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # ── 4. (Linux only) Cài thư viện GUI cho JavaFX ──────────────
       - name: Install Linux GUI libs
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            libgtk-3-0 libglib2.0-0 libgl1 libx11-6 \
-            xvfb dbus-x11
+            libgtk-3-0 libglib2.0-0 libgl1 libx11-6 xvfb
 
-      # ── 5. Compile (Unix) ─────────────────────────────────────────
-      - name: Compile (Unix)
-        if: runner.os != 'Windows'
-        run: ./mvnw compile -B -Djavafx.platform=${{ matrix.javafx_platform }}
+      # Dùng 'mvn' trực tiếp thay vì mvnw/mvnw.cmd để tránh path issues
+      - name: Compile
+        run: mvn compile -B -Djavafx.platform=${{ matrix.javafx_platform }}
 
-      # ── 6. Compile (Windows) ──────────────────────────────────────
-      - name: Compile (Windows)
-        if: runner.os == 'Windows'
-        run: mvnw.cmd compile -B "-Djavafx.platform=${{ matrix.javafx_platform }}"
+      - name: Package JAR (skip tests – cần MySQL)
+        run: mvn package -B -DskipTests -Djavafx.platform=${{ matrix.javafx_platform }}
 
-      # ── 7. Package – bỏ qua test (cần MySQL để chạy đầy đủ) ─────
-      - name: Package JAR (Unix)
-        if: runner.os != 'Windows'
-        run: ./mvnw package -B -DskipTests -Djavafx.platform=${{ matrix.javafx_platform }}
-
-      - name: Package JAR (Windows)
-        if: runner.os == 'Windows'
-        run: mvnw.cmd package -B -DskipTests "-Djavafx.platform=${{ matrix.javafx_platform }}"
-
-      # ── 8. Upload artifact ────────────────────────────────────────
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
