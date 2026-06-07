@@ -10,16 +10,49 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-// import javafx.scene.chart.XYChart; // FIX #1: Xóa import JavaFX — server không có JavaFX runtime
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DataStorage {
-    private static final String URL = "jdbc:mysql://localhost:3306/online_auction";
+    private static final String URL  = "jdbc:mysql://localhost:3306/online_auction";
     private static final String USER = "root";
     private static final String PASS = "";
+
+    //Connection Pool (HikariCP) ──
+    private static final HikariDataSource DATA_SOURCE;
+    static {
+        HikariConfig cfg = new HikariConfig();
+        cfg.setJdbcUrl(URL);
+        cfg.setUsername(USER);
+        cfg.setPassword(PASS);
+        cfg.setMaximumPoolSize(10);       // tối đa 10 connection đồng thời
+        cfg.setMinimumIdle(2);            // giữ sẵn 2 connection rảnh
+        cfg.setConnectionTimeout(30_000); // chờ tối đa 30s trước khi throw exception
+        cfg.setIdleTimeout(600_000);      // đóng connection rảnh sau 10 phút
+        cfg.setMaxLifetime(1_800_000);    // tái tạo connection sau 30 phút
+        DATA_SOURCE = new HikariDataSource(cfg);
+    }
+
     public static Account currentAccount;
+
     private static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+        return DATA_SOURCE.getConnection(); // lấy từ pool thay vì tạo mới
+    }
+
+    // Hash mật khẩu bằng SHA-256 ──
+    public static String hashPassword(String plain) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] bytes = md.digest(plain.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bytes) sb.append(String.format("%02x", b));
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 không khả dụng", e);
+        }
     }
 
     private static final Map<String, String> activeSessions = new ConcurrentHashMap<>();
@@ -48,8 +81,8 @@ public class DataStorage {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
-            stmt.setString(2, password);
-            // BUG H: ResultSet không được đóng → memory leak. Dùng try-with-resources.
+            stmt.setString(2, hashPassword(password));
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Account acc = new Account();
@@ -74,7 +107,7 @@ public class DataStorage {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
-            // BUG H: ResultSet không được đóng → dùng try-with-resources
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Account acc = new Account();
@@ -150,7 +183,7 @@ public class DataStorage {
         String sql = "UPDATE accounts SET password = ? WHERE phone_number = ? OR email = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, newPass);
+            stmt.setString(1, hashPassword(newPass));
             stmt.setString(2, identifier);
             stmt.setString(3, identifier);
             return stmt.executeUpdate() > 0;
@@ -161,7 +194,7 @@ public class DataStorage {
     }
 
     public static boolean updateAccount(Account acc){
-        // Chỉ SET những thứ cần thay đổi, tuyệt đối không SET password ở đây
+
         String sql = "UPDATE accounts SET fullname = ?, id_card = ?, email = ?, phone_number = ? WHERE username = ?";
 
         try (Connection conn = getConnection();
@@ -184,9 +217,9 @@ public class DataStorage {
         String sql = "UPDATE accounts SET password = ? WHERE username = ? AND password = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, newPass);
+            stmt.setString(1, hashPassword(newPass));
             stmt.setString(2, username);
-            stmt.setString(3, oldPass);
+            stmt.setString(3, hashPassword(oldPass));
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) { return false; }
     }
@@ -218,7 +251,7 @@ public class DataStorage {
                     p.setStartTime(startTs.toLocalDateTime());
                 }
 
-                // ── BỔ SUNG: Đọc thêm cột end_time từ MySQL lên Java ──
+                // Đọc thêm cột end_time từ MySQL lên Java
                 Timestamp endTs = rs.getTimestamp("end_time");
                 if (endTs != null) {
                     p.setEndTime(endTs.toLocalDateTime());
@@ -263,25 +296,73 @@ public class DataStorage {
         }
     }
 
-    public static boolean updateBid(String productId, double newPrice, String bidderName) {
-        // Chỉ update nếu newPrice > current_price hiện tại trong DB
-        String sql = "UPDATE products SET current_price = ?, highest_bidder = ? " +
-                "WHERE id = ? AND status = 'RUNNING' AND current_price < ?";
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setDouble(1, newPrice);
-            stmt.setString(2, bidderName);
-            stmt.setString(3, productId);
-            stmt.setDouble(4, newPrice); // ← điều kiện: giá hiện tại < giá mới
-            int rows = stmt.executeUpdate();
+    /**
+     * [FIX #3] updateBid dùng TRANSACTION để đảm bảo ATOMIC:
+     *   Bước 1: UPDATE giá sản phẩm  (AND current_price < ? chống race condition)
+     *   Bước 2: Trừ tiền bidder      (AND balance >= ? double-check tại DB)
+     *   Bước 3: Hoàn tiền oldBidder
+     *   Bước 4: Kéo dài thời gian nếu < 5 phút
+     *   Bước 5: Ghi log biểu đồ
+     * Cả 5 bước commit cùng nhau. Bất kỳ bước nào lỗi → rollback toàn bộ.
+     *
+     * oldBidder / oldPrice truyền vào từ AuctionService.handleBid()
+     * (đã đọc trước khi gọi) để tránh đọc lại DB bên trong transaction.
+     */
+    public static boolean updateBid(String productId, double newPrice, String bidderName,
+                                    String oldBidder, double oldPrice) {
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false); // BẮT ĐẦU TRANSACTION
 
-            if (rows > 0) {
+            try {
+                // BƯỚC 1: Cập nhật giá — ATOMIC nhờ AND current_price < ?
+                // Nếu 2 client đặt cùng lúc, chỉ 1 thread thắng điều kiện này
+                String updProduct = "UPDATE products SET current_price = ?, highest_bidder = ? " +
+                        "WHERE id = ? AND status = 'RUNNING' AND current_price < ?";
+                int rows;
+                try (PreparedStatement stmt = conn.prepareStatement(updProduct)) {
+                    stmt.setDouble(1, newPrice);
+                    stmt.setString(2, bidderName);
+                    stmt.setString(3, productId);
+                    stmt.setDouble(4, newPrice);
+                    rows = stmt.executeUpdate();
+                }
+                if (rows == 0) {
+                    conn.rollback();
+                    return false; // phiên đóng hoặc giá đã bị vượt bởi thread khác
+                }
 
-                //  Kéo dài thời gian nếu còn < 5 phút
+                // BƯỚC 2: Trừ tiền bidder — AND balance >= ? double-check tại DB
+                String debitSql = "UPDATE accounts SET balance = balance - ? " +
+                        "WHERE username = ? AND balance >= ?";
+                int debitRows;
+                try (PreparedStatement debitStmt = conn.prepareStatement(debitSql)) {
+                    debitStmt.setDouble(1, newPrice);
+                    debitStmt.setString(2, bidderName);
+                    debitStmt.setDouble(3, newPrice);
+                    debitRows = debitStmt.executeUpdate();
+                }
+                if (debitRows == 0) {
+                    conn.rollback(); // số dư không đủ → rollback cả bước 1
+                    return false;
+                }
+
+                // BƯỚC 3: Hoàn tiền người bị vượt giá (nếu có)
+                if (oldBidder != null && !oldBidder.isBlank()
+                        && !"None".equals(oldBidder) && !oldBidder.equals(bidderName)) {
+                    String refundSql = "UPDATE accounts SET balance = balance + ? WHERE username = ?";
+                    try (PreparedStatement refundStmt = conn.prepareStatement(refundSql)) {
+                        refundStmt.setDouble(1, oldPrice);
+                        refundStmt.setString(2, oldBidder);
+                        refundStmt.executeUpdate();
+                    }
+                }
+
+                // BƯỚC 4: Kéo dài thời gian nếu còn < 5 phút (dùng chung conn)
                 extendIfLastMinutes(conn, productId);
 
-                // 0. Ghi log thời gian thực hiện để phục vụ vẽ biểu đồ
-                String logSql = "INSERT INTO product_price_log (product_id, bidder_name, price_milestone) VALUES (?, ?, ?)";
+                // BƯỚC 5: Ghi log để vẽ biểu đồ
+                String logSql = "INSERT INTO product_price_log (product_id, bidder_name, price_milestone) " +
+                        "VALUES (?, ?, ?)";
                 try (PreparedStatement logStmt = conn.prepareStatement(logSql)) {
                     logStmt.setString(1, productId);
                     logStmt.setString(2, bidderName);
@@ -289,15 +370,20 @@ public class DataStorage {
                     logStmt.executeUpdate();
                 }
 
-                // 1. Tìm sản phẩm trong DB để lấy bước giá (bid_increment) chuẩn của nó
+                conn.commit(); // TẤT CẢ THÀNH CÔNG → COMMIT
+
+                // Kích hoạt Auto Bid SAU KHI commit (ngoài transaction)
                 Product p = findProductById(productId);
                 if (p != null) {
-                    // 2. Kích hoạt chuỗi tự động nâng giá của hệ thống Auto Bid
                     triggerAutoBidSystem(productId, newPrice, p.getBidIncrement());
                 }
                 return true;
+
+            } catch (SQLException ex) {
+                conn.rollback(); // BẤT KỲ LỖI → ROLLBACK TOÀN BỘ
+                ex.printStackTrace();
+                return false;
             }
-            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -330,7 +416,7 @@ public class DataStorage {
                     p.setStartTime(startTs.toLocalDateTime());
                 }
 
-                // ── BỔ SUNG: Đọc thêm cột end_time từ MySQL lên Java ──
+                //Đọc thêm cột end_time từ MySQL lên Java
                 Timestamp endTs = rs.getTimestamp("end_time");
                 if (endTs != null) {
                     p.setEndTime(endTs.toLocalDateTime());
@@ -689,7 +775,7 @@ public class DataStorage {
             e.printStackTrace();
         }
 
-        // ✅ BƯỚC 2: Đổi FINISHED riêng — bắt hết mọi sản phẩm hết hạn còn RUNNING
+        // Đổi FINISHED riêng — bắt hết mọi sản phẩm hết hạn còn RUNNING
         // Tách ra dùng connection mới để tránh xung đột với ResultSet đang mở ở trên
         String updateFinishedSql = "UPDATE products SET status = 'FINISHED' " +
                 "WHERE end_time <= NOW() AND status = 'RUNNING'";
@@ -786,6 +872,7 @@ public class DataStorage {
     }
 
     // 2. Hàm kích hoạt tự động nâng giá khi có người khác đặt giá cao hơn
+    // Mỗi vòng lặp được bọc trong transaction để tránh race condition
     public static void triggerAutoBidSystem(String productId, double currentPrice, double bidIncrement) {
         try (Connection conn = getConnection()) {
 
@@ -816,63 +903,104 @@ public class DataStorage {
                         double maxPrice = rs.getDouble("max_price");
                         double newPrice = currentPrice + bidIncrement;
 
-                        // Kiểm tra số dư
-                        double balance = getBalance(autoUser);
-                        if (balance < newPrice) {
-                            // Xóa AutoBid, thử người tiếp theo
-                            String del = "DELETE FROM auto_bids WHERE username = ? AND product_id = ?";
-                            try (PreparedStatement delStmt = conn.prepareStatement(del)) {
-                                delStmt.setString(1, autoUser);
-                                delStmt.setString(2, productId);
-                                delStmt.executeUpdate();
+                        // Bọc toàn bộ thao tác tiền + giá trong 1 transaction
+                        conn.setAutoCommit(false);
+                        try {
+                            // Kiểm tra số dư TRONG transaction (FOR UPDATE → lock row, tránh đọc stale value)
+                            double balance = 0;
+                            String balSql = "SELECT balance FROM accounts WHERE username = ? FOR UPDATE";
+                            try (PreparedStatement balStmt = conn.prepareStatement(balSql)) {
+                                balStmt.setString(1, autoUser);
+                                try (ResultSet brs = balStmt.executeQuery()) {
+                                    if (brs.next()) balance = brs.getDouble("balance");
+                                }
                             }
-                            continue; // Thử lại vòng lặp với người khác
-                        }
 
-                        // Lấy người giữ giá cũ để hoàn tiền
-                        Product p = findProductById(productId);
-                        String oldBidder = p != null ? p.getHighestBidder() : null;
-                        double oldPrice  = p != null ? p.getCurrentPrice()  : 0;
-
-                        // Cập nhật giá
-                        String upd = "UPDATE products SET current_price = ?, highest_bidder = ? WHERE id = ? AND status = 'RUNNING'";
-                        try (PreparedStatement updStmt = conn.prepareStatement(upd)) {
-                            updStmt.setDouble(1, newPrice);
-                            updStmt.setString(2, autoUser);
-                            updStmt.setString(3, productId);
-                            if (updStmt.executeUpdate() == 0) break; // Phiên đã đóng → dừng
-                        }
-
-                        // Trừ tiền người vừa thắng
-                        updateBalance(autoUser, -newPrice);
-
-                        // Hoàn tiền người bị vượt
-                        if (oldBidder != null && !oldBidder.equals("None") && !oldBidder.equals(autoUser)) {
-                            updateBalance(oldBidder, oldPrice);
-                        }
-
-                        // Ghi log biểu đồ
-                        String log = "INSERT INTO product_price_log (product_id, bidder_name, price_milestone) VALUES (?, ?, ?)";
-                        try (PreparedStatement logStmt = conn.prepareStatement(log)) {
-                            logStmt.setString(1, productId);
-                            logStmt.setString(2, autoUser);
-                            logStmt.setDouble(3, newPrice);
-                            logStmt.executeUpdate();
-                        }
-
-                        System.out.println("[AutoBid] " + autoUser + " → " + newPrice);
-
-                        // Cập nhật giá để vòng lặp tiếp tục đúng
-                        currentPrice = newPrice;
-
-                        // Nếu đã đạt max_price của người này → xóa AutoBid của họ
-                        if (newPrice >= maxPrice) {
-                            String del = "DELETE FROM auto_bids WHERE username = ? AND product_id = ?";
-                            try (PreparedStatement delStmt = conn.prepareStatement(del)) {
-                                delStmt.setString(1, autoUser);
-                                delStmt.setString(2, productId);
-                                delStmt.executeUpdate();
+                            if (balance < newPrice) {
+                                conn.rollback();
+                                conn.setAutoCommit(true);
+                                // Xóa AutoBid rồi thử người tiếp theo
+                                String del = "DELETE FROM auto_bids WHERE username = ? AND product_id = ?";
+                                try (PreparedStatement delStmt = conn.prepareStatement(del)) {
+                                    delStmt.setString(1, autoUser);
+                                    delStmt.setString(2, productId);
+                                    delStmt.executeUpdate();
+                                }
+                                continue;
                             }
+
+                            // Lấy người giữ giá cũ để hoàn tiền (FOR UPDATE → lock row sản phẩm)
+                            String oldBidder = null;
+                            double oldPrice  = 0;
+                            String prodSql = "SELECT current_price, highest_bidder FROM products WHERE id = ? FOR UPDATE";
+                            try (PreparedStatement pStmt = conn.prepareStatement(prodSql)) {
+                                pStmt.setString(1, productId);
+                                try (ResultSet prs = pStmt.executeQuery()) {
+                                    if (prs.next()) {
+                                        oldPrice  = prs.getDouble("current_price");
+                                        oldBidder = prs.getString("highest_bidder");
+                                    }
+                                }
+                            }
+
+                            // Cập nhật giá sản phẩm
+                            String upd = "UPDATE products SET current_price = ?, highest_bidder = ? WHERE id = ? AND status = 'RUNNING'";
+                            int updRows = 0;
+                            try (PreparedStatement updStmt = conn.prepareStatement(upd)) {
+                                updStmt.setDouble(1, newPrice);
+                                updStmt.setString(2, autoUser);
+                                updStmt.setString(3, productId);
+                                updRows = updStmt.executeUpdate();
+                            }
+                            if (updRows == 0) { conn.rollback(); conn.setAutoCommit(true); break; }
+
+                            // Trừ tiền người vừa thắng
+                            String debitSql = "UPDATE accounts SET balance = balance - ? WHERE username = ?";
+                            try (PreparedStatement ds = conn.prepareStatement(debitSql)) {
+                                ds.setDouble(1, newPrice);
+                                ds.setString(2, autoUser);
+                                ds.executeUpdate();
+                            }
+
+                            // Hoàn tiền người bị vượt
+                            if (oldBidder != null && !oldBidder.equals("None") && !oldBidder.equals(autoUser)) {
+                                String creditSql = "UPDATE accounts SET balance = balance + ? WHERE username = ?";
+                                try (PreparedStatement cs = conn.prepareStatement(creditSql)) {
+                                    cs.setDouble(1, oldPrice);
+                                    cs.setString(2, oldBidder);
+                                    cs.executeUpdate();
+                                }
+                            }
+
+                            // Ghi log biểu đồ
+                            String log = "INSERT INTO product_price_log (product_id, bidder_name, price_milestone) VALUES (?, ?, ?)";
+                            try (PreparedStatement logStmt = conn.prepareStatement(log)) {
+                                logStmt.setString(1, productId);
+                                logStmt.setString(2, autoUser);
+                                logStmt.setDouble(3, newPrice);
+                                logStmt.executeUpdate();
+                            }
+
+                            conn.commit();
+                            conn.setAutoCommit(true);
+
+                            System.out.println("[AutoBid] " + autoUser + " → " + newPrice);
+                            currentPrice = newPrice;
+
+                            // Nếu đã đạt max_price của người này → xóa AutoBid của họ
+                            if (newPrice >= maxPrice) {
+                                String del = "DELETE FROM auto_bids WHERE username = ? AND product_id = ?";
+                                try (PreparedStatement delStmt = conn.prepareStatement(del)) {
+                                    delStmt.setString(1, autoUser);
+                                    delStmt.setString(2, productId);
+                                    delStmt.executeUpdate();
+                                }
+                            }
+
+                        } catch (SQLException txEx) {
+                            conn.rollback();
+                            conn.setAutoCommit(true);
+                            throw txEx;
                         }
                     }
                 }
@@ -905,7 +1033,6 @@ public class DataStorage {
         return points;
     }
 
-    // FIX #1: Hàm getProductChartData đã bị xóa — dùng XYChart (JavaFX) không phù hợp trên server.
     // Client tự vẽ chart từ getRawChartData() đã có bên trên.
 
     private static void extendIfLastMinutes(Connection conn, String productId) {

@@ -18,6 +18,13 @@
         <javafx.platform/>
     </properties>
     <dependencies>
+        <!-- HikariCP -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
         <!--  MySQL JDBC  -->
         <dependency>
             <groupId>com.mysql</groupId>

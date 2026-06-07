@@ -4,6 +4,7 @@ module com.example.onlineauctionsystem {
     requires javafx.base;
     requires java.sql;
     requires java.desktop;
+    requires com.zaxxer.hikari;
 
 
     exports com.example.onlineauctionsystem.model;

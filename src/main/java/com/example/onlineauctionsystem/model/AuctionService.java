@@ -237,24 +237,16 @@ public class AuctionService {
         double oldPrice  = p.getCurrentPrice();
 
         if (p.placeBid(amount, bidder)) {
-            if (DataStorage.updateBid(pid, amount, bidder)) {
-                // Trừ tiền người vừa thắng
-                DataStorage.updateBalance(bidder, -amount);
-
-                // Hoàn tiền người bị vượt giá
-                if (oldBidder != null && !oldBidder.isBlank() && !"None".equals(oldBidder)) {
-                    DataStorage.updateBalance(oldBidder, oldPrice);
-                }
-
-                // FIX #5: Bỏ lời gọi triggerAutoBidSystem ở đây — DataStorage.updateBid() đã gọi rồi.
-                // Gọi 2 lần gây double auto-bid và race condition.
-
-                // Cập nhật object và trả về
+            // [FIX #3] Truyền oldBidder + oldPrice vào updateBid để xử lý
+            // trừ tiền / hoàn tiền TRONG CÙNG 1 TRANSACTION với UPDATE giá.
+            // Không còn gọi updateBalance() rời rạc ở đây nữa.
+            if (DataStorage.updateBid(pid, amount, bidder, oldBidder, oldPrice)) {
+                // Cập nhật object và trả về client
                 p.setCurrentPrice(amount);
                 p.setHighestBidder(bidder);
                 return success(p);
             }
-            return error("Lỗi cập nhật CSDL (Phiên có thể đã kết thúc)!");
+            return error("Lỗi cập nhật CSDL (Phiên có thể đã kết thúc hoặc số dư không đủ)!");
         }
         return error("Giá đưa ra quá thấp hoặc phiên đã đóng!");
     }
