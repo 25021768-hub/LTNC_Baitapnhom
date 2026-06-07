@@ -24,10 +24,24 @@ public class DataStorage {
 
     private static final Map<String, String> activeSessions = new ConcurrentHashMap<>();
 
+    /**
+     * Tạo session mới cho username.
+     * Trả về token nếu thảnh công, null nếu username đang có session (đang đăng nhập ở nơi khác).
+     */
     public static String createSession(String username) {
+        if (activeSessions.containsKey(username)) {
+            return null; // Đã có người đang đăng nhập tài khoản này
+        }
         String token = UUID.randomUUID().toString();
         activeSessions.put(username, token);
         return token;
+    }
+
+    /**
+     * Kiểm tra tài khoản có đang được đăng nhập ở nơi nào đó không.
+     */
+    public static boolean isLoggedIn(String username) {
+        return activeSessions.containsKey(username);
     }
 
     public static boolean isSessionValid(String username, String token) {

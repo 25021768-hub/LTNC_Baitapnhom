@@ -29,6 +29,10 @@ public class RemoteDataStorage {
     /** Tài khoản đang đăng nhập – lưu trên client, không qua server */
     public static Account currentAccount;
     public static String currentToken;
+    /** Lưu lý do đăng nhập thất bại mới nhất từ server */
+    private static String lastLoginError;
+    public static String getLastLoginError() { return lastLoginError; }
+
     public static boolean validateSession(String username, String token) {
         AuctionMessage res = AuctionClient.send(new AuctionMessage(
                 AuctionMessage.Action.VALIDATE_SESSION, new Object[]{username, token}
@@ -37,6 +41,7 @@ public class RemoteDataStorage {
     }
 
     public static Account checkLogin(String username, String password) {
+        lastLoginError = null;
         AuctionMessage res = AuctionClient.send(new AuctionMessage(
                 AuctionMessage.Action.LOGIN, new String[]{username, password}));
         if (res.getAction() == SUCCESS) {
@@ -44,6 +49,10 @@ public class RemoteDataStorage {
             currentAccount = (Account) payload[0];
             currentToken   = (String)  payload[1];
             return currentAccount;
+        }
+        // Lưu lý do thất bại để LoginController hiển thị đúng thông báo
+        if (res.getData() instanceof String msg) {
+            lastLoginError = msg;
         }
         return null;
     }

@@ -92,7 +92,14 @@ public class AuctionService {
         String[] info = (String[]) req.getData(); // [username, password]
         Account acc = DataStorage.checkLogin(info[0], info[1]);
         if (acc != null) {
+            if (acc.isLocked()) {
+                return error("Tài khoản đã bị khóa!");
+            }
             String token = DataStorage.createSession(acc.getUsername());
+            if (token == null) {
+                // Tài khoản đang được đăng nhập tại nơi khác
+                return error("Tài khoản đang được sử dụng trên thiết bị khác. Vui lòng đóng ẩng dụng ở nơi đó trước khi đăng nhập lại!");
+            }
             return success(new Object[]{acc, token}); // trả về cả 2
         }
         return error("Sai tên đăng nhập hoặc mật khẩu!");
