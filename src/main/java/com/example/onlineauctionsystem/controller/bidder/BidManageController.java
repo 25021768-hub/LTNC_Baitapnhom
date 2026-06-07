@@ -50,12 +50,26 @@ public class BidManageController extends MenuController {
     private final int DATA_REFRESH_INTERVAL = 5;
 
     public void initialize() {
-        // Lắng nghe thay đổi của danh sách gốc để áp dụng bộ lọc và render giao diện
+        // Mỗi khi danh sách thay đổi thì áp dụng bộ lọc và vẽ lại giao diện
         runningBidList.addListener((ListChangeListener<Product>) change -> applyFilterAndRender());
         List<Product> initialData = fetchRunningBids();
         runningBidList.setAll(initialData);
-        // Bắt đầu luồng cập nhật ngầm tự động
         startAutoRefresh();
+
+        // Lắng nghe khi node được gắn vào hoặc tháo khỏi scene.
+        // Khi scene == null, tức màn hình đã chuyển đi, dừng scheduler để tránh rò thread.
+        rowsContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene == null) {
+                stopAutoRefresh();
+            } else {
+                // Khi có cửa sổ, đăng ký thêm: đóng cửa sổ (nhấn X) cũng dừng scheduler
+                newScene.windowProperty().addListener((wObs, oldWin, newWin) -> {
+                    if (newWin != null) {
+                        newWin.setOnHiding(we -> stopAutoRefresh());
+                    }
+                });
+            }
+        });
     }
 
     private List<Product> fetchRunningBids() {
@@ -75,12 +89,12 @@ public class BidManageController extends MenuController {
         scheduler.scheduleAtFixedRate(() -> {
             refreshCounter++;
             if (refreshCounter >= DATA_REFRESH_INTERVAL) {
+                // Mỗi 5 giây lấy dữ liệu mới từ server
                 refreshCounter = 0;
                 List<Product> freshData = fetchRunningBids();
-                // Đẩy về luồng UI để cập nhật danh sách
                 Platform.runLater(() -> runningBidList.setAll(freshData));
             } else {
-                // Mỗi 1 giây cập nhật đồng hồ đếm ngược cục bộ trên giao diện cho mượt
+                // Các giây còn lại chỉ cập nhật đồng hồ đếm ngược trên giao diện
                 Platform.runLater(() -> {
                     for (BidderManageRowController ctrl : rowControllers) {
                         ctrl.updateTime();
@@ -102,7 +116,7 @@ public class BidManageController extends MenuController {
         String statusFilter = (comboStatus != null && comboStatus.getValue() != null) ? comboStatus.getValue() : "All";
         String currentUsername = RemoteDataStorage.currentAccount.getUsername();
 
-        // 1. Thực hiện lọc danh sách dữ liệu
+        // Lọc danh sách theo từ khóa tìm kiếm và trạng thái thắng/thua
         List<Product> filteredList = runningBidList.stream()
                 .filter(p -> p.getName() != null && p.getName().toLowerCase().contains(keyword))
                 .filter(p -> {
@@ -114,7 +128,7 @@ public class BidManageController extends MenuController {
                 })
                 .collect(Collectors.toList());
 
-        // 2. Render các hàng (Row) con lên giao diện
+        // Xóa các hàng cũ rồi vẽ lại theo danh sách đã lọc
         rowsContainer.getChildren().clear();
         rowControllers.clear();
 
@@ -125,17 +139,15 @@ public class BidManageController extends MenuController {
         } else {
             for (Product p : filteredList) {
                 try {
-                    // Tải file hàng con động
                     FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneConfig.BID_MANAGE_ROW.getPath()));
                     Node rowNode = loader.load();
 
                     BidderManageRowController rowCtrl = loader.getController();
 
-                    // Tính toán thông tin trạng thái cho từng hàng con
                     boolean isWinning = currentUsername.equalsIgnoreCase(p.getHighestBidder());
                     double myMaxBid = RemoteDataStorage.getMaxBidByBidderForProduct(currentUsername, p.getId(), p.getCurrentPrice());
 
-                    // Đổ dữ liệu vào hàng con, callback điều hướng sang trang chi tiết khi bấm nút tái đấu
+                    // Truyền dữ liệu vào hàng con, kèm callback điều hướng khi nhấn nút tái đấu
                     rowCtrl.setData(p, myMaxBid, isWinning, this::navigateToBidDetail);
 
                     rowsContainer.getChildren().add(rowNode);
@@ -146,16 +158,13 @@ public class BidManageController extends MenuController {
             }
         }
 
-        // 3. Tính toán và cập nhật khối dữ liệu Tóm tắt (Footer)
         calculateSummary();
     }
 
-    // FIX #7: calculateSummary() gọi network (getMaxBidByBidderForProduct) trên UI thread → freeze UI.
-    // Chuyển phần nặng sang background thread, cập nhật label qua Platform.runLater().
     private void calculateSummary() {
         String currentUsername = RemoteDataStorage.currentAccount.getUsername();
         int totalBidding = runningBidList.size();
-        // Snapshot danh sách để truyền vào background thread (tránh ConcurrentModificationException)
+        // Snapshot tránh ConcurrentModificationException khi list thay đổi trong lúc đếm
         List<Product> snapshot = new ArrayList<>(runningBidList);
 
         Thread t = new Thread(() -> {
@@ -163,7 +172,7 @@ public class BidManageController extends MenuController {
                     .filter(p -> currentUsername.equalsIgnoreCase(p.getHighestBidder()))
                     .count();
 
-            // Network call chạy trên background thread
+            // Network call lấy giá thầu tối đa — phải chạy trên background thread
             double totalValue = snapshot.stream()
                     .mapToDouble(p -> RemoteDataStorage.getMaxBidByBidderForProduct(
                             currentUsername, p.getId(), p.getCurrentPrice()))
@@ -179,7 +188,7 @@ public class BidManageController extends MenuController {
             final double tv = totalValue;
             final long hw = hotWinning;
 
-            // Cập nhật UI trên JavaFX Application Thread
+            // Cập nhật label phải thực hiện trên JavaFX Application Thread
             Platform.runLater(() -> {
                 lblTotalBidding.setText("Đang Đấu: " + totalBidding);
                 lblTotalWinning.setText("Bạn đang dẫn đầu: " + tw);
@@ -192,7 +201,6 @@ public class BidManageController extends MenuController {
     }
 
     private void navigateToBidDetail(Product p) {
-
         stopAutoRefresh();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneConfig.BIDDER_WINDOW.getPath()));

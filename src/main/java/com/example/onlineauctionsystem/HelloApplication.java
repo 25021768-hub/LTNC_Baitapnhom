@@ -54,7 +54,7 @@ public class HelloApplication extends Application {
         Label subtitle = new Label("Chọn vai trò của máy này:");
         subtitle.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 13px;");
 
-        Button btnHost = new Button("🖥  Chạy Server + Client  (Host)");
+        Button btnHost = new Button("  Chạy Server + Client  (Host)");
         btnHost.setPrefWidth(320);
         btnHost.setPrefHeight(55);
         btnHost.setStyle("-fx-background-color:#2980b9;-fx-text-fill:white;"
@@ -65,7 +65,7 @@ public class HelloApplication extends Application {
         hostDesc.setWrapText(true);
         hostDesc.setMaxWidth(320);
 
-        Button btnClient = new Button("💻  Chỉ chạy Client  (Kết nối đến Host)");
+        Button btnClient = new Button("  Chỉ chạy Client  (Kết nối đến Host)");
         btnClient.setPrefWidth(320);
         btnClient.setPrefHeight(55);
         btnClient.setStyle("-fx-background-color:#27ae60;-fx-text-fill:white;"
@@ -92,8 +92,34 @@ public class HelloApplication extends Application {
             dialog.close();
             System.setProperty("auction.host", "localhost");
             startEmbeddedServer();
-            waitForServer("localhost");
-            launchMainUI(mainStage);
+
+            // FIX : waitForServer() gọi TCP blocking — không được chạy trên JavaFX UI Thread
+            // vì sẽ làm đơ toàn bộ giao diện trong lúc chờ server khởi động (có thể 1-5 giây).
+            // Giải pháp: hiện màn hình loading, chờ trên background thread, rồi mở UI chính
+            // bằng Platform.runLater() khi server đã sẵn sàng.
+            Label lblWaiting = new Label("Đang khởi động server, vui lòng chờ...");
+            lblWaiting.setStyle("-fx-font-size:13px; -fx-text-fill:#e67e22;");
+            javafx.scene.control.ProgressIndicator spinner = new javafx.scene.control.ProgressIndicator();
+            spinner.setPrefSize(30, 30);
+            VBox waitBox = new VBox(10, spinner, lblWaiting);
+            waitBox.setAlignment(Pos.CENTER);
+            waitBox.setPadding(new Insets(30));
+
+            Stage waitStage = new Stage();
+            waitStage.setTitle("Đang khởi động...");
+            waitStage.setResizable(false);
+            waitStage.setScene(new Scene(waitBox, 300, 120));
+            waitStage.show();
+
+            Thread t = new Thread(() -> {
+                waitForServer("localhost");
+                javafx.application.Platform.runLater(() -> {
+                    waitStage.close();
+                    launchMainUI(mainStage);
+                });
+            }, "server-wait-thread");
+            t.setDaemon(true);
+            t.start();
         });
 
         btnClient.setOnAction(e -> {
@@ -133,7 +159,7 @@ public class HelloApplication extends Application {
         HBox buttons = new HBox(10, btnConnect, btnBack);
         buttons.setAlignment(Pos.CENTER);
 
-        Label hint = new Label("💡 Xem IP của Host ở màn hình chọn chế độ trên máy Host");
+        Label hint = new Label(" Xem IP của Host ở màn hình chọn chế độ trên máy Host");
         hint.setStyle("-fx-text-fill:#7f8c8d;-fx-font-size:11px;");
         hint.setWrapText(true);
 
@@ -158,7 +184,7 @@ public class HelloApplication extends Application {
                         launchMainUI(mainStage);
                     } else {
                         lblStatus.setStyle("-fx-text-fill:red;-fx-font-size:12px;");
-                        lblStatus.setText("❌ Không kết nối được đến " + ip + ":5000\n"
+                        lblStatus.setText(" Không kết nối được đến " + ip + ":5000\n"
                                 + "Kiểm tra lại IP và đảm bảo Host đang chạy.");
                         btnConnect.setDisable(false);
                     }

@@ -62,6 +62,18 @@ public class AuctionController extends BaseController {
     private Timeline refreshTimeline;
     private int secondsCounter = 0;
 
+    // FIX : Thay thế new Thread() mỗi lần bằng một ExecutorService dùng chung.
+    // Trước đây: mỗi giây updateDynamicInfo() + refreshChartData() mỗi hàm tạo 1 Thread mới.
+    // Nếu server phản hồi chậm, hàng chục thread chồng chất → memory leak + race condition.
+    // Giải pháp: dùng single-thread executor để đảm bảo các tác vụ nối tiếp nhau,
+    // không tạo thread thừa, và có thể shutdown() sạch khi rời màn hình.
+    private final java.util.concurrent.ExecutorService bgExecutor =
+            java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
+                Thread t = new Thread(r, "auction-bg-worker");
+                t.setDaemon(true);
+                return t;
+            });
+
     public void setProduct(Product p) {
         this.product = p;
         loadStaticProductInfo();
@@ -108,22 +120,19 @@ public class AuctionController extends BaseController {
         double minBid = product.getCurrentPrice() + product.getBidIncrement();
         lblMinBid.setText(formatPrice(minBid));
 
-        // BUG F: getBalance() là network call — không gọi trên UI thread mỗi giây.
-        // Chạy trên background thread, chỉ cập nhật label qua Platform.runLater().
+        // FIX : Dùng bgExecutor thay vì new Thread() mỗi giây
         String username = RemoteDataStorage.currentAccount.getUsername();
-        Thread t = new Thread(() -> {
+        bgExecutor.submit(() -> {
             double balance = RemoteDataStorage.getBalance(username);
             javafx.application.Platform.runLater(() -> lblBalance.setText(formatPrice(balance)));
         });
-        t.setDaemon(true);
-        t.start();
     }
     private void refreshChartData() {
         if (product == null) return;
-        // Network call phải chạy ngoài UI thread để không block giao diện
+        // FIX : Dùng bgExecutor thay vì new Thread() — tránh chồng thread khi server chậm
         String productId   = product.getId();
         String productName = product.getName();
-        Thread t = new Thread(() -> {
+        bgExecutor.submit(() -> {
             XYChart.Series<String, Number> series =
                     RemoteDataStorage.getProductChartData(productId, productName);
             Platform.runLater(() -> {
@@ -131,8 +140,6 @@ public class AuctionController extends BaseController {
                 bidChart.getData().add(series);
             });
         });
-        t.setDaemon(true);
-        t.start();
     }
 
     private void startTimeline() {
@@ -146,19 +153,18 @@ public class AuctionController extends BaseController {
             if (secondsCounter >= 5) {
                 secondsCounter = 0;
 
-                Thread dbThread = new Thread(() -> {
+                // FIX : Dùng bgExecutor thay vì new Thread() — tránh tích lũy thread khi server chậm
+                bgExecutor.submit(() -> {
                     Product fresh = RemoteDataStorage.findProductById(product.getId());
                     if (fresh != null) {
                         Platform.runLater(() -> {
                             this.product = fresh;
-                            this.product.updateStatus(); // Đồng bộ trạng thái mới
+                            this.product.updateStatus();
                             updateDynamicInfo();
                             refreshChartData();
                         });
                     }
                 });
-                dbThread.setDaemon(true);
-                dbThread.start();
             } else {
                 // Các giây lẻ chỉ làm nhiệm vụ trừ thời gian đếm ngược cục bộ
                 updateDynamicInfo();
@@ -178,6 +184,10 @@ public class AuctionController extends BaseController {
         if (refreshTimeline != null) {
             refreshTimeline.stop();
             refreshTimeline = null;
+        }
+        // FIX : Shutdown executor khi rời màn hình để giải phóng thread
+        if (!bgExecutor.isShutdown()) {
+            bgExecutor.shutdownNow();
         }
     }
 
