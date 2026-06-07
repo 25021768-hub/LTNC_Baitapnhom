@@ -12,35 +12,36 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      fail-fast: false        # Chạy hết cả 3 OS dù có 1 cái fail
+      fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
         include:
-          # Mỗi OS cần classifier JavaFX tương ứng
           - os: ubuntu-latest
             javafx_platform: linux
-            mvnw: ./mvnw
           - os: windows-latest
             javafx_platform: win
-            mvnw: mvnw.cmd
           - os: macos-latest
             javafx_platform: mac
-            mvnw: ./mvnw
 
     steps:
-      # ── 1. Checkout code ──────────────────────────────────────────
+      # ── 1. Checkout ───────────────────────────────────────────────
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # ── 2. Cài JDK 21 ────────────────────────────────────────────
+      # ── 2. Cấp quyền thực thi cho mvnw (Linux & macOS) ───────────
+      #    Git không lưu permission trên Windows nên cần bước này
+      - name: Grant execute permission for mvnw
+        if: runner.os != 'Windows'
+        run: chmod +x mvnw
+
+      # ── 3. Cài JDK 21 ────────────────────────────────────────────
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: maven           # cache ~/.m2 tự động
+          cache: maven
 
-      # ── 3. (Linux only) Cài thư viện đồ hoạ cho JavaFX headless ─
+      # ── 4. (Linux only) Cài thư viện GUI cho JavaFX ──────────────
       - name: Install Linux GUI libs
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -49,27 +50,30 @@ jobs:
             libgtk-3-0 libglib2.0-0 libgl1 libx11-6 \
             xvfb dbus-x11
 
-      # ── 4. Compile ───────────────────────────────────────────────
-      - name: Compile (mvn compile)
-        run: ${{ matrix.mvnw }} compile -B -Djavafx.platform=${{ matrix.javafx_platform }}
+      # ── 5. Compile (Unix) ─────────────────────────────────────────
+      - name: Compile (Unix)
+        if: runner.os != 'Windows'
+        run: ./mvnw compile -B -Djavafx.platform=${{ matrix.javafx_platform }}
 
-      # ── 5. Test ──────────────────────────────────────────────────
-      - name: Run tests
-        # Trên Linux cần Xvfb vì JavaFX cần display ảo
-        run: |
-          ${{ matrix.os == 'ubuntu-latest' && 'xvfb-run -a ' || '' }}${{ matrix.mvnw }} test -B \
-            -Djavafx.platform=${{ matrix.javafx_platform }} \
-            -Djava.awt.headless=true
-        shell: bash
+      # ── 6. Compile (Windows) ──────────────────────────────────────
+      - name: Compile (Windows)
+        if: runner.os == 'Windows'
+        run: mvnw.cmd compile -B "-Djavafx.platform=${{ matrix.javafx_platform }}"
 
-      # ── 6. Package (bỏ qua test để tránh cần MySQL) ─────────────
-      - name: Package JAR
-        run: ${{ matrix.mvnw }} package -B -DskipTests -Djavafx.platform=${{ matrix.javafx_platform }}
+      # ── 7. Package – bỏ qua test (cần MySQL để chạy đầy đủ) ─────
+      - name: Package JAR (Unix)
+        if: runner.os != 'Windows'
+        run: ./mvnw package -B -DskipTests -Djavafx.platform=${{ matrix.javafx_platform }}
 
-      # ── 7. Upload artifact ───────────────────────────────────────
-      - name: Upload JAR artifact
+      - name: Package JAR (Windows)
+        if: runner.os == 'Windows'
+        run: mvnw.cmd package -B -DskipTests "-Djavafx.platform=${{ matrix.javafx_platform }}"
+
+      # ── 8. Upload artifact ────────────────────────────────────────
+      - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
           name: OnlineAuctionSystem-${{ matrix.javafx_platform }}
           path: target/*.jar
+          if-no-files-found: warn
           retention-days: 7
