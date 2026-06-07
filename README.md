@@ -238,16 +238,16 @@ VALUES ('admin', 'Administrator', 'admin123', 'ADMIN', 0);
 ## 8. Thành viên nhóm
 
 | Thành viên | GitHub |
-|---|---|
+|---|--|
 | giabao848 | [@giabao848](https://github.com/giabao848) |
 | Thạch Minh Hiếu | [@25021768-hub](https://github.com/25021768-hub) |
-| Nguyễn Huy Hoàng | — |
+| Nguyễn Huy Hoàng | https://github.com/25021775-NguyenHuyHoang |
 | Phu | https://github.com/25020745-afk |
 
 ---
 
 ## 9. Link báo cáo và video demo
 
-| Tài liệu | Link |
-|---|---|
-| https://drive.google.com/drive/folders/1VCo_vHUA-w5xP27zvCRw2l28K228U23U?usp=sharing
+| Tài liệu | Link                                                                                 |
+|----------|--------------------------------------------------------------------------------------|
+| Drive    | https://drive.google.com/drive/folders/1VCo_vHUA-w5xP27zvCRw2l28K228U23U?usp=sharing |
