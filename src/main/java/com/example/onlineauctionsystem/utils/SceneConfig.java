@@ -10,7 +10,6 @@ public enum SceneConfig {
     BIDDER_HISTORY("Lich_Su_Dau_Gia_Bidder_BTL.fxml", "Lịch sử đấu giá"),
     BIDDER_PRODUCT("San_Pham_Moi_Bidder_BTL.fxml", "Sản phẩm mới"),
     BIDDER_MANAGER("Ban_Dang_Dau_Gia_Bidder_BTL.fxml", "Sản phẩm đang đấu giá"),
-    BID_PRODUCT("Cua_So_Dat_Gia_Bidder_BTL.fxml", "Ô đặt giá bidder"),
     BIDDER_WINDOW("CuaSoDatGia_Bidder.fxml", "Ô đặt giá bidder"),
 
     SELLER_HOME("Tai_Khoan_Seller_BTL.fxml","Trang chủ người bán"),
