@@ -44,11 +44,13 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             libgtk-3-0 libglib2.0-0 libgl1 libx11-6 xvfb
 
-      # Dùng 'mvn' trực tiếp thay vì mvnw/mvnw.cmd để tránh path issues
+      # Dùng shell: bash trên mọi OS để tránh vấn đề PowerShell parse -D
       - name: Compile
+        shell: bash
         run: mvn compile -B -Djavafx.platform=${{ matrix.javafx_platform }}
 
       - name: Package JAR (skip tests – cần MySQL)
+        shell: bash
         run: mvn package -B -DskipTests -Djavafx.platform=${{ matrix.javafx_platform }}
 
       - name: Upload JAR
