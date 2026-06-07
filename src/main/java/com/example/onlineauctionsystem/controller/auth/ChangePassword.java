@@ -41,7 +41,15 @@ public class ChangePassword extends BaseController {
     private void onReturnProfile(ActionEvent event) {
         String username = RemoteDataStorage.currentAccount.getUsername();
         if(RemoteDataStorage.changePassword(username, txtCurrentPassword.getText(), txtNewPassword.getText())){
-            switchScene(event, SceneConfig.BIDDER_HOME);
+            // BUG G: Hardcode BIDDER_HOME — SELLER cũng bị chuyển về trang bidder.
+            // Dùng role để điều hướng đúng trang chủ.
+            String role = RemoteDataStorage.currentAccount.getRole() != null
+                    ? RemoteDataStorage.currentAccount.getRole().toUpperCase().trim() : "";
+            com.example.onlineauctionsystem.utils.SceneConfig home =
+                    "SELLER".equals(role)
+                            ? com.example.onlineauctionsystem.utils.SceneConfig.SELLER_HOME
+                            : com.example.onlineauctionsystem.utils.SceneConfig.BIDDER_HOME;
+            switchScene(event, home);
             showAlert("Đổi mật khẩu", "Đổi mật khẩu thành công.");
         }
         else{

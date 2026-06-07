@@ -2,7 +2,7 @@ package com.example.onlineauctionsystem.model;
 
 import com.example.onlineauctionsystem.network.AuctionClient;
 import com.example.onlineauctionsystem.network.AuctionMessage;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart; // OK: RemoteDataStorage chạy trên CLIENT (có JavaFX), khác DataStorage server-side
 
 import java.util.ArrayList;
 import java.util.List;

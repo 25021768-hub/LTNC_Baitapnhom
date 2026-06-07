@@ -49,19 +49,21 @@ public class DataStorage {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             stmt.setString(2, password);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                Account acc = new Account();
-                acc.setUsername(rs.getString("username"));
-                acc.setRole(rs.getString("role"));
-                acc.setIdCard(rs.getString("id_card"));
-                acc.setEmail(rs.getString("email"));
-                acc.setPhoneNumber(rs.getString("phone_number")); // Đúng tên phone_number
-                acc.setBalance(rs.getDouble("balance"));
-                acc.setPassword(rs.getString("password"));
-                acc.setFullName(rs.getString("fullname"));
-                acc.setLocked(rs.getBoolean("is_locked"));
-                return acc;
+            // BUG H: ResultSet không được đóng → memory leak. Dùng try-with-resources.
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Account acc = new Account();
+                    acc.setUsername(rs.getString("username"));
+                    acc.setRole(rs.getString("role"));
+                    acc.setIdCard(rs.getString("id_card"));
+                    acc.setEmail(rs.getString("email"));
+                    acc.setPhoneNumber(rs.getString("phone_number"));
+                    acc.setBalance(rs.getDouble("balance"));
+                    acc.setPassword(rs.getString("password"));
+                    acc.setFullName(rs.getString("fullname"));
+                    acc.setLocked(rs.getBoolean("is_locked"));
+                    return acc;
+                }
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
@@ -72,18 +74,20 @@ public class DataStorage {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                Account acc = new Account();
-                acc.setUsername(rs.getString("username"));
-                acc.setPassword(rs.getString("password"));
-                acc.setRole(rs.getString("role"));
-                acc.setFullName(rs.getString("fullname"));
-                acc.setIdCard(rs.getString("id_card"));
-                acc.setEmail(rs.getString("email"));
-                acc.setPhoneNumber(rs.getString("phone_number"));
-                acc.setLocked(rs.getBoolean("is_locked"));
-                return acc;
+            // BUG H: ResultSet không được đóng → dùng try-with-resources
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Account acc = new Account();
+                    acc.setUsername(rs.getString("username"));
+                    acc.setPassword(rs.getString("password"));
+                    acc.setRole(rs.getString("role"));
+                    acc.setFullName(rs.getString("fullname"));
+                    acc.setIdCard(rs.getString("id_card"));
+                    acc.setEmail(rs.getString("email"));
+                    acc.setPhoneNumber(rs.getString("phone_number"));
+                    acc.setLocked(rs.getBoolean("is_locked"));
+                    return acc;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -557,22 +561,32 @@ public class DataStorage {
         return null;
     }
 
-    // Đánh dấu đã thanh toán trong bid_history và products
+    // BUG J: markAsPaid() chạy 2 UPDATE không có transaction — nếu UPDATE 2 lỗi, UPDATE 1 vẫn commit.
+    // Dùng executeManualPayment() thay thế nếu cần full payment (có trừ tiền buyer, cộng tiền seller).
+    // Hàm này chỉ dùng khi không cần chuyển tiền (admin mark thủ công), nên wrap transaction.
     public static boolean markAsPaid(String productId, String bidderName) {
         String sql1 = "UPDATE bid_history SET is_paid = true " +
                 "WHERE product_id = ? AND bidder_name = ? AND result = 'WIN'";
         String sql2 = "UPDATE products SET status = 'PAID' WHERE id = ?";
         try (Connection conn = getConnection()) {
-            try (PreparedStatement s1 = conn.prepareStatement(sql1)) {
-                s1.setString(1, productId);
-                s1.setString(2, bidderName);
-                s1.executeUpdate();
+            conn.setAutoCommit(false); // FIX J: wrap trong transaction
+            try {
+                try (PreparedStatement s1 = conn.prepareStatement(sql1)) {
+                    s1.setString(1, productId);
+                    s1.setString(2, bidderName);
+                    s1.executeUpdate();
+                }
+                try (PreparedStatement s2 = conn.prepareStatement(sql2)) {
+                    s2.setString(1, productId);
+                    s2.executeUpdate();
+                }
+                conn.commit();
+                return true;
+            } catch (SQLException e) {
+                conn.rollback();
+                e.printStackTrace();
+                return false;
             }
-            try (PreparedStatement s2 = conn.prepareStatement(sql2)) {
-                s2.setString(1, productId);
-                s2.executeUpdate();
-            }
-            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

@@ -99,18 +99,24 @@ public class AuctionController extends BaseController {
         if (product.getEndTime() == null && product.getStartTime() != null) {
             product.setEndTime(product.getStartTime().plusHours(product.getDurationHours()));
         }
-        // Luôn luôn tính toán lại trạng thái dựa trên thời gian thực
         product.updateStatus();
 
         lblHighestBidder.setText(Objects.requireNonNullElse(product.getHighestBidder(), "Chưa có"));
         lblCurrentPrice.setText(formatPrice(product.getCurrentPrice()));
         lblTime.setText(product.getRemainingTime());
 
-        double balance = RemoteDataStorage.getBalance(RemoteDataStorage.currentAccount.getUsername());
-        lblBalance.setText(formatPrice(balance));
-
         double minBid = product.getCurrentPrice() + product.getBidIncrement();
         lblMinBid.setText(formatPrice(minBid));
+
+        // BUG F: getBalance() là network call — không gọi trên UI thread mỗi giây.
+        // Chạy trên background thread, chỉ cập nhật label qua Platform.runLater().
+        String username = RemoteDataStorage.currentAccount.getUsername();
+        Thread t = new Thread(() -> {
+            double balance = RemoteDataStorage.getBalance(username);
+            javafx.application.Platform.runLater(() -> lblBalance.setText(formatPrice(balance)));
+        });
+        t.setDaemon(true);
+        t.start();
     }
     private void refreshChartData() {
         if (product == null) return;

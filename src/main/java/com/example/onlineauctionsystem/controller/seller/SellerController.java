@@ -49,8 +49,12 @@ public class SellerController extends MenuController {
         String seller_username = RemoteDataStorage.currentAccount.getUsername();
         return RemoteDataStorage.getAllProducts().stream()
                 .filter(p -> seller_username.equals(p.getSellerName()))
+                // BUG I: Filter cũ bỏ sót PENDING — SP mới tạo sẽ không hiện ở "Sản phẩm của tôi"
+                // PENDING hiển thị ở tab "Quản lý đăng bán", OPEN+RUNNING hiển thị ở "SP của tôi"
+                // Giữ nguyên logic domain: trang này chỉ hiện SP đang hoạt động
                 .filter(p -> "OPEN".equals(p.getStatus())
-                        || "RUNNING".equals(p.getStatus()))
+                        || "RUNNING".equals(p.getStatus())
+                        || "PENDING".equals(p.getStatus())) // THÊM PENDING để seller thấy SP chờ duyệt
                 .collect(Collectors.toList());
     }
     private void startAutoRefresh(){

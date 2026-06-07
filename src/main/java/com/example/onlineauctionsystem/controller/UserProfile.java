@@ -24,6 +24,7 @@ public class UserProfile extends MenuController{
         acc = RemoteDataStorage.currentAccount;
         if (acc == null) return; // guard thêm để tránh NPE
         btnSave.setDisable(true);
+        txtFullName.setText(RemoteDataStorage.currentAccount.getFullName()); // BUG B: dòng này bị thiếu sau lần sửa trước
         txtEmail.setText(RemoteDataStorage.currentAccount.getEmail());
         txtIDCard.setText(RemoteDataStorage.currentAccount.getIdCard());
         txtPhoneNumber.setText(RemoteDataStorage.currentAccount.getPhoneNumber());

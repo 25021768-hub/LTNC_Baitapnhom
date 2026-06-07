@@ -20,7 +20,8 @@ public class ProductItemHistoryController {
         lblCurrentPrice.setText(formatPrice(p.getCurrentPrice()));
         lblcurrentBidder.setText(p.getHighestBidder());
 
-        if (p.getStartTime() != null) {
+        // BUG E: Code cũ check startTime != null nhưng lại format endTime — endTime có thể null riêng → NPE
+        if (p.getEndTime() != null) {
             lblsellDate.setText(
                     p.getEndTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             );

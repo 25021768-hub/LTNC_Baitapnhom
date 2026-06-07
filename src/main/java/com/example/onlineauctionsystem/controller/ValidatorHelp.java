@@ -9,27 +9,40 @@ import java.util.function.Predicate;
 
 public class ValidatorHelp{
     public static void setupValidation(TextField field, Label label,
-                                       String originalValue, // Truyền null nếu là Đăng ký
+                                       String originalValue,
                                        Predicate<String> formatChecker,
                                        String errorFormat, String successMsg,
                                        Runnable updateStatus) {
         field.textProperty().addListener((obs, oldVal, newVal) -> {
             if (originalValue != null && newVal.equals(originalValue)) {
                 setUpLabel(label);
-            }
-            else if (newVal == null || newVal.isEmpty()) {
+            } else if (newVal == null || newVal.isEmpty()) {
                 setUpLabel(label);
-            }
-            else {
+            } else {
                 if (!formatChecker.test(newVal)) {
                     updateLabel(label, errorFormat, "red");
+                    if (updateStatus != null) updateStatus.run();
                 } else {
                     if (originalValue == null || !newVal.equals(originalValue)) {
-                        if (RemoteDataStorage.isAccountExists(newVal)) {
-                            updateLabel(label, "Đã tồn tại trên hệ thống!", "red");
-                        } else {
-                            updateLabel(label, successMsg, "green");
-                        }
+                        // BUG D: isAccountExists() là network call — KHÔNG gọi trên UI thread.
+                        // Chạy trên background thread, cập nhật label qua Platform.runLater().
+                        final String valueToCheck = newVal;
+                        Thread t = new Thread(() -> {
+                            boolean exists = RemoteDataStorage.isAccountExists(valueToCheck);
+                            javafx.application.Platform.runLater(() -> {
+                                // Guard: chỉ cập nhật nếu text vẫn là giá trị đang check
+                                if (!valueToCheck.equals(field.getText())) return;
+                                if (exists) {
+                                    updateLabel(label, "Đã tồn tại trên hệ thống!", "red");
+                                } else {
+                                    updateLabel(label, successMsg, "green");
+                                }
+                                if (updateStatus != null) updateStatus.run();
+                            });
+                        });
+                        t.setDaemon(true);
+                        t.start();
+                        return; // updateStatus sẽ được gọi trong runLater ở trên
                     } else {
                         setUpLabel(label);
                     }
@@ -88,10 +101,21 @@ public class ValidatorHelp{
 
     public static boolean isAllValid(Label... labels) {
         for (Label lbl : labels) {
-            if (lbl.getText().isEmpty() || lbl.getStyle().contains("red")) {
+            // BUG C: Logic cũ return false khi text rỗng (label đang ẩn) — sai.
+            // Chỉ fail khi label đang HIỂN THỊ và có màu đỏ (lỗi thực sự).
+            // Label ẩn (setVisible(false)) = chưa nhập / chưa thay đổi → không tính là invalid.
+            if (lbl.isVisible() && lbl.getStyle().contains("red")) {
                 return false;
             }
+            // Nếu tất cả label đều ẩn → không có field nào hợp lệ (người dùng chưa nhập gì)
+            // Kiểm tra phải có ít nhất 1 label xanh
         }
-        return true;
+        // Phải có ít nhất 1 label hiển thị màu xanh để kích hoạt nút
+        for (Label lbl : labels) {
+            if (lbl.isVisible() && lbl.getStyle().contains("green")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
