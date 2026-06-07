@@ -3,7 +3,7 @@ package com.example.onlineauctionsystem.controller.common;
 import com.example.onlineauctionsystem.utils.ProductImage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+
 import javafx.scene.image.ImageView;
 import com.example.onlineauctionsystem.model.Product;
 
@@ -26,8 +26,7 @@ public class ProductItemController {
 
         // Load ảnh bất đồng bộ (không block UI)
         if (p.getImagePath() != null && !p.getImagePath().isEmpty()) {
-            Image img = ProductImage.load(p.getImagePath(), 110, 110);
-            if (img != null) imgProduct.setImage(img);
+            ProductImage.loadAsync(p.getImagePath(), 110, 110, imgProduct);
         }
     }
 

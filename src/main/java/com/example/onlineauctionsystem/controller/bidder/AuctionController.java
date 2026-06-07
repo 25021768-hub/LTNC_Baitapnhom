@@ -20,7 +20,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.image.Image;
+
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
@@ -91,8 +91,7 @@ public class AuctionController extends BaseController {
         lblStep.setText(formatPrice(product.getBidIncrement()));
         autoStepField.setText(String.format("%.0f", product.getBidIncrement()));
 
-        Image img = ProductImage.load(product.getImagePath(), 229, 150);
-        if (img != null) imgProduct.setImage(img);
+        ProductImage.loadAsync(product.getImagePath(), 229, 150, imgProduct);
     }
 
     private void updateDynamicInfo() {
@@ -115,11 +114,19 @@ public class AuctionController extends BaseController {
     }
     private void refreshChartData() {
         if (product == null) return;
-        Platform.runLater(() -> {
-            XYChart.Series<String, Number> series = RemoteDataStorage.getProductChartData(product.getId(), product.getName());
-            bidChart.getData().clear();
-            bidChart.getData().add(series);
+        // Network call phải chạy ngoài UI thread để không block giao diện
+        String productId   = product.getId();
+        String productName = product.getName();
+        Thread t = new Thread(() -> {
+            XYChart.Series<String, Number> series =
+                    RemoteDataStorage.getProductChartData(productId, productName);
+            Platform.runLater(() -> {
+                bidChart.getData().clear();
+                bidChart.getData().add(series);
+            });
         });
+        t.setDaemon(true);
+        t.start();
     }
 
     private void startTimeline() {

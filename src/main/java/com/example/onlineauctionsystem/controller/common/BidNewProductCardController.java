@@ -4,7 +4,7 @@ import com.example.onlineauctionsystem.model.Product;
 import com.example.onlineauctionsystem.utils.ProductImage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+
 import javafx.scene.image.ImageView;
 
 import java.util.function.Consumer;
@@ -24,8 +24,7 @@ public class BidNewProductCardController {
         lblPrice.setText(formatPrice(p.getCurrentPrice()));
         lblTime.setText(p.getRemainingTime());
         if (p.getImagePath() != null && !p.getImagePath().isEmpty()) {
-            Image img = ProductImage.load(p.getImagePath(), 110, 110);
-            if (img != null) imgProduct.setImage(img);
+            ProductImage.loadAsync(p.getImagePath(), 110, 110, imgProduct);
         }
     }
     public void updateTime() {
@@ -37,7 +36,7 @@ public class BidNewProductCardController {
     }
     @FXML
     private void onBid() {
-    if(onBidCallBack != null) onBidCallBack.accept(product);
+        if(onBidCallBack != null) onBidCallBack.accept(product);
     }
     private String formatPrice(double price) {
         return String.format("%,.0fđ", price).replace(",", ".");

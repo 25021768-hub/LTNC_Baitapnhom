@@ -5,7 +5,7 @@ import com.example.onlineauctionsystem.utils.ProductImage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+
 import javafx.scene.image.ImageView;
 
 import java.util.function.BiConsumer;
@@ -30,8 +30,7 @@ public class ProductPendingController {
         loadImage(p.getImagePath());
     }
     private void loadImage(String imagePath) {
-        Image img = ProductImage.load(imagePath, 80, 87);
-        if (img != null) imgProduct.setImage(img);
+        ProductImage.loadAsync(imagePath, 80, 87, imgProduct);
     }
     private String formatPrice(double price) {
         return String.format("%,.0fđ", price).replace(",", ".");

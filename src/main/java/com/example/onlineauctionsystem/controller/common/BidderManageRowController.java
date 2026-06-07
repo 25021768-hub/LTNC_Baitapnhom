@@ -5,7 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+
 import javafx.scene.image.ImageView;
 
 import java.util.function.Consumer;
@@ -39,10 +39,7 @@ public class BidderManageRowController {
             lblStatusBadge.setStyle("-fx-background-color: #ffebee; -fx-border-color: #c62828; -fx-text-fill: #c62828; -fx-background-radius: 20; -fx-border-radius: 20; -fx-font-weight: bold;");
         }
 
-        Image img = ProductImage.load(product.getImagePath(), 80, 80);
-        if (img != null) {
-            imgProduct.setImage(img);
-        }
+        ProductImage.loadAsync(product.getImagePath(), 80, 80, imgProduct);
     }
 
     public void updateTime() {

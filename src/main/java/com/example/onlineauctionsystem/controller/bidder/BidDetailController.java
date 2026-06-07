@@ -67,8 +67,7 @@ public class BidDetailController extends BaseController {
         lblSeller.setText(product.getSellerName());
         lblInitialPrice.setText(formatPrice(product.getInitialPrice()));
 
-        Image img = ProductImage.load(product.getImagePath(), 229, 150);
-        if (img != null) imgProduct.setImage(img);
+        ProductImage.loadAsync(product.getImagePath(), 229, 150, imgProduct);
     }
 
     private void updateDynamicInfo() {

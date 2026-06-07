@@ -82,10 +82,14 @@ public class AddProductController extends BaseController {
             return;
         }
         selectedImagePath = savedPath;
+        // Luôn upload byte[] lên Server để các máy Client khác có thể tải ảnh về
         try {
             byte[] imageBytes = Files.readAllBytes(file.toPath());
             String fileName = savedPath.replace("Product_Image/", "");
-            RemoteDataStorage.uploadImage(fileName, imageBytes);
+            boolean uploaded = RemoteDataStorage.uploadImage(fileName, imageBytes);
+            if (!uploaded) {
+                System.err.println("[AddProduct] Upload ảnh lên server thất bại, client khác sẽ không thấy ảnh.");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
