@@ -91,11 +91,20 @@ public class AuctionService {
     private static AuctionMessage handleLogin(AuctionMessage req) {
         String[] info = (String[]) req.getData(); // [username, password]
         Account acc = DataStorage.checkLogin(info[0], info[1]);
-        if (acc != null) {
-            String token = DataStorage.createSession(acc.getUsername());
-            return success(new Object[]{acc, token}); // trả về cả 2
+        if (acc == null) {
+            return error("Sai tên đăng nhập hoặc mật khẩu!");
         }
-        return error("Sai tên đăng nhập hoặc mật khẩu!");
+        // Kiểm tra tài khoản bị khóa
+        if (acc.isLocked()) {
+            return error("Tài khoản của bạn đã bị khóa! Vui lòng liên hệ quản trị viên.");
+        }
+        // Kiểm tra session đang hoạt động (chỉ 1 người/1 tài khoản)
+        if (DataStorage.isSessionActive(acc.getUsername())) {
+            return new AuctionMessage(AuctionMessage.Action.ACCOUNT_IN_USE,
+                    "Tài khoản đang được đăng nhập ở thiết bị khác! Vui lòng đợi người dùng kia đăng xuất.");
+        }
+        String token = DataStorage.createSession(acc.getUsername());
+        return success(new Object[]{acc, token}); // trả về cả 2
     }
 
     private static AuctionMessage handleRegister(AuctionMessage req) {
@@ -341,11 +350,14 @@ public class AuctionService {
         String imagePath = (String) req.getData();
         if (imagePath == null || imagePath.isEmpty()) return error("Đường dẫn ảnh rỗng.");
         try {
-            // Thử tìm file ảnh ở nhiều vị trí
+            // Thử tìm file ảnh ở nhiều vị trí (src dev, target runtime, user.home)
+            String filename = imagePath.replace("Product_Image/", "");
             String[] candidates = {
                     System.getProperty("user.dir") + "/src/main/resources/" + imagePath,
-                    System.getProperty("user.dir") + "/src/main/resources/Product_Image/" + imagePath.replace("Product_Image/",""),
-                    System.getProperty("user.home") + "/Product_Image/" + imagePath.replace("Product_Image/","")
+                    System.getProperty("user.dir") + "/src/main/resources/Product_Image/" + filename,
+                    System.getProperty("user.dir") + "/target/classes/" + imagePath,
+                    System.getProperty("user.dir") + "/target/classes/Product_Image/" + filename,
+                    System.getProperty("user.home") + "/Product_Image/" + filename
             };
             for (String candidate : candidates) {
                 File f = new File(candidate);
@@ -364,11 +376,27 @@ public class AuctionService {
         String fileName   = (String) data[0];
         byte[] imageBytes = (byte[]) data[1];
         try {
-            String folderPath = System.getProperty("user.dir")
-                    + "/src/main/resources/Product_Image/";
-            File folder = new File(folderPath);
-            if (!folder.exists()) folder.mkdirs();
-            Files.write(new File(folder, fileName).toPath(), imageBytes);
+            boolean saved = false;
+            // Lưu vào src/main/resources (môi trường dev)
+            String srcPath = System.getProperty("user.dir") + "/src/main/resources/Product_Image/";
+            File srcFolder = new File(srcPath);
+            if (srcFolder.exists() || srcFolder.mkdirs()) {
+                Files.write(new File(srcFolder, fileName).toPath(), imageBytes);
+                saved = true;
+            }
+            // Lưu vào target/classes (runtime classpath)
+            String targetPath = System.getProperty("user.dir") + "/target/classes/Product_Image/";
+            File targetFolder = new File(targetPath);
+            if (targetFolder.exists() || targetFolder.mkdirs()) {
+                Files.write(new File(targetFolder, fileName).toPath(), imageBytes);
+                saved = true;
+            }
+            // Fallback: user.home
+            if (!saved) {
+                File homeFolder = new File(System.getProperty("user.home") + "/Product_Image/");
+                homeFolder.mkdirs();
+                Files.write(new File(homeFolder, fileName).toPath(), imageBytes);
+            }
             return success("Upload ảnh thành công.");
         } catch (Exception e) {
             return error("Lỗi lưu ảnh: " + e.getMessage());

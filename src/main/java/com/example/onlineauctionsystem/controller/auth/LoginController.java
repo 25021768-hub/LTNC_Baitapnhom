@@ -1,6 +1,7 @@
 package com.example.onlineauctionsystem.controller.auth;
 
 import com.example.onlineauctionsystem.controller.BaseController;
+import com.example.onlineauctionsystem.model.Account;
 import com.example.onlineauctionsystem.controller.ValidatorHelp;
 import com.example.onlineauctionsystem.model.RemoteDataStorage;
 import com.example.onlineauctionsystem.utils.SceneConfig;
@@ -36,42 +37,58 @@ public class LoginController extends BaseController {
         String user = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
 
-        RemoteDataStorage.currentAccount = RemoteDataStorage.checkLogin(user, password);
-        if (RemoteDataStorage.currentAccount != null) {
-            Stage stage = (Stage) btnLogin.getScene().getWindow();
+        // Chạy đăng nhập trên background thread để không block UI
+        btnLogin.disableProperty().unbind(); // tạm bỏ bind để có thể setDisable thủ công
+        btnLogin.setDisable(true);
+        Thread t = new Thread(() -> {
+            Account acc = RemoteDataStorage.checkLogin(user, password);
+            Platform.runLater(() -> {
+                // Khôi phục bind sau khi xong
+                btnLogin.disableProperty().bind(
+                        txtUsername.textProperty().isEmpty()
+                                .or(txtPassword.textProperty().isEmpty())
+                );
+                if (acc == null) {
+                    String lastError = RemoteDataStorage.getLastLoginError();
+                    if (lastError != null && lastError.contains("thiết bị khác")) {
+                        ValidatorHelp.updateLabel(lblLoginMessage,
+                                "⚠ Tài khoản đang đăng nhập ở thiết bị khác!\nVui lòng đợi người dùng kia đăng xuất.", "red");
+                    } else if (lastError != null && lastError.contains("bị khóa")) {
+                        ValidatorHelp.updateLabel(lblLoginMessage,
+                                "🔒 Tài khoản đã bị khóa! Vui lòng liên hệ quản trị viên.", "red");
+                    } else {
+                        ValidatorHelp.updateLabel(lblLoginMessage, "Sai tên đăng nhập hoặc mật khẩu.", "red");
+                    }
+                    return;
+                }
 
-            // THÊM BỘ KIỂM TRA TRẠNG THÁI KHÓA TÀI KHOẢN TẠI ĐÂY
-            if (RemoteDataStorage.currentAccount.isLocked()) {
-                showAlert("Đăng nhập thất bại", "Tài khoản của bạn đã bị khóa bởi Quản trị viên!");
-                RemoteDataStorage.currentAccount = null;
-                RemoteDataStorage.currentToken = null;
-                return; // Dừng hàm luôn, không cho chạy tiếp xuống phần phân quyền
-            }
+                RemoteDataStorage.currentAccount = acc;
+                Stage stage = (Stage) btnLogin.getScene().getWindow();
 
-            // Nếu vượt qua bộ lọc khóa ở trên thì mới báo thành công và phân quyền
-            showAlert("Đăng nhập", "Đăng nhập thành công.");
+                showAlert("Đăng nhập", "Đăng nhập thảnh công.");
 
-            String role = RemoteDataStorage.currentAccount.getRole() != null
-                    ? RemoteDataStorage.currentAccount.getRole().toUpperCase().trim()
-                    : "GUEST";
+                String role = acc.getRole() != null
+                        ? acc.getRole().toUpperCase().trim()
+                        : "GUEST";
 
-            switch (role) {
-                case "BIDDER":
-                    switchScene(stage, SceneConfig.BIDDER_HOME);
-                    break;
-                case "SELLER":
-                    switchScene(stage, SceneConfig.SELLER_HOME);
-                    break;
-                case "ADMIN":
-                    switchScene(stage, SceneConfig.ADMIN_USER);
-                    break;
-                default:
-                    showAlert("Lỗi phân quyền", "Tài khoản của bạn chưa được cấp quyền truy cập hệ thống.");
-                    break;
-            }
-        } else {
-            ValidatorHelp.updateLabel(lblLoginMessage, "Sai tên đăng nhập hoặc mật khẩu.", "red");
-        }
+                switch (role) {
+                    case "BIDDER":
+                        switchScene(stage, SceneConfig.BIDDER_HOME);
+                        break;
+                    case "SELLER":
+                        switchScene(stage, SceneConfig.SELLER_HOME);
+                        break;
+                    case "ADMIN":
+                        switchScene(stage, SceneConfig.ADMIN_USER);
+                        break;
+                    default:
+                        showAlert("Lỗi phân quyền", "Tài khoản chưa được cấp quyền truy cập hệ thống.");
+                        break;
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     @Override

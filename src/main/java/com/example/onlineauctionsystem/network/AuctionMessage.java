@@ -49,7 +49,8 @@ public class AuctionMessage implements Serializable {
 
         // ── Kết quả ──
         SUCCESS,
-        ERROR
+        ERROR,
+        ACCOUNT_IN_USE
     }
 
     private Action action;

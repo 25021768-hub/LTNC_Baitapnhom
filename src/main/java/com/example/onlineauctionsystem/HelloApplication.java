@@ -22,6 +22,21 @@ import java.util.Enumeration;
 public class HelloApplication extends Application {
 
     @Override
+    public void stop() {
+        // Tự động đăng xuất khi đóng ứng dụng (giải phóng session trên server)
+        try {
+            com.example.onlineauctionsystem.model.Account current =
+                    com.example.onlineauctionsystem.model.RemoteDataStorage.currentAccount;
+            if (current != null) {
+                AuctionClient.send(new AuctionMessage(AuctionMessage.Action.LOGOUT, current.getUsername()));
+                System.out.println("[App] Đã gửi LOGOUT cho: " + current.getUsername());
+            }
+        } catch (Exception e) {
+            System.err.println("[App] Lỗi khi gửi LOGOUT: " + e.getMessage());
+        }
+    }
+
+    @Override
     public void start(Stage stage) {
         showModeDialog(stage);
     }

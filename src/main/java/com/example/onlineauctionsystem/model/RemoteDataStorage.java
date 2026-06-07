@@ -36,7 +36,15 @@ public class RemoteDataStorage {
         return res.getAction() == AuctionMessage.Action.SUCCESS;
     }
 
+    /** Lưu lỗi đăng nhập gần nhất (để LoginController đọc và hiển thị) */
+    private static String lastLoginError = null;
+
+    public static String getLastLoginError() {
+        return lastLoginError;
+    }
+
     public static Account checkLogin(String username, String password) {
+        lastLoginError = null;
         AuctionMessage res = AuctionClient.send(new AuctionMessage(
                 AuctionMessage.Action.LOGIN, new String[]{username, password}));
         if (res.getAction() == SUCCESS) {
@@ -45,6 +53,8 @@ public class RemoteDataStorage {
             currentToken   = (String)  payload[1];
             return currentAccount;
         }
+        // Lưu lại lỗi để controller đọc
+        lastLoginError = res.getData() != null ? res.getData().toString() : "Lỗi không xác định.";
         return null;
     }
 

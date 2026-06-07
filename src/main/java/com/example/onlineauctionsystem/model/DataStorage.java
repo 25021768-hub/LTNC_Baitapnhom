@@ -24,6 +24,10 @@ public class DataStorage {
 
     private static final Map<String, String> activeSessions = new ConcurrentHashMap<>();
 
+    public static boolean isSessionActive(String username) {
+        return activeSessions.containsKey(username);
+    }
+
     public static String createSession(String username) {
         String token = UUID.randomUUID().toString();
         activeSessions.put(username, token);

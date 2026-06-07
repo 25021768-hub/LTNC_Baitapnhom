@@ -19,7 +19,7 @@ import java.nio.file.StandardCopyOption;
  *   2. Nếu không có → hỏi Server qua network, nhận byte[] rồi render
  *   3. Fallback classpath (JAR)
  *
- * save(): Lưu ảnh vào folder trên máy Server.
+ * save(): Lưu ảnh vào folder trên máy Server VÀ upload lên server qua socket.
  */
 public enum ProductImage {
     ;
@@ -44,6 +44,7 @@ public enum ProductImage {
             }
         }
 
+        // Cách 1b: thư mục user.home (fallback khi src/ không tồn tại)
         File homeFile = new File(System.getProperty("user.home")
                 + "/Product_Image/" + imagePath.replace(FOLDER_NAME + "/", ""));
         if (homeFile.exists()) {
@@ -82,23 +83,73 @@ public enum ProductImage {
     }
 
     // ──────────────────────────────────────────────────────────────
-    //  SAVE – lưu ảnh vào disk (Seller gọi khi đăng sản phẩm)
+    //  SAVE – lưu ảnh vào disk cục bộ (Seller gọi khi đăng sản phẩm)
+    //  Trả về đường dẫn tương đối, ví dụ: "Product_Image/12345_abc.jpg"
+    //  Lưu ý: AddProductController sẽ tự gọi uploadImage() sau hàm này
     // ──────────────────────────────────────────────────────────────
     public static String save(File sourceFile) {
+        String newFileName = System.currentTimeMillis() + "_" + sourceFile.getName();
+
+        // Ưu tiên lưu vào thư mục src/main/resources (môi trường dev)
+        File destFolder = new File(FOLDER_PATH);
+        if (!destFolder.exists()) {
+            destFolder.mkdirs();
+        }
+
+        // Nếu mkdirs thất bại (ví dụ JAR mode), dùng user.home
+        if (!destFolder.exists() || !destFolder.isDirectory()) {
+            destFolder = new File(System.getProperty("user.home") + "/Product_Image/");
+            destFolder.mkdirs();
+        }
+
+        File destFile = new File(destFolder, newFileName);
         try {
-            File destFolder = new File(FOLDER_PATH);
-            if (!destFolder.exists() && !destFolder.mkdirs()) {
-                destFolder = new File(System.getProperty("user.home") + "/Product_Image/");
-                destFolder.mkdirs();
-            }
-            String newFileName = System.currentTimeMillis() + "_" + sourceFile.getName();
-            File destFile = new File(destFolder, newFileName);
             Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            return FOLDER_NAME + "/" + newFileName;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+        return FOLDER_NAME + "/" + newFileName;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  LOAD ASYNC – load ảnh trên background thread, gán vào ImageView
+    //  Tránh block UI thread khi phải gọi network
+    // ──────────────────────────────────────────────────────────────
+    public static void loadAsync(String imagePath, double width, double height,
+                                 javafx.scene.image.ImageView imageView) {
+        if (imagePath == null || imagePath.isEmpty()) return;
+
+        // Bind kích thước ImageView vào parent StackPane để tự co giãn khi resize
+        javafx.application.Platform.runLater(() -> {
+            if (imageView.getParent() instanceof javafx.scene.layout.StackPane pane) {
+                imageView.fitWidthProperty().bind(
+                        javafx.beans.binding.Bindings.createDoubleBinding(
+                                () -> Math.max(10, pane.getWidth() - 10),
+                                pane.widthProperty()
+                        )
+                );
+                imageView.fitHeightProperty().bind(
+                        javafx.beans.binding.Bindings.createDoubleBinding(
+                                () -> Math.max(10, pane.getHeight() - 10),
+                                pane.heightProperty()
+                        )
+                );
+            } else {
+                imageView.setFitWidth(width);
+                imageView.setFitHeight(height);
+            }
+            imageView.setPreserveRatio(true);
+        });
+
+        Thread t = new Thread(() -> {
+            Image img = load(imagePath, width, height);
+            if (img != null) {
+                javafx.application.Platform.runLater(() -> imageView.setImage(img));
+            }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     // ──────────────────────────────────────────────────────────────
