@@ -1,0 +1,75 @@
+name: CI – Build & Test (Multi-OS)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false        # Chạy hết cả 3 OS dù có 1 cái fail
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        include:
+          # Mỗi OS cần classifier JavaFX tương ứng
+          - os: ubuntu-latest
+            javafx_platform: linux
+            mvnw: ./mvnw
+          - os: windows-latest
+            javafx_platform: win
+            mvnw: mvnw.cmd
+          - os: macos-latest
+            javafx_platform: mac
+            mvnw: ./mvnw
+
+    steps:
+      # ── 1. Checkout code ──────────────────────────────────────────
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # ── 2. Cài JDK 21 ────────────────────────────────────────────
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven           # cache ~/.m2 tự động
+
+      # ── 3. (Linux only) Cài thư viện đồ hoạ cho JavaFX headless ─
+      - name: Install Linux GUI libs
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libgtk-3-0 libglib2.0-0 libgl1 libx11-6 \
+            xvfb dbus-x11
+
+      # ── 4. Compile ───────────────────────────────────────────────
+      - name: Compile (mvn compile)
+        run: ${{ matrix.mvnw }} compile -B -Djavafx.platform=${{ matrix.javafx_platform }}
+
+      # ── 5. Test ──────────────────────────────────────────────────
+      - name: Run tests
+        # Trên Linux cần Xvfb vì JavaFX cần display ảo
+        run: |
+          ${{ matrix.os == 'ubuntu-latest' && 'xvfb-run -a ' || '' }}${{ matrix.mvnw }} test -B \
+            -Djavafx.platform=${{ matrix.javafx_platform }} \
+            -Djava.awt.headless=true
+        shell: bash
+
+      # ── 6. Package (bỏ qua test để tránh cần MySQL) ─────────────
+      - name: Package JAR
+        run: ${{ matrix.mvnw }} package -B -DskipTests -Djavafx.platform=${{ matrix.javafx_platform }}
+
+      # ── 7. Upload artifact ───────────────────────────────────────
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OnlineAuctionSystem-${{ matrix.javafx_platform }}
+          path: target/*.jar
+          retention-days: 7

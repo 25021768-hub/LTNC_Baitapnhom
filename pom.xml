@@ -12,25 +12,52 @@
     <properties>
         <javafx.version>21.0.6</javafx.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.12.1</junit.version>  </properties>
+        <junit.version>5.12.1</junit.version>
+        <!--
+            javafx.platform được truyền từ dòng lệnh:
+              mvn compile -Djavafx.platform=win   (Windows)
+              mvn compile -Djavafx.platform=linux  (Linux)
+              mvn compile -Djavafx.platform=mac    (macOS)
+            Mặc định để trống → Maven tự chọn native của máy.
+        -->
+        <javafx.platform></javafx.platform>
+    </properties>
 
     <dependencies>
+        <!-- MySQL JDBC -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.4.0</version>
         </dependency>
+
+        <!-- JavaFX – classifier tự động theo javafx.platform -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>21.0.6</version>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.platform}</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>21.0.6</version>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.platform}</classifier>
         </dependency>
 
+        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -42,20 +69,12 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
-        </dependency>          <dependency>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-graphics</artifactId>
-        <version>${javafx.version}</version>
-    </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-            <version>${javafx.version}</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -63,15 +82,17 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+
+            <!-- JavaFX plugin (dùng để mvn javafx:run khi dev) -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>com.example.onlineauctionsystem/com.example.onlineauctionsystem.HelloApplication</mainClass>
@@ -81,6 +102,44 @@
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+                Shade plugin: đóng gói tất cả dependency vào 1 fat-JAR.
+                Dùng khi mvn package → target/OnlineAuctionSystem-1.0-SNAPSHOT.jar
+                Người dùng chỉ cần: java -jar OnlineAuctionSystem-1.0-SNAPSHOT.jar
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <!-- Loại bỏ signature files để tránh lỗi khi chạy JAR -->
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <!-- Gộp module-info nếu có xung đột -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.example.onlineauctionsystem.Launcher</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,0 +1,139 @@
+name: Release – Đóng gói phát hành (Multi-OS)
+
+# Chạy khi push tag dạng v1.0, v2.1.3, …
+on:
+  push:
+    tags:
+      - 'v*.*'
+      - 'v*.*.*'
+
+permissions:
+  contents: write    # Cần để tạo GitHub Release
+
+jobs:
+  build-release:
+    name: Build release for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            javafx_platform: linux
+            mvnw: ./mvnw
+            artifact_suffix: linux
+            zip_name: OnlineAuctionSystem-linux.zip
+
+          - os: windows-latest
+            javafx_platform: win
+            mvnw: mvnw.cmd
+            artifact_suffix: windows
+            zip_name: OnlineAuctionSystem-windows.zip
+
+          - os: macos-latest
+            javafx_platform: mac
+            mvnw: ./mvnw
+            artifact_suffix: macos
+            zip_name: OnlineAuctionSystem-macos.zip
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Linux GUI libs
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libgtk-3-0 libglib2.0-0 libgl1 libx11-6 zip
+
+      # Build JAR (bỏ qua test, cần MySQL để chạy đầy đủ)
+      - name: Package JAR
+        run: ${{ matrix.mvnw }} package -B -DskipTests -Djavafx.platform=${{ matrix.javafx_platform }}
+
+      # Tạo thư mục dist và copy JAR + script khởi động vào đó
+      - name: Prepare dist folder (Unix)
+        if: matrix.os != 'windows-latest'
+        run: |
+          mkdir -p dist
+          cp target/OnlineAuctionSystem-*.jar dist/OnlineAuctionSystem.jar 2>/dev/null || \
+          cp target/*.jar dist/OnlineAuctionSystem.jar
+          # Script khởi động cho Unix
+          cat > dist/run.sh << 'SCRIPT'
+          #!/bin/bash
+          # Khởi động Hệ thống Đấu giá Trực tuyến
+          DIR="$(cd "$(dirname "$0")" && pwd)"
+          java -jar "$DIR/OnlineAuctionSystem.jar" "$@"
+          SCRIPT
+          chmod +x dist/run.sh
+          # Đóng gói
+          cd dist && zip -r ../${{ matrix.zip_name }} .
+
+      - name: Prepare dist folder (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist
+          $jar = Get-ChildItem -Path target -Filter "*.jar" | Select-Object -First 1
+          Copy-Item $jar.FullName dist\OnlineAuctionSystem.jar
+          # Script khởi động cho Windows
+          @"
+          @echo off
+          REM Khởi động Hệ thống Đấu giá Trực tuyến
+          set DIR=%~dp0
+          java -jar "%DIR%OnlineAuctionSystem.jar" %*
+          "@ | Out-File -Encoding ASCII dist\run.bat
+          # Đóng gói
+          Compress-Archive -Path dist\* -DestinationPath ${{ matrix.zip_name }}
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.artifact_suffix }}
+          path: ${{ matrix.zip_name }}
+          retention-days: 1
+
+  # Job thứ hai: gom 3 artifact lại và tạo GitHub Release
+  create-release:
+    name: Create GitHub Release
+    needs: build-release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          merge-multiple: true
+          path: release-files
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-files/*.zip
+          generate_release_notes: true
+          body: |
+            ## 🏷️ Phiên bản ${{ github.ref_name }}
+
+            ### Tải về theo hệ điều hành
+            | Hệ điều hành | File |
+            |---|---|
+            | 🐧 Linux | `OnlineAuctionSystem-linux.zip` |
+            | 🪟 Windows | `OnlineAuctionSystem-windows.zip` |
+            | 🍎 macOS | `OnlineAuctionSystem-macos.zip` |
+
+            ### Yêu cầu
+            - Java 21+ đã cài sẵn
+            - MySQL Server đang chạy (cho máy Host)
+
+            ### Cách chạy
+            - **Linux/macOS**: giải nén → chạy `./run.sh`
+            - **Windows**: giải nén → chạy `run.bat` (hoặc double-click)
