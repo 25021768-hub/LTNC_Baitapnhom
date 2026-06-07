@@ -65,7 +65,7 @@ public class LoginController extends BaseController {
                 RemoteDataStorage.currentAccount = acc;
                 Stage stage = (Stage) btnLogin.getScene().getWindow();
 
-                showAlert("Đăng nhập", "Đăng nhập thảnh công.");
+                showAlert("Đăng nhập", "Đăng nhập thành công."); // FIX #6: Sửa typo "thảnh" → "thành"
 
                 String role = acc.getRole() != null
                         ? acc.getRole().toUpperCase().trim()

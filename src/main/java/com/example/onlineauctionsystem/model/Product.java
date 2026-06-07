@@ -36,6 +36,8 @@ public class Product implements Serializable {
     public synchronized boolean placeBid(double newAmount, String bidderName) {
         LocalDateTime now = LocalDateTime.now();
         if (!status.equals("RUNNING")) return false;
+        // FIX #4: Null-check startTime/endTime trước khi so sánh — tránh NullPointerException
+        if (startTime == null || endTime == null) return false;
         if (now.isBefore(startTime) || now.isAfter(endTime)) return false;
 
 

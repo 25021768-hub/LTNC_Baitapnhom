@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javafx.scene.chart.XYChart;
+// import javafx.scene.chart.XYChart; // FIX #1: Xóa import JavaFX — server không có JavaFX runtime
 
 public class DataStorage {
     private static final String URL = "jdbc:mysql://localhost:3306/online_auction";
@@ -620,7 +620,8 @@ public class DataStorage {
         String insertHistorySql = "INSERT INTO bid_history (bidder_name, product_id, product_name, my_bid_price, final_price, end_time, result, is_paid) " +
                 "VALUES (?, ?, ?, ?, ?, NOW(), ?, 0)";
 
-        String findAllBiddersSql = "SELECT DISTINCT bidder_name, MAX(bid_amount) as max_bid FROM bids " +
+        // FIX #2: Bảng 'bids' không tồn tại → dùng 'bid_history' với cột 'my_bid_price'
+        String findAllBiddersSql = "SELECT DISTINCT bidder_name, MAX(my_bid_price) as max_bid FROM bid_history " +
                 "WHERE product_id = ? AND bidder_name != ? GROUP BY bidder_name";
 
         try (Connection conn = getConnection();
@@ -890,30 +891,8 @@ public class DataStorage {
         return points;
     }
 
-    public static XYChart.Series<String, Number> getProductChartData(String productId, String productName) {
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName(productName); // Tên sản phẩm hiển thị ở chú thích biểu đồ
-
-        // Lấy Giờ:Phút:Giây và Mức giá tăng dần theo thời gian
-        String sql = "SELECT DATE_FORMAT(recorded_at, '%H:%i:%s') as bid_time, price_milestone " +
-                "FROM product_price_log WHERE product_id = ? ORDER BY recorded_at ASC";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, productId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    String time = rs.getString("bid_time");         // Trục X (Thời gian)
-                    double price = rs.getDouble("price_milestone"); // Trục Y (Giá tiền)
-
-                    series.getData().add(new XYChart.Data<>(time, price));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return series;
-    }
+    // FIX #1: Hàm getProductChartData đã bị xóa — dùng XYChart (JavaFX) không phù hợp trên server.
+    // Client tự vẽ chart từ getRawChartData() đã có bên trên.
 
     private static void extendIfLastMinutes(Connection conn, String productId) {
         String checkSql = "SELECT end_time FROM products WHERE id = ? AND status = 'RUNNING'";

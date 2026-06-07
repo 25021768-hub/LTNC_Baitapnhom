@@ -150,31 +150,45 @@ public class BidManageController extends MenuController {
         calculateSummary();
     }
 
+    // FIX #7: calculateSummary() gọi network (getMaxBidByBidderForProduct) trên UI thread → freeze UI.
+    // Chuyển phần nặng sang background thread, cập nhật label qua Platform.runLater().
     private void calculateSummary() {
         String currentUsername = RemoteDataStorage.currentAccount.getUsername();
         int totalBidding = runningBidList.size();
+        // Snapshot danh sách để truyền vào background thread (tránh ConcurrentModificationException)
+        List<Product> snapshot = new ArrayList<>(runningBidList);
 
-        long totalWinning = runningBidList.stream()
-                .filter(p -> currentUsername.equalsIgnoreCase(p.getHighestBidder()))
-                .count();
+        Thread t = new Thread(() -> {
+            long totalWinning = snapshot.stream()
+                    .filter(p -> currentUsername.equalsIgnoreCase(p.getHighestBidder()))
+                    .count();
 
-        double totalValue = runningBidList.stream()
-                .mapToDouble(p -> RemoteDataStorage.getMaxBidByBidderForProduct(currentUsername, p.getId(), p.getCurrentPrice()))
-                .sum();
+            // Network call chạy trên background thread
+            double totalValue = snapshot.stream()
+                    .mapToDouble(p -> RemoteDataStorage.getMaxBidByBidderForProduct(
+                            currentUsername, p.getId(), p.getCurrentPrice()))
+                    .sum();
 
-        // Định nghĩa 2 phút cuối = còn dưới 120 giây
-        long hotWinning = runningBidList.stream()
-                .filter(p -> currentUsername.equalsIgnoreCase(p.getHighestBidder()))
-                .filter(p -> {
-                    return p.getRemainingTime() != null && (p.getRemainingTime().contains("00:01:") || p.getRemainingTime().contains("00:00:"));
-                })
-                .count();
+            long hotWinning = snapshot.stream()
+                    .filter(p -> currentUsername.equalsIgnoreCase(p.getHighestBidder()))
+                    .filter(p -> p.getRemainingTime() != null &&
+                            (p.getRemainingTime().contains("00:01:") || p.getRemainingTime().contains("00:00:")))
+                    .count();
 
-        // Đổ dữ liệu text hiển thị trực quan lên giao diện
-        lblTotalBidding.setText("Đang Đấu: " + totalBidding);
-        lblTotalWinning.setText("Bạn đang dẫn đầu: " + totalWinning);
-        lblTotalValue.setText("Tổng giá trị thầu: " + String.format("%,.0fđ", totalValue));
-        lblHotWinning.setText("Bạn đang dẫn đầu (2 phút cuối): " + hotWinning);
+            final long tw = totalWinning;
+            final double tv = totalValue;
+            final long hw = hotWinning;
+
+            // Cập nhật UI trên JavaFX Application Thread
+            Platform.runLater(() -> {
+                lblTotalBidding.setText("Đang Đấu: " + totalBidding);
+                lblTotalWinning.setText("Bạn đang dẫn đầu: " + tw);
+                lblTotalValue.setText("Tổng giá trị thầu: " + String.format("%,.0fđ", tv));
+                lblHotWinning.setText("Bạn đang dẫn đầu (2 phút cuối): " + hw);
+            });
+        }, "calculate-summary-thread");
+        t.setDaemon(true);
+        t.start();
     }
 
     private void navigateToBidDetail(Product p) {

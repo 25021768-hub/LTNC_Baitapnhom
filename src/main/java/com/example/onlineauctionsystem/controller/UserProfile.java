@@ -12,15 +12,18 @@ import java.util.Optional;
 
 public class UserProfile extends MenuController{
     @FXML private Label lblFullNameMessage, lblEmailMessage, lblPhoneMessage, lblIDCardMessage, lblName;
-    private Account acc = RemoteDataStorage.currentAccount;
+    // FIX #3: Không khởi tạo field-level — RemoteDataStorage.currentAccount có thể null lúc class load
+    private Account acc;
     @FXML private Label lblBalance;
     @FXML private TextField txtFullName, txtEmail, txtPhoneNumber, txtIDCard;
     @FXML private Button btnSave;
 
     @Override
     public void initialize() {
+        // FIX #3: Gán acc trong initialize() — lúc này currentAccount đã được set sau đăng nhập
+        acc = RemoteDataStorage.currentAccount;
+        if (acc == null) return; // guard thêm để tránh NPE
         btnSave.setDisable(true);
-        txtFullName.setText(RemoteDataStorage.currentAccount.getFullName());
         txtEmail.setText(RemoteDataStorage.currentAccount.getEmail());
         txtIDCard.setText(RemoteDataStorage.currentAccount.getIdCard());
         txtPhoneNumber.setText(RemoteDataStorage.currentAccount.getPhoneNumber());

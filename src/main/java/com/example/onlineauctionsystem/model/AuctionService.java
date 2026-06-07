@@ -246,8 +246,8 @@ public class AuctionService {
                     DataStorage.updateBalance(oldBidder, oldPrice);
                 }
 
-                // Kích hoạt auto-bid của người khác
-                DataStorage.triggerAutoBidSystem(pid, amount, p.getBidIncrement());
+                // FIX #5: Bỏ lời gọi triggerAutoBidSystem ở đây — DataStorage.updateBid() đã gọi rồi.
+                // Gọi 2 lần gây double auto-bid và race condition.
 
                 // Cập nhật object và trả về
                 p.setCurrentPrice(amount);
