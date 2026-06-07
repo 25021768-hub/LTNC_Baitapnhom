@@ -163,7 +163,7 @@ public class DataStorage {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, acc.getUsername());
-            stmt.setString(2, acc.getPassword());
+            stmt.setString(2, hashPassword(acc.getPassword())); // [FIX #1] hash trước khi lưu
             stmt.setString(3, acc.getRole());
             stmt.setString(4, acc.getFullName());
             stmt.setString(5, acc.getIdCard());
