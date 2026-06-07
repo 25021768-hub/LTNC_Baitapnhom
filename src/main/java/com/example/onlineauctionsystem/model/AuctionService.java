@@ -91,18 +91,20 @@ public class AuctionService {
     private static AuctionMessage handleLogin(AuctionMessage req) {
         String[] info = (String[]) req.getData(); // [username, password]
         Account acc = DataStorage.checkLogin(info[0], info[1]);
-        if (acc != null) {
-            if (acc.isLocked()) {
-                return error("Tài khoản đã bị khóa!");
-            }
-            String token = DataStorage.createSession(acc.getUsername());
-            if (token == null) {
-                // Tài khoản đang được đăng nhập tại nơi khác
-                return error("Tài khoản đang được sử dụng trên thiết bị khác. Vui lòng đóng ẩng dụng ở nơi đó trước khi đăng nhập lại!");
-            }
-            return success(new Object[]{acc, token}); // trả về cả 2
+        if (acc == null) {
+            return error("Sai tên đăng nhập hoặc mật khẩu!");
         }
-        return error("Sai tên đăng nhập hoặc mật khẩu!");
+        // Kiểm tra tài khoản bị khóa
+        if (acc.isLocked()) {
+            return error("Tài khoản của bạn đã bị khóa! Vui lòng liên hệ quản trị viên.");
+        }
+        // Kiểm tra session đang hoạt động (chỉ 1 người/1 tài khoản)
+        if (DataStorage.isSessionActive(acc.getUsername())) {
+            return new AuctionMessage(AuctionMessage.Action.ACCOUNT_IN_USE,
+                    "Tài khoản đang được đăng nhập ở thiết bị khác! Vui lòng đợi người dùng kia đăng xuất.");
+        }
+        String token = DataStorage.createSession(acc.getUsername());
+        return success(new Object[]{acc, token}); // trả về cả 2
     }
 
     private static AuctionMessage handleRegister(AuctionMessage req) {

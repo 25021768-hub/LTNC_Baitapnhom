@@ -29,15 +29,18 @@ public class RemoteDataStorage {
     /** Tài khoản đang đăng nhập – lưu trên client, không qua server */
     public static Account currentAccount;
     public static String currentToken;
-    /** Lưu lý do đăng nhập thất bại mới nhất từ server */
-    private static String lastLoginError;
-    public static String getLastLoginError() { return lastLoginError; }
-
     public static boolean validateSession(String username, String token) {
         AuctionMessage res = AuctionClient.send(new AuctionMessage(
                 AuctionMessage.Action.VALIDATE_SESSION, new Object[]{username, token}
         ));
         return res.getAction() == AuctionMessage.Action.SUCCESS;
+    }
+
+    /** Lưu lỗi đăng nhập gần nhất (để LoginController đọc và hiển thị) */
+    private static String lastLoginError = null;
+
+    public static String getLastLoginError() {
+        return lastLoginError;
     }
 
     public static Account checkLogin(String username, String password) {
@@ -50,10 +53,8 @@ public class RemoteDataStorage {
             currentToken   = (String)  payload[1];
             return currentAccount;
         }
-        // Lưu lý do thất bại để LoginController hiển thị đúng thông báo
-        if (res.getData() instanceof String msg) {
-            lastLoginError = msg;
-        }
+        // Lưu lại lỗi để controller đọc
+        lastLoginError = res.getData() != null ? res.getData().toString() : "Lỗi không xác định.";
         return null;
     }
 
