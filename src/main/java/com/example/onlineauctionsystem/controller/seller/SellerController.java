@@ -167,6 +167,7 @@ public class SellerController extends MenuController {
         if (alert.showAndWait().get() == ButtonType.OK) {
             stopAutoRefresh();
             RemoteDataStorage.currentAccount = null;
+            RemoteDataStorage.currentToken = null;
             switchScene(event, SceneConfig.LOGIN);
 
         }
